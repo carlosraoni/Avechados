@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="10" height="10" tilewidth="35" tileheight="35">
+ <tileset firstgid="1" name="Background" tilewidth="35" tileheight="35">
+  <image source="Background.png" width="420" height="210"/>
+ </tileset>
+ <layer name="pistaTeste" width="10" height="10">
+  <data encoding="base64" compression="zlib">
+   eJwzYmBgMKIBNsaD0dWZYsEDoQ6X+4jxB7UwAKrJE9k=
+  </data>
+ </layer>
+</map>
