@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="27" tilewidth="35" tileheight="35">
+ <tileset firstgid="1" name="MapaTeste35x35" tilewidth="35" tileheight="35">
+  <image source="../PackedTiles35x35/Tiles35x35.png" width="256" height="512"/>
+ </tileset>
+ <layer name="Pista" width="32" height="27">
+  <data encoding="base64" compression="zlib">
+   eJyzYGBgsBhgbDNAeNR+yu1XwIKpbT82OwjhgbafGDeM2j9q/0i1n5Tyf9T+UfupaTep9pPqDmLMGm3/jNo/av/gsH8gMQCYCLNJ
+  </data>
+ </layer>
+</map>
