@@ -1,16 +1,18 @@
 package com.avechados.main;
 
+import com.avechados.model.Car;
+import com.avechados.utils.Constants;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class AvechadosApplicationListener implements ApplicationListener{
 
-	private SpriteBatch car;
+	private SpriteBatch carSprite;
+	private Car player;
 	private Texture carTexture;
 	
 	/**
@@ -32,8 +34,8 @@ public class AvechadosApplicationListener implements ApplicationListener{
 	 * libgdx's gdx.graphics.getWidth() / getHeight() on devices that make use
 	 * of on-screen menu buttons.
 	 */
-	private int screenWidth;
-	private int screenHeight;
+	private int screenWidth, mapWidth;
+	private int screenHeight, mapHeight;
 
 	public AvechadosApplicationListener() {
 		super();
@@ -49,14 +51,11 @@ public class AvechadosApplicationListener implements ApplicationListener{
 		screenWidth = width;
 		screenHeight = height;
 	}
-
-	float carX, carY;
 	
 	@Override
 	public void create() {
 		carTexture = new Texture(Gdx.files.internal("res/carro.png"));
-		car = new SpriteBatch();
-		
+		carSprite = new SpriteBatch();
 		/**
 		 * If the viewport's size is not yet known, determine it here.
 		 */
@@ -66,17 +65,19 @@ public class AvechadosApplicationListener implements ApplicationListener{
 		}
 
 		tiledMapHelper = new TiledMapHelper();
-
 		tiledMapHelper.setPackerDirectory("res");
-
 		tiledMapHelper.loadMap("res/level.tmx");
-
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
-
+		
 		lastRender = System.nanoTime();
 		
-		carX = screenWidth/2;
-		carY = screenHeight/2;
+		mapWidth = tiledMapHelper.getWidth();
+		mapHeight = tiledMapHelper.getHeight();
+		
+		player = new Car(
+				Constants.INITIAL_MAX_SPEED_PLAYER, 
+				Constants.INITIAL_ACCELERATION_PLAYER, 
+				mapWidth/2, mapHeight/2, mapWidth, mapHeight);		
 	}
 
 	@Override
@@ -89,71 +90,12 @@ public class AvechadosApplicationListener implements ApplicationListener{
 
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-//		if (Gdx.input.justTouched()) {
-//			lastTouchedX = Gdx.input.getX();
-//			lastTouchedY = Gdx.input.getY();
-//		} else if (Gdx.input.isTouched()) {
-//			tiledMapHelper.getCamera().position.x += lastTouchedX
-//					- Gdx.input.getX();
-//
-//			/**
-//			 * Camera y is opposite of Gdx.input y, so the subtraction is
-//			 * swapped.
-//			 */
-//			tiledMapHelper.getCamera().position.y += Gdx.input.getY()
-//					- lastTouchedY;
-//
-//			carX = tiledMapHelper.getCamera().position.x;
-//			carY = tiledMapHelper.getCamera().position.y;
-//			
-//			lastTouchedX = Gdx.input.getX();
-//			lastTouchedY = Gdx.input.getY();
-//		} else 
-		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
-			//carY -= 5.0;
-			tiledMapHelper.getCamera().position.y -= 5.0;
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-			//carY += 5.0;
-			tiledMapHelper.getCamera().position.y += 5.0;
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-			//carX += 5.0;
-			tiledMapHelper.getCamera().position.x += 5.0;
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){
-			//carX -= 5.0;
-			tiledMapHelper.getCamera().position.x -= 5.0;
-		}
+		updateCarPosition();
+		updateCameraPosition();
 				
-		/**
-		 * Ensure that the camera is only showing the map, nothing outside.
-		 */
-		if (tiledMapHelper.getCamera().position.x < screenWidth / 2) {
-			tiledMapHelper.getCamera().position.x = screenWidth / 2;
-		}
-		if (tiledMapHelper.getCamera().position.x >= tiledMapHelper.getWidth()
-				- screenWidth / 2) {
-			tiledMapHelper.getCamera().position.x = tiledMapHelper.getWidth()
-					- screenWidth / 2;
-		}
-
-		if (tiledMapHelper.getCamera().position.y < screenHeight / 2) {
-			tiledMapHelper.getCamera().position.y = screenHeight / 2;
-		}
-		if (tiledMapHelper.getCamera().position.y >= tiledMapHelper.getHeight()
-				- screenHeight / 2) {
-			tiledMapHelper.getCamera().position.y = tiledMapHelper.getHeight()
-					- screenHeight / 2;
-		}
-
-		System.out.println(
-				"CarX: " + carX + 
-				", CarY: " + carY + 
-				", cX: " + tiledMapHelper.getCamera().position.x +
-				", cY: " + tiledMapHelper.getCamera().position.y);
+		renderMap();
+		renderCar();
 		
-		tiledMapHelper.getCamera().update();
-
-		tiledMapHelper.render();
-
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
 			try {
@@ -162,10 +104,95 @@ public class AvechadosApplicationListener implements ApplicationListener{
 			}
 		}
 
-		lastRender = now;
-		car.begin();
-		car.draw(carTexture, carX, carY);
-		car.end();
+		lastRender = now;		
+	}
+
+	private void renderMap() {
+		tiledMapHelper.render();
+	}
+
+	private void renderCar() {
+		float coordXCarFromCamera = screenWidth / 2;
+		float coordYCarFromCamera = screenHeight / 2;
+		
+		if (player.getPosX() < screenWidth / 2) {
+			coordXCarFromCamera -= ((screenWidth / 2) - player.getPosX());
+		}
+		if (player.getPosX() >= mapWidth - screenWidth / 2) {
+			coordXCarFromCamera += player.getPosX() - (mapWidth - (screenWidth / 2));
+		}
+
+		if (player.getPosY() < screenHeight / 2) {
+			coordYCarFromCamera -= ((screenHeight / 2) - player.getPosY());
+		}
+		if (player.getPosY() >= mapHeight - screenHeight / 2) {
+			coordYCarFromCamera += player.getPosY() - (mapHeight - (screenHeight / 2));
+		}
+		
+		drawCarRotated(coordXCarFromCamera, coordYCarFromCamera, player.getAngle());
+	}
+
+	private void drawCarRotated(float coordXCarFromCamera, float coordYCarFromCamera, float angle) {
+		carSprite.begin();
+		carSprite.draw(
+				carTexture, 
+				coordXCarFromCamera,
+				coordYCarFromCamera, 
+				carTexture.getWidth() / 2, 
+				carTexture.getHeight() / 2,
+				carTexture.getWidth(), 
+				carTexture.getHeight(),
+				1.0f, 
+				1.0f, 
+				angle,
+				0, 
+				0, 
+				carTexture.getWidth(), 
+				carTexture.getHeight(),
+				false,
+				false
+				);	
+		carSprite.end();
+	}
+
+	private void updateCameraPosition() {
+		/**
+		 * Ensure that the camera is only showing the map, nothing outside.
+		 */		
+		float camX = player.getPosX();
+		if (camX < screenWidth / 2) {
+			camX = screenWidth / 2;
+		}
+		if (camX >= mapWidth - screenWidth / 2) {
+			camX = mapWidth - (screenWidth / 2);
+		}
+
+		//float camY = carY + (screenHeight / 2);
+		float camY = player.getPosY();
+		if (camY < screenHeight / 2) {
+			camY = screenHeight / 2;
+		}
+		if (camY >= mapHeight - screenHeight / 2) {
+			camY = mapHeight - screenHeight / 2;
+		}
+		tiledMapHelper.getCamera().position.x = camX;
+		tiledMapHelper.getCamera().position.y = camY;
+		
+		tiledMapHelper.getCamera().update();
+	}
+
+	private void updateCarPosition() {
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+			//			
+		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
+			//			
+		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+			player.turnRight();			
+		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
+			player.turnLeft();
+		}
+
+		player.update();
 	}
 
 	@Override

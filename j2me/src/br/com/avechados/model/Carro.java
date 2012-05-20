@@ -113,7 +113,7 @@ public class Carro extends Sprite{
 		//Simulacao das formulas fisicas de Calculo do deslocamento 
 		//(com aceleracao : As = Vo*t + a*(t*t)/2 , sem aceleracao : As = V*t)
 		if(hasAcel)
-			tmpY = vel*TIME+(acel*(TIME*TIME))/2;
+			tmpY = v0*TIME+(acel*(TIME*TIME))/2;
 		else 
 			tmpY = vel*TIME;
 		//Fator 30 eh o valor do Modulo do deslocamento em y quando o angulo for de 30 em relacao ao eixo X
