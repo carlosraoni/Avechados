@@ -143,7 +143,7 @@ public class AvechadosApplicationListener implements ApplicationListener{
 				carTexture.getWidth(), 
 				carTexture.getHeight(),
 				1.0f, 
-				1.0f, 
+				0.9f, 
 				angle,
 				0, 
 				0, 
@@ -183,12 +183,15 @@ public class AvechadosApplicationListener implements ApplicationListener{
 
 	private void updateCarPosition() {
 		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+			player.decreaseSpeed();			
+		} 
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
 			//			
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
-			//			
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+		}
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
 			player.turnRight();			
-		} else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
+		} 
+		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
 			player.turnLeft();
 		}
 

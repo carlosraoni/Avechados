@@ -81,6 +81,11 @@ public class Car {
 			angle += 360;
 	}
 
+	public void decreaseSpeed(){
+		speed -= Constants.BRAKE_SPEED;
+		if(speed < 0) speed = 0;
+	}
+	
 	// Calcula o deslocamento do Carro no Eixo X a partir de sua Velociade ,
 	// Aceleracao e Direcao
 	private float getDeltaX() {
