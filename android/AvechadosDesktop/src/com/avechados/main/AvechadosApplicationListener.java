@@ -66,7 +66,7 @@ public class AvechadosApplicationListener implements ApplicationListener{
 
 		tiledMapHelper = new TiledMapHelper();
 		tiledMapHelper.setPackerDirectory("res");
-		tiledMapHelper.loadMap("res/level.tmx");
+		tiledMapHelper.loadMap("res/NatalArena.tmx");
 		tiledMapHelper.prepareCamera(screenWidth, screenHeight);
 		
 		lastRender = System.nanoTime();
