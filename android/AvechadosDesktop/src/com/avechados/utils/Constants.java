@@ -6,7 +6,7 @@ public interface Constants {
 	public static final int DEGREE_TURN = 5;
 	public static final int TIME = 1;
 	
-	public static final int INITIAL_MAX_SPEED_PLAYER = 90;
+	public static final int INITIAL_MAX_SPEED_PLAYER = 70;
 	public static final int INITIAL_ACCELERATION_PLAYER = 1;
 	public static final int BRAKE_SPEED = 5;
 	
