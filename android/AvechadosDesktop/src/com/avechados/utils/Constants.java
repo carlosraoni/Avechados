@@ -18,4 +18,8 @@ public interface Constants {
 	public static final String START_PLAYER_COLUMN_KEY = "startPlayerColumn";
 	public static final String START_PLAYER_LINE_KEY = "startPlayerLine";
 	
+	public static final String TILE_LOCATION_KEY = "location";
+	public static final String TILE_GROUND_KEY = "ground";
+	public static final String TILE_QUALIFIER_KEY = "qualifier";
+	
 }

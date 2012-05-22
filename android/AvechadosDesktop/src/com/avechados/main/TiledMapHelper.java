@@ -29,6 +29,7 @@ package com.avechados.main;
 
 import java.util.Iterator;
 
+import com.avechados.utils.Constants;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -172,12 +173,12 @@ public class TiledMapHelper {
 			for(int i=0; i<layer.tiles.length; i++){
 				for(int j=0; j<layer.tiles[i].length; j++){
 					int tileIndex = layer.tiles[i][j] - 1;
-					String location = map.getTileProperty(tileIndex, "location");
-					String ground = map.getTileProperty(tileIndex, "ground");
-					String qualifier = map.getTileProperty(tileIndex, "qualifier");
-					System.out.println("Tile["+ i +"]["+ j +"] = "+ tileIndex+ "(" + location + "," + ground + "," + qualifier + ")");
-					//System.out.print(location.charAt(0) + " ");
-					//System.out.print(ground.charAt(0) + " ");
+					String locationStr = map.getTileProperty(tileIndex, Constants.TILE_LOCATION_KEY);
+					String groundStr = map.getTileProperty(tileIndex, Constants.TILE_GROUND_KEY);
+					String qualifierStr = map.getTileProperty(tileIndex, Constants.TILE_QUALIFIER_KEY);
+					
+					System.out.println("Tile["+ i +"]["+ j +"] = "+ tileIndex+ "(" + locationStr + "," + groundStr + "," + qualifierStr + ")");
+					
 				}
 				System.out.println();
 			}
