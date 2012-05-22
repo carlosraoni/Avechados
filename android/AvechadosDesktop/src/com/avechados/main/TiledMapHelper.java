@@ -200,5 +200,23 @@ public class TiledMapHelper {
 			}
 		}
 	}
+
+	public String getMapProperty(String key) {
+		if(map == null)
+			return null;
+		return map.properties.get(key);
+	}
+
+	public int getNumRows() {
+		if(map == null)
+			return 0;
+		return map.layers.get(0).tiles.length;
+	}
+	
+	public int getNumCols() {
+		if(map == null)
+			return 0;
+		return map.layers.get(0).tiles[0].length;
+	}
 	
 }

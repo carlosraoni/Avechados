@@ -81,8 +81,24 @@ public class Car {
 			angle += 360;
 	}
 
+	public void slowTurnLeft() {
+		angle = (angle + Constants.SLOW_DEGREE_TURN) % 360;
+	}
+
+	public void slowTurnRight() {
+		angle = angle - Constants.SLOW_DEGREE_TURN;
+		if(angle < 0)
+			angle += 360;
+	}
+
+	
 	public void decreaseSpeed(){
 		speed -= Constants.BRAKE_SPEED;
+		if(speed < 0) speed = 0;
+	}
+	
+	public void slowDecreaseSpeed(){
+		speed -= Constants.SLOW_BRAKE_SPEED;
 		if(speed < 0) speed = 0;
 	}
 	
@@ -148,4 +164,5 @@ public class Car {
 	public double getAngleInRadians(){
 		return (getAngle() * Math.PI) / 180.0; 
 	}
+
 }

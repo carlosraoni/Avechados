@@ -74,10 +74,32 @@ public class AvechadosApplicationListener implements ApplicationListener{
 		mapWidth = tiledMapHelper.getWidth();
 		mapHeight = tiledMapHelper.getHeight();
 		
+		int posIniX = mapWidth/2;
+		int posIniY = mapHeight/2;
+		try {
+			int startPlayerColumn = Integer.parseInt(tiledMapHelper.getMapProperty(Constants.START_PLAYER_COLUMN_KEY));
+			int startPlayerLine = tiledMapHelper.getNumRows() - Integer.parseInt(tiledMapHelper.getMapProperty(Constants.START_PLAYER_LINE_KEY)) - 1;
+			
+			int tileWidth = tiledMapHelper.getMap().tileWidth;
+			int tileHeight = tiledMapHelper.getMap().tileHeight;
+			
+			posIniX = (startPlayerColumn * tileWidth);
+			posIniY = (startPlayerLine * tileHeight);
+			
+//			System.out.println("nc: " + tiledMapHelper.getNumCols() + ", nr: " + tiledMapHelper.getNumRows());
+//			System.out.println("tw: " + tileWidth + ", th: " + tileHeight);
+//			System.out.println("spc: " + startPlayerColumn + ", spl, " + startPlayerLine);
+//			System.out.println("px: " + posIniX + ", py: " + posIniY);
+			
+		} catch (NumberFormatException e) {
+			System.out.println("Erro parseando inteiro de posição inicial no mapa: " + e.getMessage());
+			e.printStackTrace();
+		}
+		
 		player = new Car(
 				Constants.INITIAL_MAX_SPEED_PLAYER, 
 				Constants.INITIAL_ACCELERATION_PLAYER, 
-				mapWidth/2, mapHeight/2, mapWidth, mapHeight);		
+				posIniX, posIniY, mapWidth, mapHeight);		
 	}
 
 	@Override
@@ -194,7 +216,17 @@ public class AvechadosApplicationListener implements ApplicationListener{
 		if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
 			player.turnLeft();
 		}
-
+		float accelerometerX = Gdx.input.getAccelerometerX();
+		float accelerometerY = Gdx.input.getAccelerometerY();
+		if(accelerometerX < -3.0f){
+			player.slowTurnRight();
+		}
+		else if(accelerometerX > 3.0f){
+			player.slowTurnLeft();
+		}
+		if(accelerometerY > 5.0f){
+			player.slowDecreaseSpeed();
+		}
 		player.update();
 	}
 
