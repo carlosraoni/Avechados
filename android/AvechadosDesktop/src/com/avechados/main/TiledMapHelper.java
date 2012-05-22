@@ -27,13 +27,19 @@ package com.avechados.main;
  * http://code.google.com/p/libgdx/
  */
 
+import java.util.Iterator;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
+import com.badlogic.gdx.graphics.g2d.tiled.TileSet;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledLayer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
+import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Vector3;
 
 public class TiledMapHelper {
@@ -146,4 +152,53 @@ public class TiledMapHelper {
 	private TileMapRenderer tileMapRenderer;
 
 	private TiledMap map;
+
+	public static void main(String[] args) {
+		System.out.println("--- map ---");
+		TiledMap map = TiledLoader.createMap(new FileHandle("res/NatalArena.tmx"));
+		for (String name : map.properties.keySet()) {			
+			String value = map.properties.get(name);
+			System.out.println("\tproperty :: " + name + ": " + value);
+		}
+		System.out.println();
+		System.out.println("--- layers ---");
+		for (TiledLayer layer : map.layers) {
+			System.out.println("layer: " + layer.name);
+			for (String name : layer.properties.keySet()) {				
+				String value = layer.properties.get(name);
+				System.out.println("layer property :: " + name + ": " + value);
+			}
+			System.out.println("--- layer tiles ---");
+			for(int i=0; i<layer.tiles.length; i++){
+				for(int j=0; j<layer.tiles[i].length; j++){
+					int tileIndex = layer.tiles[i][j] - 1;
+					String location = map.getTileProperty(tileIndex, "location");
+					String ground = map.getTileProperty(tileIndex, "ground");
+					String qualifier = map.getTileProperty(tileIndex, "qualifier");
+					System.out.println("Tile["+ i +"]["+ j +"] = "+ tileIndex+ "(" + location + "," + ground + "," + qualifier + ")");
+					//System.out.print(location.charAt(0) + " ");
+					//System.out.print(ground.charAt(0) + " ");
+				}
+				System.out.println();
+			}
+		}
+		System.out.println();
+		
+		System.out.println("--- groups ---");
+		for (TiledObjectGroup group : map.objectGroups) {
+			System.out.println("group: " + group.name);
+			for (String name : group.properties.keySet()) {				
+				String value = group.properties.get(name);
+				System.out.println("\tproperty :: " + name + ": " + value);
+			}
+			for (TiledObject object : group.objects) {
+				System.out.println("\tobject: " + object.name);
+				for (String name : object.properties.keySet()) {					
+					String value = object.properties.get(name);
+					System.out.println("\t\tproperty :: " + name + ": " + value);
+				}
+			}
+		}
+	}
+	
 }
