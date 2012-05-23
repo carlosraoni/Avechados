@@ -14,9 +14,11 @@ public interface Constants {
 	public static final int SLOW_BRAKE_SPEED = 2;
 	
 	public static final float CONVERT_DELTA_TO_PIXELS = -(1.0f / 20.0f);
+
+	public static int UNFILLED_DISTANCE = -1;
 	
 	public static final String START_PLAYER_COLUMN_KEY = "startPlayerColumn";
-	public static final String START_PLAYER_LINE_KEY = "startPlayerLine";
+	public static final String START_PLAYER_ROW_KEY = "startPlayerLine";
 	
 	public static final String TILE_LOCATION_KEY = "location";
 	public static final String TILE_GROUND_KEY = "ground";

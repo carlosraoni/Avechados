@@ -345,6 +345,7 @@ public class Corrida extends LayerManager{
 				distance[i][j] = dIni;
 		
 		int [][] dir = {{0, -1}, {-1, -1}, {-1, 0}, {-1, 1}, {0, 1} , {1, 1}, {1, 0}, {1, -1}};
+		//int [][] dir = {{0, -1},  {-1, 0}, {0, 1} , {1, 0}};
 		
 		Queue q = new Queue();
 		int rowIni = ini.getRow();
@@ -385,7 +386,7 @@ public class Corrida extends LayerManager{
 			}
 		}
 				
-		//printBiDimensionalArrayFormated(distance, 4);
+		printBiDimensionalArrayFormated(distance, 4);
 	}
 	
 	private void printBiDimensionalArrayFormated(int [][] mat, int padding){

@@ -14,7 +14,7 @@
   </tile>
   <tile id="1">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
     <property name="qualifier" value="start"/>
    </properties>
@@ -34,7 +34,7 @@
   </tile>
   <tile id="4">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
     <property name="qualifier" value="start"/>
    </properties>
@@ -109,7 +109,7 @@
   </tile>
   <tile id="16">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
    </properties>
   </tile>
@@ -169,7 +169,7 @@
   </tile>
   <tile id="26">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
    </properties>
   </tile>
@@ -235,7 +235,7 @@
   </tile>
   <tile id="37">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
    </properties>
   </tile>
@@ -301,7 +301,7 @@
   </tile>
   <tile id="48">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
    </properties>
   </tile>
@@ -367,7 +367,7 @@
   </tile>
   <tile id="59">
    <properties>
-    <property name="ground" value="white-sand"/>
+    <property name="ground" value="white_sand"/>
     <property name="location" value="inside"/>
    </properties>
   </tile>

@@ -78,7 +78,7 @@ public class AvechadosApplicationListener implements ApplicationListener{
 		int posIniY = mapHeight/2;
 		try {
 			int startPlayerColumn = Integer.parseInt(tiledMapHelper.getMapProperty(Constants.START_PLAYER_COLUMN_KEY));
-			int startPlayerLine = tiledMapHelper.getNumRows() - Integer.parseInt(tiledMapHelper.getMapProperty(Constants.START_PLAYER_LINE_KEY)) - 1;
+			int startPlayerLine = tiledMapHelper.getNumRows() - Integer.parseInt(tiledMapHelper.getMapProperty(Constants.START_PLAYER_ROW_KEY)) - 1;
 			
 			int tileWidth = tiledMapHelper.getMap().tileWidth;
 			int tileHeight = tiledMapHelper.getMap().tileHeight;
