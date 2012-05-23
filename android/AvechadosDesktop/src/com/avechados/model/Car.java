@@ -15,8 +15,7 @@ public class Car {
 	private float posX, posY;
 	private float mapWidth, mapHeight;
 	
-	// Variavel que sinaliza se o carro esta acelerando ou se chegou a
-	// Velocidade Maxima
+	// Variavel que sinaliza se o carro esta acelerando ou se chegou a Velocidade Maxima
 	public boolean hasAcel;
 
 	// Construtor do Carro para atribuicao das caracteristicas iniciais do Carro
@@ -42,10 +41,8 @@ public class Car {
 	}
 	
 	private void updatePosition() {
-		float deltaX = getDeltaX();
-		float deltaY = getDeltaY();
-		setPosX(getPosX() + deltaX);
-		setPosY(getPosY() + deltaY);
+		setPosX(getPosX() + getDeltaX());
+		setPosY(getPosY() + getDeltaY());
 	}
 
 	// Metodo para determinacao da Velocidade do Carro
@@ -53,8 +50,7 @@ public class Car {
 		initialSpeed = speed;
 		// Aumentar a Velocidade gradativamente de Acordo com a Aceleracao
 		if (hasAcel) {
-			// Se o Carro estiver acelerando simular formula fisica para o
-			// calculo da Velocidade(V = Vo + a*t)
+			// Se o Carro estiver acelerando simular formula fisica para o calculo da Velocidade(V = Vo + a*t)
 			int newSpeed = speed + acceleration * Constants.TIME;
 			// Se o Carro atingir a Velocidade Maxima a aceleracao eh Parada
 			if (newSpeed <= maxSpeed)
@@ -64,31 +60,37 @@ public class Car {
 				hasAcel = false;
 			}
 		} else {
-			// Se o carro possui velocidade inferior a Velocidade Maxima ele
-			// comeca a acelerar novamente
+			// Se o carro possui velocidade inferior a Velocidade Maxima ele comeca a acelerar novamente
 			if (speed < maxSpeed)
 				hasAcel = true;
 		}
 	}
 
-	public void turnLeft() {
-		angle = (angle + Constants.DEGREE_TURN) % 360;
+	private void turnLeft(int degree) {
+		angle = (angle + degree) % 360;
 	}
+		
 
-	public void turnRight() {
-		angle = angle - Constants.DEGREE_TURN;
+	private void turnRight(int degree) {
+		angle = angle - degree;
 		if(angle < 0)
 			angle += 360;
+	}
+	
+	public void turnLeft() {
+		turnLeft(Constants.DEGREE_TURN);
+	}
+	
+	public void turnRight() {
+		turnRight(Constants.DEGREE_TURN);
 	}
 
 	public void slowTurnLeft() {
-		angle = (angle + Constants.SLOW_DEGREE_TURN) % 360;
+		turnLeft(Constants.SLOW_DEGREE_TURN);
 	}
 
 	public void slowTurnRight() {
-		angle = angle - Constants.SLOW_DEGREE_TURN;
-		if(angle < 0)
-			angle += 360;
+		turnRight(Constants.SLOW_DEGREE_TURN);		
 	}
 
 	
@@ -102,35 +104,24 @@ public class Car {
 		if(speed < 0) speed = 0;
 	}
 	
-	// Calcula o deslocamento do Carro no Eixo X a partir de sua Velociade ,
-	// Aceleracao e Direcao
-	private float getDeltaX() {
-		// deltaX eh o valor do deslocamento caso o Carro possuisse velociade no eixo Y sendo 0
-		float deltaX = 0.0f;
-		// Simulacao das formulas fisicas de Calculo do deslocamento
-		// (com aceleracao : As = Vo*t + a*(t*t)/2 , sem aceleracao : As = V*t)
+	// Retorna o valor do deslocamento do Carro em uma dimensão
+	private float getDelta(){
+		// Simulacao das formulas fisicas de Calculo do deslocamento (com aceleracao : As = Vo*t + a*(t*t)/2 , sem aceleracao : As = V*t)
 		if (hasAcel)
-			deltaX = initialSpeed * Constants.TIME + (acceleration * (Constants.TIME * Constants.TIME)) / 2;
-		else
-			deltaX = speed * Constants.TIME;
-		deltaX *= Math.cos(getAngleInRadians()); 
+			return initialSpeed * Constants.TIME + (acceleration * (Constants.TIME * Constants.TIME)) / 2;		
+		return speed * Constants.TIME;
+	}
+	
+	// Calcula o deslocamento do Carro no Eixo X a partir de sua Velociade, Aceleracao e Direcao
+	private float getDeltaX() {
+		float deltaX = (float) (getDelta() * Math.cos(getAngleInRadians())); 
 		// Conversao do deslocamento para pixel
 		return deltaX * Constants.CONVERT_DELTA_TO_PIXELS;
 	}
 
-	// Calcula o deslocamento do Carro no Eixo Y a partir de sua Velociade ,
-	// Aceleracao e Direcao
+	// Calcula o deslocamento do Carro no Eixo Y a partir de sua Velociade, Aceleracao e Direcao
 	private float getDeltaY() {
-		// deltaX eh o valor do deslocamento caso o Carro possuisse velociade no eixo Y sendo 0
-		float deltaY = 0.0f;
-		// Simulacao das formulas fisicas de Calculo do deslocamento
-		// (com aceleracao : As = Vo*t + a*(t*t)/2 , sem aceleracao : As = V*t)
-		if (hasAcel)
-			deltaY = initialSpeed * Constants.TIME + (acceleration * (Constants.TIME * Constants.TIME)) / 2;
-		else
-			deltaY = speed * Constants.TIME;
-		deltaY *= Math.sin(getAngleInRadians());
-
+		float deltaY = (float) (getDelta() * Math.sin(getAngleInRadians())); 
 		// Conversao do deslocamento para pixel
 		return deltaY * Constants.CONVERT_DELTA_TO_PIXELS;
 	}
