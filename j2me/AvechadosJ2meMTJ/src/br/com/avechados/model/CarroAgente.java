@@ -42,7 +42,7 @@ public class CarroAgente extends Carro{
 	public void atualiza(int npista){
 		calcVel();		
 		simularDecisao();
-		setFrame(direcao-1);		
+//		setFrame(direcao-1);		
 	}
 
 	
@@ -141,21 +141,23 @@ public class CarroAgente extends Carro{
 
 	private int calcSum(int row, int col, int dx, int dy, int maxRange) {
 		int sum = 0;
+		int lastDistance = distance[row][col];
 		for(int i=0; i<maxRange; i++){
 			int nRow = row + dx;
 			int nCol = col + dy;
 			if(nRow < 0 || nRow >= n || nCol < 0 || nCol >= m || distance[nRow][nCol] < 0)
 				break;
-			sum += getReward(nRow, nCol);
+			sum += getReward(nRow, nCol, lastDistance, i + 1);
 			row = nRow;
 			col = nCol;
+			lastDistance = distance[row][col];
 		}
 		return sum;
 	}
 
 
-	private int getReward(int row, int col) {
-		int tot = distance[row][col];
+	private int getReward(int row, int col, int lastDistance, int iter) {
+		int tot = (distance[row][col] - lastDistance) * iter;
 		if(distance[row][col] == maxDist){
 			//System.out.println("Ponto final atingido, desabilitando manobras.");
 			distanciaMaximaNoRange = true;

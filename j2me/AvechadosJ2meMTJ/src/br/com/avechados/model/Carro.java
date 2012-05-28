@@ -62,14 +62,15 @@ public class Carro extends Sprite{
 	public void turnRight(){
 		direcao = (direcao+1)%ROT_330;
 		if(direcao == 0)
-			direcao = ROT_330;	
+			direcao = ROT_330;
+		setFrame(direcao - 1);
 	}
 	
 	public void turnLeft(){
 		direcao--;
 		if(direcao == 0)
 			direcao = ROT_330;
-			
+		setFrame(direcao - 1);
 	}
 	
 	//Calcula o deslocamento do Carro no Eixo X a partir de sua Velociade , Aceleracao e Direcao

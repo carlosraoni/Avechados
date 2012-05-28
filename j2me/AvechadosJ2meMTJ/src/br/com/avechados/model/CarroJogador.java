@@ -34,6 +34,6 @@ public class CarroJogador extends Carro{
 		}
 		*/
 		//System.out.println(direcao);
-		setFrame(direcao-1);
+		//setFrame(direcao-1);
 	}
 }

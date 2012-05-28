@@ -100,27 +100,32 @@ public class Corrida extends LayerManager{
 				jogador.life = 0;
 				estado = 0;
 			}	
-//			Carro carroDireita = jogador, carroEsquerda = agente;
-//			if(jogador.direcao < agente.direcao){
-//				carroDireita = agente;
-//				carroEsquerda = jogador;
-//			}
-//			int diffDir = dirPorRot[carroDireita.direcao] - dirPorRot[carroEsquerda.direcao];
-//			if(diffDir < 4){
-//				carroDireita.turnRight();
-//				carroDireita.turnRight();
-//				carroEsquerda.turnLeft();
-//				carroEsquerda.turnLeft();
-//			}else if(diffDir > 4){
-//				carroDireita.turnLeft();
-//				carroDireita.turnLeft();
-//				carroEsquerda.turnRight();
-//				carroEsquerda.turnRight();
-//			}else{
+			Carro carroDireita = jogador, carroEsquerda = agente;
+			if(jogador.direcao < agente.direcao){
+				carroDireita = agente;
+				carroEsquerda = jogador;
+			}
+			int diffDir = dirPorRot[carroDireita.direcao] - dirPorRot[carroEsquerda.direcao];
+			if(diffDir < 4){
+				carroDireita.turnRight();
+				carroDireita.turnRight();
+				carroEsquerda.turnLeft();
+				carroEsquerda.turnLeft();
+			}else if(diffDir > 4){
+				carroDireita.turnLeft();
+				carroDireita.turnLeft();
+				carroEsquerda.turnRight();
+				carroEsquerda.turnRight();
+			}else{
+				carroDireita.turnLeft();
+				carroDireita.turnLeft();
+				carroEsquerda.turnRight();
+				carroEsquerda.turnRight();
+				
 //				int tmp = carroDireita.direcao;
 //				carroDireita.direcao = carroEsquerda.direcao;
 //				carroEsquerda.direcao = tmp;
-//			}
+			}
 		}
 		//calcPos(jogador.direcao);
 		setScreenPos();
