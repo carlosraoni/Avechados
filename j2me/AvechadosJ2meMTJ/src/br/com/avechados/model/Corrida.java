@@ -119,6 +119,11 @@ public class Corrida extends LayerManager{
 			}else{
 				carroDireita.turnLeft();
 				carroDireita.turnLeft();
+				carroDireita.turnLeft();
+				carroDireita.turnLeft();
+				
+				carroEsquerda.turnRight();
+				carroEsquerda.turnRight();
 				carroEsquerda.turnRight();
 				carroEsquerda.turnRight();
 				
