@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="32" height="27" tilewidth="32" tileheight="32">
+ <tileset firstgid="0" name="level" tilewidth="32" tileheight="32">
+  <image source="TilesPacked/level.png" width="256" height="512"/>
+ </tileset>
+ <layer name="pistaTeste" width="32" height="27">
+  <data encoding="base64" compression="zlib">
+   eJzFlrkOwjAMQMMIlBSBKDMjQsDABIijIPj/T8IRjWRZtpP0HJ5QDvIS1zm+xpjPQJyBObAeiD3yj4BVz2yQ381lmcAMyBGh/gcBzk/H9mSkTwHY6jdXHEdgISD5/dgWOajfl/Ec/Dz9+Nxasgg/dnF1tEznif2F0q6tH3/bkJ/WYz/3v5CfxrxPP+fgxsExonE6VXTp53IzFKe2/CnzrOPPmXXReHO52cSPx+X2u3QetOWne9X1c+fXNiHmNE7SuSX5cZtnl+i3hKZ+7i7Qcl6jjp+7D6zi594aKd/fre8FlMAT1YfW5MvcWyN2//n2S1X/MPLek3KsCz+NvZZj3Fsn1X8FbsDd8Plflxi/FmuNaUSf0P0fE2uJSUJf6n+b/z4pe2bI979jPLD/B7m5Tmg=
+  </data>
+ </layer>
+</map>
