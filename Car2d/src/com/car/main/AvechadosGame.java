@@ -4,6 +4,7 @@ import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -43,6 +44,8 @@ public class AvechadosGame implements ApplicationListener{
 		private int screenWidth, mapWidth;
 		private int screenHeight, mapHeight;
 
+		private OrthographicCamera cameraDebugRenderer;
+		
 		public AvechadosGame() {
 			super();
 
@@ -59,7 +62,8 @@ public class AvechadosGame implements ApplicationListener{
 		}
 		
 		@Override
-		public void create() {
+		public void create() {			
+			
 			carTexture = new Texture(Gdx.files.internal("res/carro.png"));
 			carSprite = new SpriteBatch();
 			/**
@@ -70,6 +74,8 @@ public class AvechadosGame implements ApplicationListener{
 				screenHeight = Gdx.graphics.getHeight();
 			}
 
+			cameraDebugRenderer = new OrthographicCamera(4 * screenWidth / (Constants.PIXELS_PER_METER) , 4 * screenHeight  / (Constants.PIXELS_PER_METER));
+			
 			tiledMapHelper = new TiledMapHelper();
 			tiledMapHelper.setPackerDirectory("res");
 			tiledMapHelper.loadMap("res/NatalArena.tmx");
@@ -92,10 +98,10 @@ public class AvechadosGame implements ApplicationListener{
 				posIniX = (startPlayerColumn * tileWidth);
 				posIniY = (startPlayerLine * tileHeight);
 				
-//				System.out.println("nc: " + tiledMapHelper.getNumCols() + ", nr: " + tiledMapHelper.getNumRows());
-//				System.out.println("tw: " + tileWidth + ", th: " + tileHeight);
-//				System.out.println("spc: " + startPlayerColumn + ", spl, " + startPlayerLine);
-//				System.out.println("px: " + posIniX + ", py: " + posIniY);
+				System.out.println("nc: " + tiledMapHelper.getNumCols() + ", nr: " + tiledMapHelper.getNumRows());
+				System.out.println("tw: " + tileWidth + ", th: " + tileHeight);
+				System.out.println("spc: " + startPlayerColumn + ", spl, " + startPlayerLine);
+				System.out.println("px: " + posIniX + ", py: " + posIniY);
 				
 			} catch (NumberFormatException e) {
 				System.out.println("Erro parseando inteiro de posição inicial no mapa: " + e.getMessage());
@@ -104,8 +110,14 @@ public class AvechadosGame implements ApplicationListener{
 			
 			
 			world = new World(new Vector2(0, 0), false);
-			player = new Car(world);
-			player.getBody().getPosition().x = 20;
+			//player = new Car(world, posIniX, posIniY);
+			player = new Car(world, 0, 0);
+			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
+//			player.setXCoordFromXPixelCoord(posIniX);
+//			player.setYCoordFromYPixelCoord(posIniY);
+//			player.getBody().getPosition().set(posIniX, posIniY);
+			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
+			
 			debugRenderer = new Box2DDebugRenderer();
 /*			player = new Car(
 					Constants.INITIAL_MAX_SPEED_PLAYER, 
@@ -122,12 +134,27 @@ public class AvechadosGame implements ApplicationListener{
 			long now = System.nanoTime();
 
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
+			
 			updateCarPosition();
-			updateCameraPosition();
-					
-			renderMap();
-			renderCar();
+			
+
+			float targetFPS = 30;
+	    	float timeStep = (1 / targetFPS);
+	    	int iterations = 1;
+			world.step(timeStep, iterations, iterations);
+			
+			//cameraDebugRenderer.position.set(player.getBody().getPosition().x, player.getBody().getPosition().y, 0);
+			cameraDebugRenderer.position.set(0, 0, 0);
+			cameraDebugRenderer.update();
+			cameraDebugRenderer.apply(Gdx.gl10);						
+			
+			//updateCameraPosition();			
+			
+			//renderMap();
+			//renderCar();			
+	    		    	
+	    	//debugRenderer.render(world, tiledMapHelper.getCamera().combined);
+			debugRenderer.render(world, cameraDebugRenderer.combined);
 			
 			now = System.nanoTime();
 			if (now - lastRender < 30000000) { // 30 ms, ~33FPS
@@ -137,14 +164,7 @@ public class AvechadosGame implements ApplicationListener{
 				}
 			}
 			
-    	   float targetFPS = 45;
-    	   float timeStep = (1 / targetFPS);
-    	   int iterations = 1;
-			world.step(timeStep, iterations, iterations);
-			debugRenderer.render(world, tiledMapHelper.getCamera().combined.scale(3,3,3));
-			
-			lastRender = now;		
-			
+    	   lastRender = now;					
 		}
 
 		private void renderMap() {
@@ -155,21 +175,21 @@ public class AvechadosGame implements ApplicationListener{
 			float coordXCarFromCamera = screenWidth / 2;
 			float coordYCarFromCamera = screenHeight / 2;
 			
-			if (player.getBody().getPosition().x < screenWidth / 2) {
-				coordXCarFromCamera -= ((screenWidth / 2) - player.getBody().getPosition().x);
+			if (player.getXPixelCoord() < screenWidth / 2) {
+				coordXCarFromCamera -= ((screenWidth / 2) - player.getXPixelCoord());
 			}
-			if (player.getBody().getPosition().x >= mapWidth - screenWidth / 2) {
-				coordXCarFromCamera += player.getBody().getPosition().x - (mapWidth - (screenWidth / 2));
+			if (player.getXPixelCoord() >= mapWidth - screenWidth / 2) {
+				coordXCarFromCamera += player.getXPixelCoord() - (mapWidth - (screenWidth / 2));
 			}
 
-			if (player.getBody().getPosition().y < screenHeight / 2) {
-				coordYCarFromCamera -= ((screenHeight / 2) - player.getBody().getPosition().y);
+			if (player.getYPixelCoord() < screenHeight / 2) {
+				coordYCarFromCamera -= ((screenHeight / 2) - player.getYPixelCoord());
 			}
-			if (player.getBody().getPosition().y >= mapHeight - screenHeight / 2) {
-				coordYCarFromCamera += player.getBody().getPosition().y - (mapHeight - (screenHeight / 2));
+			if (player.getYPixelCoord() >= mapHeight - screenHeight / 2) {
+				coordYCarFromCamera += player.getYPixelCoord() - (mapHeight - (screenHeight / 2));
 			}
 			
-			//drawCarRotated(coordXCarFromCamera, coordYCarFromCamera, player.getBody().getAngle());
+			drawCarRotated(coordXCarFromCamera, coordYCarFromCamera, player.getBody().getAngle());
 		}
 
 		private void drawCarRotated(float coordXCarFromCamera, float coordYCarFromCamera, float angle) {
@@ -197,7 +217,7 @@ public class AvechadosGame implements ApplicationListener{
 
 		private void updateCameraPosition() {
 		
-			float camX = 0;//player.getPosX();
+			float camX = player.getXPixelCoord();
 			if (camX < screenWidth / 2) {
 				camX = screenWidth / 2;
 			}
@@ -206,13 +226,16 @@ public class AvechadosGame implements ApplicationListener{
 			}
 
 			//float camY = carY + (screenHeight / 2);
-			float camY = 0;//player.getPosY();
+			float camY = player.getYPixelCoord();
 			if (camY < screenHeight / 2) {
 				camY = screenHeight / 2;
 			}
 			if (camY >= mapHeight - screenHeight / 2) {
 				camY = mapHeight - screenHeight / 2;
 			}
+			
+			System.out.println("CarX: " + player.getXPixelCoord() + ", CarY: " + player.getYPixelCoord() + ", camX: " + camX + ", camY: " + camY);
+			
 			tiledMapHelper.getCamera().position.x = camX;
 			tiledMapHelper.getCamera().position.y = camY;
 			
@@ -220,18 +243,24 @@ public class AvechadosGame implements ApplicationListener{
 		}
 
 		private void updateCarPosition() {
-			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){
+			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){				
 				player.update(true, Controls.TDC_DOWN);			
 			} 
-			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){
+			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){				
 				player.update(true, Controls.TDC_UP);			
 			}
-			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
+			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
 				player.update(true, Controls.TDC_RIGHT);
 			} 
-			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
+			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
 				player.update(true, Controls.TDC_LEFT);
+			} 
+			else {
+				player.update(false, null);
 			}
+			
+			System.out.println("X: " + player.getBody().getPosition().x + ", Y: " + player.getBody().getPosition().y);
+						
 		}
 		
 /*		private void updateCarPosition() {

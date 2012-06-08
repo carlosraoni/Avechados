@@ -1,6 +1,5 @@
 package com.car.model;
 
-import java.util.Iterator;
 import java.util.Set;
 
 import com.badlogic.gdx.math.Vector2;
@@ -26,7 +25,7 @@ public class Tire {
 	public Tire(World world){
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        body = world.createBody(bodyDef);
+        body = world.createBody(bodyDef);	
 
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.setAsBox( 0.5f, 1.25f );
@@ -59,11 +58,8 @@ public class Tire {
     	if( m_groundAreas.isEmpty() )
             m_currentTraction = 1;
         else {
-            m_currentTraction = 0;
-            Iterator<GroundAreaFUD> it = m_groundAreas.iterator();
-
-            while(it.hasNext()){
-            	GroundAreaFUD ga = it.next();            	
+            m_currentTraction = 0;            
+            for(GroundAreaFUD ga: m_groundAreas){            	 
                 if ( ga.getFrictionModifier() > m_currentTraction )
                 	m_currentTraction = ga.getFrictionModifier();
             }
@@ -90,7 +86,8 @@ public class Tire {
         
         if ( impulse.len() > m_maxLateralImpulse ){
         	// TODO ?????
-            impulse = impulse.mul(m_maxLateralImpulse).mul(-impulse.len());
+            //impulse = impulse.mul(m_maxLateralImpulse).mul(-impulse.len());
+            impulse = impulse.mul(m_maxLateralImpulse/impulse.len());
         }
         
         body.applyLinearImpulse( impulse.mul(m_currentTraction), body.getWorldCenter());
@@ -102,7 +99,8 @@ public class Tire {
         Vector2 currentForwardNormal = getForwardVelocity();
         
         // TODO currentForwardNormal.nomalize
-        float currentForwardSpeed = currentForwardNormal.len2();
+        //float currentForwardSpeed = currentForwardNormal.len2();
+        float currentForwardSpeed = currentForwardNormal.nor().len();
         float dragForceMagnitude = -2 * currentForwardSpeed;
         body.applyForce( currentForwardNormal.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );
     }
@@ -113,7 +111,7 @@ public class Tire {
         
         if(controlState){
         	if(c.equals(Controls.TDC_UP)){
-        		 desiredSpeed = m_maxForwardSpeed;
+        		desiredSpeed = m_maxForwardSpeed;
         	}else if(c.equals(Controls.TDC_DOWN)){
         		desiredSpeed = m_maxBackwardSpeed;
         	}
@@ -124,8 +122,10 @@ public class Tire {
         //find current speed in forward direction
         // TODO verificar b2Dot
         Vector2 currentForwardNormal = body.getWorldVector( new Vector2(0,1) );
+        System.out.println("CFNX: " + currentForwardNormal.x + ", CFNY: " + currentForwardNormal.y);
         float currentSpeed = currentForwardNormal.dot( getForwardVelocity() );
-       
+        System.out.println("CFNX: " + currentForwardNormal.x + ", CFNY: " + currentForwardNormal.y);
+        System.out.println("DesiredSpeed: " + desiredSpeed + ", CurrentSpeed: " + currentSpeed);
         //apply necessary force
         float force = 0;
         if ( desiredSpeed > currentSpeed )
@@ -134,6 +134,8 @@ public class Tire {
             force = -m_maxDriveForce;
         else
             return;
+        System.out.println("Force: " + force + ", CFNX: " + currentForwardNormal.x + ", CFNY: " + currentForwardNormal.y);
+        
         body.applyForce( currentForwardNormal.mul(m_currentTraction).mul(force), body.getWorldCenter() );
     }
     
@@ -143,7 +145,7 @@ public class Tire {
         
         if( controlState && c.equals(Controls.TDC_LEFT)){
         	 desiredTorque = 15;
-        }else if( c.equals(Controls.TDC_RIGHT) ){
+        }else if(controlState && c.equals(Controls.TDC_RIGHT) ){
         	desiredTorque = -15;
         }
 

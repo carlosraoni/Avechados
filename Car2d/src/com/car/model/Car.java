@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.car.utils.Constants;
 import com.car.utils.Controls;
 
 public class Car {
@@ -20,10 +20,13 @@ public class Car {
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
 	RevoluteJoint flJoint, frJoint;
-	public Car(World world){
+	public Car(World world, float pixelXCoord, float pixelYCoord){
         //create car body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
+        bodyDef.position.x = pixelXCoord / Constants.PIXELS_PER_METER;
+        bodyDef.position.y = pixelYCoord / Constants.PIXELS_PER_METER;
+        		
         body = world.createBody(bodyDef);
         body.setAngularDamping(3f);
         
@@ -39,7 +42,7 @@ public class Car {
         vertices.add( new Vector2(-1.5f,0) );
 
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );
+        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );        
         body.createFixture(polygonShape, 0.1f);//shape, density
         
         //prepare common joint parameters
@@ -49,7 +52,8 @@ public class Car {
         jointDef.lowerAngle = 0;
         jointDef.upperAngle = 0;
         // TODO setZero()
-        jointDef.localAnchorB.set(0, 0);//center of tire
+        //jointDef.localAnchorB.set(0, 0);//center of tire
+        jointDef.localAnchorB.set(Vector2.Zero); 
         
         float maxForwardSpeed = 250;
         float maxBackwardSpeed = -40;
@@ -96,6 +100,9 @@ public class Car {
 		
 		for(Tire p: tires){
 			p.updateFriction();
+		}
+		
+		for(Tire p: tires){			
 			p.updateDrive(controlState,c);
 		}
 	
@@ -139,7 +146,20 @@ public class Car {
 		this.tires = tires;
 	}
 	
+	public void setXCoordFromXPixelCoord(float pixelCoordX){
+		getBody().getPosition().x = pixelCoordX / Constants.PIXELS_PER_METER;
+	}
 	
+	public void setYCoordFromYPixelCoord(float pixelCoordY){
+		getBody().getPosition().y = pixelCoordY / Constants.PIXELS_PER_METER;
+	}
 	
+	public float getXPixelCoord(){
+		return getBody().getPosition().x * Constants.PIXELS_PER_METER;
+	}
+	
+	public float getYPixelCoord(){
+		return getBody().getPosition().y * Constants.PIXELS_PER_METER;
+	}
 }
 
