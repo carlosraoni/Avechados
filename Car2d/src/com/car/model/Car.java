@@ -1,6 +1,7 @@
 package com.car.model;
 
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
@@ -52,8 +53,8 @@ public class Car {
         jointDef.lowerAngle = 0;
         jointDef.upperAngle = 0;
         // TODO setZero()
-        //jointDef.localAnchorB.set(0, 0);//center of tire
-        jointDef.localAnchorB.set(Vector2.Zero); 
+        jointDef.localAnchorB.set(0, 0);//center of tire
+        //jointDef.localAnchorB.set(Vector2.Zero); 
         
         float maxForwardSpeed = 250;
         float maxBackwardSpeed = -40;
@@ -96,14 +97,14 @@ public class Car {
 	}
 
 
-	public void update(boolean controlState,Controls c) {
+	public void update(BitSet controls) {
 		
 		for(Tire p: tires){
 			p.updateFriction();
 		}
 		
 		for(Tire p: tires){			
-			p.updateDrive(controlState,c);
+			p.updateDrive(controls);
 		}
 	
 	    //control steering
@@ -112,9 +113,9 @@ public class Car {
 		float turnPerTimeStep = turnSpeedPerSec / 60.0f;
 		float desiredAngle = 0;
 		
-		if( controlState && c.equals(Controls.TDC_LEFT) ){
+		if(controls.get(Controls.TDC_LEFT.ordinal())){
 			desiredAngle = lockAngle; 
-		}else if( controlState && c.equals(Controls.TDC_RIGHT) ){
+		}else if(controls.get(Controls.TDC_RIGHT.ordinal())){
 			desiredAngle = -lockAngle;
 		}
 		

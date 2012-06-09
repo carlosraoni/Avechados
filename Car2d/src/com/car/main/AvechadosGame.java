@@ -1,5 +1,7 @@
 package com.car.main;
 
+import java.util.BitSet;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -44,6 +46,7 @@ public class AvechadosGame implements ApplicationListener{
 		private int screenWidth, mapWidth;
 		private int screenHeight, mapHeight;
 
+		// Camera para teste da física, atualmente a renderização do carro e do mapa foram desabilitados
 		private OrthographicCamera cameraDebugRenderer;
 		
 		public AvechadosGame() {
@@ -98,11 +101,10 @@ public class AvechadosGame implements ApplicationListener{
 				posIniX = (startPlayerColumn * tileWidth);
 				posIniY = (startPlayerLine * tileHeight);
 				
-				System.out.println("nc: " + tiledMapHelper.getNumCols() + ", nr: " + tiledMapHelper.getNumRows());
-				System.out.println("tw: " + tileWidth + ", th: " + tileHeight);
-				System.out.println("spc: " + startPlayerColumn + ", spl, " + startPlayerLine);
-				System.out.println("px: " + posIniX + ", py: " + posIniY);
-				
+//				System.out.println("nc: " + tiledMapHelper.getNumCols() + ", nr: " + tiledMapHelper.getNumRows());
+//				System.out.println("tw: " + tileWidth + ", th: " + tileHeight);
+//				System.out.println("spc: " + startPlayerColumn + ", spl, " + startPlayerLine);
+//				System.out.println("px: " + posIniX + ", py: " + posIniY);				
 			} catch (NumberFormatException e) {
 				System.out.println("Erro parseando inteiro de posição inicial no mapa: " + e.getMessage());
 				e.printStackTrace();
@@ -112,11 +114,11 @@ public class AvechadosGame implements ApplicationListener{
 			world = new World(new Vector2(0, 0), false);
 			//player = new Car(world, posIniX, posIniY);
 			player = new Car(world, 0, 0);
-			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
+//			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
 //			player.setXCoordFromXPixelCoord(posIniX);
 //			player.setYCoordFromYPixelCoord(posIniY);
 //			player.getBody().getPosition().set(posIniX, posIniY);
-			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
+//			System.out.println("Px: " + player.getBody().getPosition().x + ", Py: " + player.getBody().getPosition().y);
 			
 			debugRenderer = new Box2DDebugRenderer();
 /*			player = new Car(
@@ -135,15 +137,14 @@ public class AvechadosGame implements ApplicationListener{
 
 			Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 			
-			updateCarPosition();
-			
+			updateCarPosition();			
 
 			float targetFPS = 30;
 	    	float timeStep = (1 / targetFPS);
 	    	int iterations = 1;
 			world.step(timeStep, iterations, iterations);
 			
-			//cameraDebugRenderer.position.set(player.getBody().getPosition().x, player.getBody().getPosition().y, 0);
+			// Camera exclusiva para teste da física, renderização do carro e do mapa foram desabilitados
 			cameraDebugRenderer.position.set(0, 0, 0);
 			cameraDebugRenderer.update();
 			cameraDebugRenderer.apply(Gdx.gl10);						
@@ -243,24 +244,15 @@ public class AvechadosGame implements ApplicationListener{
 		}
 
 		private void updateCarPosition() {
-			if(Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN)){				
-				player.update(true, Controls.TDC_DOWN);			
-			} 
-			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_UP)){				
-				player.update(true, Controls.TDC_UP);			
-			}
-			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT)){
-				player.update(true, Controls.TDC_RIGHT);
-			} 
-			else if(Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT)){			
-				player.update(true, Controls.TDC_LEFT);
-			} 
-			else {
-				player.update(false, null);
-			}
-			
-			System.out.println("X: " + player.getBody().getPosition().x + ", Y: " + player.getBody().getPosition().y);
-						
+			// Uso de bitSet para interpretação dos controles devido a necessidade de realizar mais de um controle
+			// no carro no mesmo passo da simulação física
+			BitSet controls = new BitSet();
+			controls.set(Controls.TDC_DOWN.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN));
+			controls.set(Controls.TDC_UP.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_UP));
+			controls.set(Controls.TDC_RIGHT.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT));
+			controls.set(Controls.TDC_LEFT.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT));
+			player.update(controls);			
+			//System.out.println("X: " + player.getBody().getPosition().x + ", Y: " + player.getBody().getPosition().y);
 		}
 		
 /*		private void updateCarPosition() {
