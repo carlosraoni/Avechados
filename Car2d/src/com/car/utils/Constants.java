@@ -24,5 +24,5 @@ public interface Constants {
 	public static final String TILE_GROUND_KEY = "ground";
 	public static final String TILE_QUALIFIER_KEY = "qualifier";
 
-	public static final float PIXELS_PER_METER = 8;
+	public static final float PIXELS_PER_METER = 4;
 }

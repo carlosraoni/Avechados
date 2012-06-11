@@ -27,6 +27,7 @@ public class Car {
         bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.x = pixelXCoord / Constants.PIXELS_PER_METER;
         bodyDef.position.y = pixelYCoord / Constants.PIXELS_PER_METER;
+        bodyDef.angle = 90 * MathUtils.degreesToRadians;
         		
         body = world.createBody(bodyDef);
         body.setAngularDamping(3f);
