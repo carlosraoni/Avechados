@@ -25,8 +25,8 @@ public class Car {
         //create car body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.x = pixelXCoord / Constants.PIXELS_PER_METER;
-        bodyDef.position.y = pixelYCoord / Constants.PIXELS_PER_METER;
+        bodyDef.position.x = pixelXCoord;
+        bodyDef.position.y = pixelYCoord;
         bodyDef.angle = 90 * MathUtils.degreesToRadians;
         		
         body = world.createBody(bodyDef);
@@ -148,20 +148,20 @@ public class Car {
 		this.tires = tires;
 	}
 	
-	public void setXCoordFromXPixelCoord(float pixelCoordX){
-		getBody().getPosition().x = pixelCoordX / Constants.PIXELS_PER_METER;
-	}
-	
-	public void setYCoordFromYPixelCoord(float pixelCoordY){
-		getBody().getPosition().y = pixelCoordY / Constants.PIXELS_PER_METER;
-	}
-	
-	public float getXPixelCoord(){
-		return getBody().getPosition().x * Constants.PIXELS_PER_METER;
-	}
-	
-	public float getYPixelCoord(){
-		return getBody().getPosition().y * Constants.PIXELS_PER_METER;
-	}
+//	public void setXCoordFromXPixelCoord(float pixelCoordX){
+//		getBody().getPosition().x = pixelCoordX / Constants.PIXELS_PER_METER;
+//	}
+//	
+//	public void setYCoordFromYPixelCoord(float pixelCoordY){
+//		getBody().getPosition().y = pixelCoordY / Constants.PIXELS_PER_METER;
+//	}
+//	
+//	public float getXPixelCoord(){
+//		return getBody().getPosition().x * Constants.PIXELS_PER_METER;
+//	}
+//	
+//	public float getYPixelCoord(){
+//		return getBody().getPosition().y * Constants.PIXELS_PER_METER;
+//	}
 }
 

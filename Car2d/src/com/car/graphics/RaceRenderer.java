@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.car.model.Race;
 import com.car.utils.Constants;
@@ -38,11 +39,15 @@ public class RaceRenderer {
 		screenWidth = screenPixelWidth;
 		screenHeight = screenPixelHeight;
 		
-		mapWidth = (int) (tiledHelper.getPixelWidth() / Constants.PIXELS_PER_METER);
-		mapHeight = (int) (tiledHelper.getPixelHeight() / Constants.PIXELS_PER_METER);
+		//mapWidth = (int) (tiledHelper.getPixelWidth() / Constants.PIXELS_PER_METER);
+		//mapHeight = (int) (tiledHelper.getPixelHeight() / Constants.PIXELS_PER_METER);
 		
-		tileMapRenderer = new TileMapRenderer(tiledHelper.getMap(), tiledHelper.getTileAtlas(), 16, 16);
-		prepareCamera(screenWidth, screenHeight);
+		float unitsPerTileX = tiledHelper.getTileWidth()/Constants.PPM;
+		float unitsPerTileY = tiledHelper.getTileHeight()/Constants.PPM;
+		
+		tileMapRenderer = new TileMapRenderer(
+				tiledHelper.getMap(), tiledHelper.getTileAtlas(), 16, 16, unitsPerTileX, unitsPerTileY);
+		prepareCamera(Constants.VIEW_W, Constants.VIEW_H);
 
 		debugRenderer = new Box2DDebugRenderer();
 		
@@ -51,8 +56,8 @@ public class RaceRenderer {
 		carSprite = new SpriteBatch();
 	}
 	
-	private void prepareCamera(int screenWidth, int screenHeight) {
-		camera = new OrthographicCamera(screenWidth, screenHeight);
+	private void prepareCamera(float viewW, float viewH) {
+		camera = new OrthographicCamera(viewW, viewH);
 		camera.position.set(0, 0, 0);
 	}
 	
@@ -63,8 +68,8 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updateCameraPosition();
-		
-		tileMapRenderer.getProjectionMatrix().set(camera.combined);
+		Matrix4 world_to_map = camera.combined;
+		tileMapRenderer.getProjectionMatrix().set(world_to_map);
 
 //		Vector3 tmp = new Vector3();
 //		tmp.set(0, 0, 0);
@@ -74,7 +79,7 @@ public class RaceRenderer {
 //				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
 
 		tileMapRenderer.render(camera);
-		renderCar();
+		//renderCar();
 		debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 

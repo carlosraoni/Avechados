@@ -24,5 +24,12 @@ public interface Constants {
 	public static final String TILE_GROUND_KEY = "ground";
 	public static final String TILE_QUALIFIER_KEY = "qualifier";
 
-	public static final float PIXELS_PER_METER = 4;
+	// we want one tile to be 10mx10m
+	public static final float PPM = 1.8f;
+	
+	// constants below are in meters
+	// we want to show a 320 x 240 region of our world
+	public static final float ASPECT_RATIO = 240/320.f;
+	public static final float VIEW_W = 150;
+	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 }

@@ -56,6 +56,15 @@ public class TiledMapHelper {
 		// tileMapRenderer.dispose();
 	}
 
+	public int getTileWidth() {
+		return map.tileWidth;
+	}
+	
+
+	public int getTileHeight() {
+		return map.tileHeight;
+	}
+
 	public int getPixelHeight() {
 		return map.height * map.tileHeight;
 	}
