@@ -13,7 +13,6 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
-import com.car.utils.Constants;
 import com.car.utils.Controls;
 
 public class Car {
@@ -21,12 +20,12 @@ public class Car {
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
 	RevoluteJoint flJoint, frJoint;
-	public Car(World world, float pixelXCoord, float pixelYCoord){
+	public Car(World world, float posX, float posY){
         //create car body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.x = pixelXCoord;
-        bodyDef.position.y = pixelYCoord;
+        bodyDef.position.x = posX;
+        bodyDef.position.y = posY;
         bodyDef.angle = 90 * MathUtils.degreesToRadians;
         		
         body = world.createBody(bodyDef);

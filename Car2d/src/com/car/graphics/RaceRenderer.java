@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.car.model.Race;
 import com.car.utils.Constants;
@@ -27,8 +27,7 @@ public class RaceRenderer {
 	private long lastRender;
 	private Box2DDebugRenderer debugRenderer;
 	
-	private int screenWidth, mapWidth;
-	private int screenHeight, mapHeight;
+	private float mapW, mapH;
 			
 	private OrthographicCamera camera;
 	
@@ -36,17 +35,15 @@ public class RaceRenderer {
 		this.raceWorld = race;
 		this.tiledHelper = tiledHelper;
 		
-		screenWidth = screenPixelWidth;
-		screenHeight = screenPixelHeight;
-		
-		//mapWidth = (int) (tiledHelper.getPixelWidth() / Constants.PIXELS_PER_METER);
-		//mapHeight = (int) (tiledHelper.getPixelHeight() / Constants.PIXELS_PER_METER);
-		
+		// setup map renderer
 		float unitsPerTileX = tiledHelper.getTileWidth()/Constants.PPM;
 		float unitsPerTileY = tiledHelper.getTileHeight()/Constants.PPM;
-		
 		tileMapRenderer = new TileMapRenderer(
 				tiledHelper.getMap(), tiledHelper.getTileAtlas(), 16, 16, unitsPerTileX, unitsPerTileY);
+		
+		mapW = tiledHelper.getNumCols() * unitsPerTileX;
+		mapH = tiledHelper.getNumRows() * unitsPerTileY;
+		
 		prepareCamera(Constants.VIEW_W, Constants.VIEW_H);
 
 		debugRenderer = new Box2DDebugRenderer();
@@ -68,8 +65,7 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updateCameraPosition();
-		Matrix4 world_to_map = camera.combined;
-		tileMapRenderer.getProjectionMatrix().set(world_to_map);
+		tileMapRenderer.getProjectionMatrix().set(camera.combined);
 
 //		Vector3 tmp = new Vector3();
 //		tmp.set(0, 0, 0);
@@ -85,22 +81,13 @@ public class RaceRenderer {
 
 	private void updateCameraPosition() {
 		
-		float camX = raceWorld.getPlayerX();
-//		if (camX < screenWidth / 2) {
-//			camX = screenWidth / 2;
-//		}
-//		if (camX >= mapWidth - screenWidth / 2) {
-//			camX = mapWidth - (screenWidth / 2);
-//		}
+		float minX = 0.5f * Constants.VIEW_W;
+		float maxX = mapW - minX;
+		float camX = MathUtils.clamp(raceWorld.getPlayerX(), minX, maxX);
 
-		//float camY = carY + (screenHeight / 2);
-		float camY = raceWorld.getPlayerY();
-//		if (camY < screenHeight / 2) {
-//			camY = screenHeight / 2;
-//		}
-//		if (camY >= mapHeight - screenHeight / 2) {
-//			camY = mapHeight - screenHeight / 2;
-//		}
+		float minY = 0.5f * Constants.VIEW_H;
+		float maxY = mapH - minY;
+		float camY = MathUtils.clamp(raceWorld.getPlayerY(), minY, maxY);
 				
 		camera.position.x = camX;
 		camera.position.y = camY;		
