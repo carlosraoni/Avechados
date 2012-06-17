@@ -28,8 +28,16 @@ public interface Constants {
 	public static final float PPM = 1.8f;
 	
 	// constants below are in meters
-	// we want to show a 320 x 240 region of our world
-	public static final float ASPECT_RATIO = 240/320.f;
-	public static final float VIEW_W = 150;
+	public static final int HTC_EVO_3D_W = 540;
+	public static final int HTC_EVO_3D_H = 960;
+	public static final int GALAXY_5_W = 240;
+	public static final int GALAXY_5_H = 320;
+	
+	// change to target resolution
+	public static final int TARGET_RES_W = GALAXY_5_W;
+	public static final int TARGET_RES_H = GALAXY_5_H;
+	
+	public static final float ASPECT_RATIO = 0.68f;
+	public static final float VIEW_W = 150f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 }
