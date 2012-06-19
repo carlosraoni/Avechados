@@ -36,13 +36,13 @@ public class RaceRenderer {
 		this.tiledHelper = tiledHelper;
 		
 		// setup map renderer
-		float unitsPerTileX = tiledHelper.getTileWidth()/Constants.PPM;
-		float unitsPerTileY = tiledHelper.getTileHeight()/Constants.PPM;
+		float unitsPerTileX = tiledHelper.getWorldUnitsPerTileX();
+		float unitsPerTileY = tiledHelper.getWorldUnitsPerTileY();
 		tileMapRenderer = new TileMapRenderer(
 				tiledHelper.getMap(), tiledHelper.getTileAtlas(), 16, 16, unitsPerTileX, unitsPerTileY);
 		
-		mapW = tiledHelper.getNumCols() * unitsPerTileX;
-		mapH = tiledHelper.getNumRows() * unitsPerTileY;
+		mapW = tiledHelper.getWorldMapWidth();
+		mapH = tiledHelper.getWorldMapHeight();
 		
 		prepareCamera(Constants.VIEW_W, Constants.VIEW_H);
 

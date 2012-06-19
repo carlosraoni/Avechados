@@ -103,6 +103,53 @@ public class TiledMapHelper {
 		return map.layers.get(0).tiles[0].length;
 	}
 
+	public int getStartPlayerColumn(){
+		return Integer.parseInt(getMapProperty(Constants.START_PLAYER_COLUMN_KEY));
+	}
+	
+	public int getStartPlayerRow(){
+		return Integer.parseInt(getMapProperty(Constants.START_PLAYER_ROW_KEY));
+	}
+	
+	public int getStartPlayerXMap(){
+		return getStartPlayerColumn() * getTileWidth();
+	}
+	
+	public int getStartPlayerYMap(){
+		return getStartPlayerRow() * getTileHeight();
+	}
+	
+	public float getWorldUnitsPerTileX(){
+		return getTileWidth()/Constants.PPM;
+	}
+	
+	public float getWorldUnitsPerTileY(){
+		return getTileHeight()/Constants.PPM;
+	}
+	
+	public float getWorldMapWidth(){
+		return getNumCols() * getWorldUnitsPerTileX();
+	}
+	
+	public float getWorldMapHeight(){
+		return getNumRows() * getWorldUnitsPerTileY();
+	}
+	
+	public float getWorldXFromMapX(float mapX){
+		return mapX / Constants.PPM;
+	}
+	
+	public float getWorldYFromMapY(float mapY){
+		return getWorldMapHeight() - (mapY / Constants.PPM);
+	}
+	
+	public float getStartPlayerXWorld(){
+		return getWorldXFromMapX(getStartPlayerXMap());
+	}
+	
+	public float getStartPlayerYWorld(){
+		return getWorldYFromMapY(getStartPlayerYMap());
+	}
 	
 	public static void main(String[] args) {
 		System.out.println("--- map ---");

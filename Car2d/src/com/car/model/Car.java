@@ -20,6 +20,7 @@ public class Car {
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
 	RevoluteJoint flJoint, frJoint;
+	
 	public Car(World world, float posX, float posY){
         //create car body
         BodyDef bodyDef = new BodyDef();
@@ -53,8 +54,9 @@ public class Car {
         jointDef.lowerAngle = 0;
         jointDef.upperAngle = 0;
         // TODO setZero()
-        jointDef.localAnchorB.set(0, 0);//center of tire
-        //jointDef.localAnchorB.set(Vector2.Zero); 
+        //jointDef.localAnchorB.set(0, 0);//center of tire
+        jointDef.localAnchorB.set(Vector2.Zero); 
+        //jointDef.localAnchorB.set(posX, posY);
         
         float maxForwardSpeed = 250;
         float maxBackwardSpeed = -40;
@@ -93,7 +95,7 @@ public class Car {
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( 3, 8.5f );
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
-        tires.add(tire);
+        tires.add(tire);                
 	}
 
 
