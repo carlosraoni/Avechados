@@ -20,6 +20,11 @@ public interface Constants {
 	public static final String START_PLAYER_COLUMN_KEY = "startPlayerColumn";
 	public static final String START_PLAYER_ROW_KEY = "startPlayerLine";
 	
+	public static final String PHYSICAL_LAYER_NAME = "physicalLayer";
+	public static final String BOUNDARY_LIMITS_NAME = "boundaryLimits";
+	public static final String INSIDE_TRACK_LIMITS_NAME = "insideTrackLimits";
+	public static final String OUTSIDE_TRACK_LIMITS_NAME = "outsideTrackLimits";
+	
 	public static final String TILE_LOCATION_KEY = "location";
 	public static final String TILE_GROUND_KEY = "ground";
 	public static final String TILE_QUALIFIER_KEY = "qualifier";

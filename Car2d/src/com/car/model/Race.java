@@ -1,11 +1,15 @@
 package com.car.model;
 
 import java.util.BitSet;
+import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.ChainShape;
 import com.badlogic.gdx.physics.box2d.World;
-import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
 
 public class Race {
@@ -15,7 +19,10 @@ public class Race {
 	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);		
-		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());
+		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());		
+		createChainFromVertexs(tiledHelper.getBoudaryLimitsLine(), true);
+		createChainFromVertexs(tiledHelper.getInsideTrackLine(), true);
+		createChainFromVertexs(tiledHelper.getOutsideTrackLine(), true);
 	}
 	
 	public float getPlayerX(){
@@ -44,5 +51,25 @@ public class Race {
 	public Vector2 getBoundingBoxPlayerCenter() {		
 		return player.getBoundingBoxLocalCenter();
 	}
-	
+
+	private void createChainFromVertexs(List<Vector2> vertexs, boolean closed){
+		if(vertexs == null || vertexs.size() < 3)
+			return;
+		
+		Vector2 [] vsArr = vertexs.toArray(new Vector2[vertexs.size()]);
+		
+		ChainShape chain = new ChainShape();
+		if(closed){
+			chain.createLoop(vsArr);
+		}
+		else{
+			chain.createChain(vsArr);
+		}
+		
+		BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyType.StaticBody;
+        Body body = world.createBody(bodyDef);	
+        
+        body.createFixture(chain, 0);
+	} 
 }

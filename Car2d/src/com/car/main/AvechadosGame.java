@@ -42,7 +42,8 @@ public class AvechadosGame implements ApplicationListener{
 				screenPixelHeight = Gdx.graphics.getHeight();
 			}
 			
-			tiledMapHelper = new TiledMapHelper("res/NatalArena.tmx", "res"); 
+			//tiledMapHelper = new TiledMapHelper("res/NatalArena.tmx", "res");
+			tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
 			race = new Race(tiledMapHelper);
 			raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 			

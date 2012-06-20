@@ -27,30 +27,86 @@ package com.car.utils;
  * http://code.google.com/p/libgdx/
  */
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.tiled.TileAtlas;
-import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLayer;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledLoader;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Vector2;
 
 public class TiledMapHelper {
 
 	private FileHandle packFileDirectory;
 	private TileAtlas tileAtlas;	
-	private TiledMap map;	
+	private TiledMap map;
+	
+	private List<Vector2> boudaryLimitsLine;
+	private List<Vector2> insideTrackLine;
+	private List<Vector2> outsideTrackLine;
 
 	public TiledMapHelper(String tmxFile, String packDirectory) {
 		packFileDirectory = Gdx.files.internal(packDirectory);
 		map = TiledLoader.createMap(Gdx.files.internal(tmxFile));
-		tileAtlas = new TileAtlas(map, packFileDirectory);		
+		tileAtlas = new TileAtlas(map, packFileDirectory);
+		
+		parseMapObjects();
 	}
 	
+	private void parseMapObjects() {
+		for (TiledObjectGroup group : map.objectGroups) {
+			if(Constants.PHYSICAL_LAYER_NAME.equals(group.name)){
+				for (TiledObject object : group.objects) {				
+					if(Constants.BOUNDARY_LIMITS_NAME.equals(object.name)){
+						this.boudaryLimitsLine = buildWorldLineFromTiledObject(object);
+					}
+					else if(Constants.INSIDE_TRACK_LIMITS_NAME.equals(object.name)){
+						this.insideTrackLine = buildWorldLineFromTiledObject(object);
+					}
+					else if(Constants.OUTSIDE_TRACK_LIMITS_NAME.equals(object.name)){
+						this.outsideTrackLine = buildWorldLineFromTiledObject(object);
+					}
+				}
+			}			
+		}
+	}
+
+	public List<Vector2> getInsideTrackLine() {
+		return insideTrackLine;
+	}
+
+	public List<Vector2> getOutsideTrackLine() {
+		return outsideTrackLine;
+	}
+
+	private List<Vector2> buildWorldLineFromTiledObject(TiledObject object) {
+		List<Vector2> line =  new ArrayList<Vector2>();
+		float iniX = object.x;
+		float iniY = object.y;
+		
+		String [] points = object.polyline.split(" ");
+		for(String point: points){
+			String [] coords = point.split(",");
+			float x = Float.parseFloat(coords[0]) + iniX;
+			float y = Float.parseFloat(coords[1]) + iniY;
+			
+			Vector2 worldVertex = new Vector2(getWorldXFromMapX(x), getWorldYFromMapY(y));
+			//System.out.println(worldVertex);
+			line.add(worldVertex);
+		}
+		
+		return line;
+	}
+
+	public List<Vector2> getBoudaryLimitsLine() {
+		return boudaryLimitsLine;
+	}
+
 	public void dispose() {
 		tileAtlas.dispose();
 		// tileMapRenderer.dispose();
@@ -153,7 +209,7 @@ public class TiledMapHelper {
 	
 	public static void main(String[] args) {
 		System.out.println("--- map ---");
-		TiledMap map = TiledLoader.createMap(new FileHandle("res/NatalArena.tmx"));
+		TiledMap map = TiledLoader.createMap(new FileHandle("res/NatalArenaLimits.tmx"));
 		for (String name : map.properties.keySet()) {			
 			String value = map.properties.get(name);
 			System.out.println("\tproperty :: " + name + ": " + value);
@@ -182,15 +238,16 @@ public class TiledMapHelper {
 		}
 		System.out.println();
 		
-		System.out.println("--- groups ---");
+		System.out.println("--- groups ---");		
 		for (TiledObjectGroup group : map.objectGroups) {
 			System.out.println("group: " + group.name);
 			for (String name : group.properties.keySet()) {				
 				String value = group.properties.get(name);
 				System.out.println("\tproperty :: " + name + ": " + value);
 			}
-			for (TiledObject object : group.objects) {
+			for (TiledObject object : group.objects) {				
 				System.out.println("\tobject: " + object.name);
+				System.out.println("\tx:" + object.x + ", y:" + object.y + " -> " + object.polyline);
 				for (String name : object.properties.keySet()) {					
 					String value = object.properties.get(name);
 					System.out.println("\t\tproperty :: " + name + ": " + value);
