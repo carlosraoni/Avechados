@@ -40,5 +40,9 @@ public class Race {
 		//System.out.println(player.getBody().getPosition());
 		//System.out.println("-------------------------------");
 	}
+
+	public Vector2 getBoundingBoxPlayerCenter() {		
+		return player.getBoundingBoxLocalCenter();
+	}
 	
 }

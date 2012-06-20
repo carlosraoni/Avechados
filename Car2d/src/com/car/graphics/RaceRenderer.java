@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.car.model.Race;
 import com.car.utils.Constants;
@@ -75,7 +76,7 @@ public class RaceRenderer {
 //				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
 
 		tileMapRenderer.render(camera);
-		//renderCar();
+		renderCar();
 		debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 
@@ -96,35 +97,24 @@ public class RaceRenderer {
 
 	
 	private void renderCar() {
-//		float coordXCarFromCamera = screenWidth / 2;
-//		float coordYCarFromCamera = screenHeight / 2;
-		
-//		if (raceWorld.getPlayerX() < screenWidth / 2) {
-//			coordXCarFromCamera -= ((screenWidth / 2) - raceWorld.getPlayerX());
-//		}
-//		if (raceWorld.getPlayerX()>= mapWidth - screenWidth / 2) {
-//			coordXCarFromCamera += raceWorld.getPlayerX() - (mapWidth - (screenWidth / 2));
-//		}
-//
-//		if (raceWorld.getPlayerY() < screenHeight / 2) {
-//			coordYCarFromCamera -= ((screenHeight / 2) - raceWorld.getPlayerY());
-//		}
-//		if (raceWorld.getPlayerY() >= mapHeight - screenHeight / 2) {
-//			coordYCarFromCamera += raceWorld.getPlayerY() - (mapHeight - (screenHeight / 2));
-//		}
-		
 		drawCarRotated(raceWorld.getPlayerX(), raceWorld.getPlayerY(), raceWorld.getPlayerAngleInDegrees());		
 	}
 
 	private void drawCarRotated(float coordX, float coordY, float angle) {
-		float halfTextureWidth = carTexture.getWidth() / 2;
-		float halfTextureHeight = carTexture.getWidth() / 2;
-		
+		// Centro local do jogador
+		Vector2 playerCenter = raceWorld.getBoundingBoxPlayerCenter();
+		// Centro local da textura em coordenadas do mundo
+		float textureCenterX = carTexture.getWidth() / (2 * Constants.PPM);
+		float textureCenterY = carTexture.getHeight() / (2 * Constants.PPM);
+		// Deslocamento necessário para alinhar o centro do carrinho e o centro da textura
+		float centerDx = textureCenterX - playerCenter.x;
+		float centerDy = textureCenterY - playerCenter.y;
+				
 		carSprite.setProjectionMatrix(getCamera().combined);
 		carSprite.begin();
-		carSprite.draw(carTextureRegion, coordX - halfTextureWidth, raceWorld.getPlayerY() - halfTextureHeight, // the bottom left corner of the box, unrotated
-                halfTextureWidth, halfTextureHeight, // the rotation center relative to the bottom left corner of the box
-                (float) carTexture.getWidth(), (float) carTexture.getHeight(), // the width and height of the box
+		carSprite.draw(carTextureRegion, coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
+                centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
+                (float) carTexture.getWidth() / Constants.PPM, (float) carTexture.getHeight() / Constants.PPM, // the width and height of the box
                 1f, 1f, // the scale on the x- and y-axis
                 angle);		
 		carSprite.end();

@@ -17,6 +17,9 @@ import com.car.utils.Controls;
 
 public class Car {
 	
+	private float width;
+	private float height;
+	private Vector2 boundingBoxLocalCenter;
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
 	RevoluteJoint flJoint, frJoint;
@@ -42,13 +45,11 @@ public class Car {
         vertices.add( new Vector2(-2.8f,5.5f) );
         vertices.add( new Vector2(-3,2.5f) );
         vertices.add( new Vector2(-1.5f,0) );
-
-        float w = 6.4f;
-        float h = 10f;
         
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );        
+        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );         
         body.createFixture(polygonShape, 0.1f);//shape, density
+        setWidthAndHeight(vertices);
         
         //prepare common joint parameters
         RevoluteJointDef jointDef = new RevoluteJointDef();
@@ -100,6 +101,24 @@ public class Car {
 	}
 
 
+	private void setWidthAndHeight(List<Vector2> vertices) {
+		if(vertices == null || vertices.size() == 0)
+			return;
+		float maxX = vertices.get(0).x, minX = vertices.get(0).x;
+		float maxY = vertices.get(0).x, minY = vertices.get(0).y;
+		
+		for(Vector2 v: vertices){
+			if(v.x < minX) minX = v.x;
+			if(v.x > maxX) maxX = v.x;
+			if(v.y < minY) minY = v.y;
+			if(v.y > maxY) maxY = v.y;
+		}
+		
+		this.width = maxX - minX;
+		this.height = maxY - minY;
+	}
+
+
 	public void update(BitSet controls) {		
 		for(Tire p: tires){
 			p.updateFriction();
@@ -148,21 +167,23 @@ public class Car {
 	public void setTires(List<Tire> tires) {
 		this.tires = tires;
 	}
+
 	
-//	public void setXCoordFromXPixelCoord(float pixelCoordX){
-//		getBody().getPosition().x = pixelCoordX / Constants.PIXELS_PER_METER;
-//	}
-//	
-//	public void setYCoordFromYPixelCoord(float pixelCoordY){
-//		getBody().getPosition().y = pixelCoordY / Constants.PIXELS_PER_METER;
-//	}
-//	
-//	public float getXPixelCoord(){
-//		return getBody().getPosition().x * Constants.PIXELS_PER_METER;
-//	}
-//	
-//	public float getYPixelCoord(){
-//		return getBody().getPosition().y * Constants.PIXELS_PER_METER;
-//	}
+	public float getWidth() {
+		return width;
+	}
+
+
+	public float getHeight() {
+		return height;
+	}
+
+	public Vector2 getBoundingBoxLocalCenter(){
+		if(boundingBoxLocalCenter == null){
+			// As coordenadas do carro são simétricas em relação ao eixo X, por isso o X do centro está localizado no 0.
+			boundingBoxLocalCenter = new Vector2(0, getHeight() / 2); 
+		}
+		return boundingBoxLocalCenter;
+	}
 }
 
