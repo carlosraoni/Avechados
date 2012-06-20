@@ -115,7 +115,8 @@ public class Car {
 		}
 		
 		this.width = maxX - minX;
-		this.height = maxY - minY;
+		this.height = maxY - minY;		
+		this.boundingBoxLocalCenter = new Vector2((minX + maxX)/2f, (minY + maxY)/2f);
 	}
 
 
@@ -178,11 +179,7 @@ public class Car {
 		return height;
 	}
 
-	public Vector2 getBoundingBoxLocalCenter(){
-		if(boundingBoxLocalCenter == null){
-			// As coordenadas do carro são simétricas em relação ao eixo X, por isso o X do centro está localizado no 0.
-			boundingBoxLocalCenter = new Vector2(0, getHeight() / 2); 
-		}
+	public Vector2 getBoundingBoxLocalCenter(){		
 		return boundingBoxLocalCenter;
 	}
 }
