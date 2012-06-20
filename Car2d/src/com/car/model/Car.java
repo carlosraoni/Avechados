@@ -43,6 +43,9 @@ public class Car {
         vertices.add( new Vector2(-3,2.5f) );
         vertices.add( new Vector2(-1.5f,0) );
 
+        float w = 6.4f;
+        float h = 10f;
+        
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );        
         body.createFixture(polygonShape, 0.1f);//shape, density
@@ -53,10 +56,8 @@ public class Car {
         jointDef.enableLimit = true;
         jointDef.lowerAngle = 0;
         jointDef.upperAngle = 0;
-        // TODO setZero()
-        //jointDef.localAnchorB.set(0, 0);//center of tire
+        jointDef.referenceAngle = 0;
         jointDef.localAnchorB.set(Vector2.Zero); 
-        //jointDef.localAnchorB.set(posX, posY);
         
         float maxForwardSpeed = 250;
         float maxBackwardSpeed = -40;
@@ -66,7 +67,7 @@ public class Car {
         float frontTireMaxLateralImpulse = 7.5f;
         
         //back left tire
-        Tire tire = new Tire(world);
+        Tire tire = new Tire(world, posX - 0.75f, posY - 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set(-3, 0.75f);
@@ -74,7 +75,7 @@ public class Car {
         tires.add(tire);
         
         //back right tire
-        tire = new Tire(world);
+        tire = new Tire(world, posX - 0.75f, posY + 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set(3, 0.75f);
@@ -82,7 +83,7 @@ public class Car {
         tires.add(tire);
 
         //front left tire
-        tire = new Tire(world);
+        tire = new Tire(world, posX - 8.5f, posY - 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( -3, 8.5f );
@@ -90,7 +91,7 @@ public class Car {
         tires.add(tire);
 
         //front right tire
-        tire = new Tire(world);
+        tire = new Tire(world, posX - 8.5f, posY + 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( 3, 8.5f );
@@ -99,16 +100,15 @@ public class Car {
 	}
 
 
-	public void update(BitSet controls) {
-		
+	public void update(BitSet controls) {		
 		for(Tire p: tires){
 			p.updateFriction();
 		}
 		
 		for(Tire p: tires){			
 			p.updateDrive(controls);
-		}
-	
+		}		
+		
 	    //control steering
 		float lockAngle = 35 * MathUtils.degreesToRadians;
 		float turnSpeedPerSec = 160 * MathUtils.degreesToRadians;//from lock to lock in 0.5 sec

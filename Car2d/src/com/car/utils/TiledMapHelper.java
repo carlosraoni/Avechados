@@ -112,11 +112,11 @@ public class TiledMapHelper {
 	}
 	
 	public int getStartPlayerXMap(){
-		return getStartPlayerColumn() * getTileWidth();
+		return getStartPlayerColumn() * getTileWidth() + getTileWidth() / 2 ;
 	}
 	
 	public int getStartPlayerYMap(){
-		return getStartPlayerRow() * getTileHeight();
+		return getStartPlayerRow() * getTileHeight() + getTileHeight() / 2 ;
 	}
 	
 	public float getWorldUnitsPerTileX(){

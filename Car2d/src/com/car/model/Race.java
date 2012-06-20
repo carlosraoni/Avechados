@@ -16,9 +16,6 @@ public class Race {
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);		
 		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());
-		System.out.println("X: " + tiledHelper.getStartPlayerXWorld());
-		System.out.println("Y: " + tiledHelper.getStartPlayerYWorld());
-		//player = new Car(world, 50, 50);
 	}
 	
 	public float getPlayerX(){
@@ -38,10 +35,10 @@ public class Race {
 	}
 
 	public void update(float timeStep, int velocityIterations, int positionIterations, BitSet controls) {
-		System.out.println("A -> " + player.getBody().getPosition());
 		player.update(controls);
 		world.step(timeStep, velocityIterations, positionIterations);	
-		System.out.println(player.getBody().getPosition());
+		//System.out.println(player.getBody().getPosition());
+		//System.out.println("-------------------------------");
 	}
 	
 }

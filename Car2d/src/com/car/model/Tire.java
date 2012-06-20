@@ -3,6 +3,7 @@ package com.car.model;
 import java.util.BitSet;
 import java.util.Set;
 
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -23,9 +24,12 @@ public class Tire {
     Set<GroundAreaFUD> m_groundAreas;
     float m_currentTraction;	
 	
-	public Tire(World world){
+	public Tire(World world, float posX, float posY){
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
+        bodyDef.position.x = posX;
+        bodyDef.position.y = posY;
+        bodyDef.angle = 90 * MathUtils.degreesToRadians;
         body = world.createBody(bodyDef);	
 
         PolygonShape polygonShape = new PolygonShape();
@@ -83,8 +87,7 @@ public class Tire {
         return currentForwardNormalCpy.mul( currentForwardNormalCpy.dot(body.getLinearVelocity()) );
     }
     
-    public void updateFriction() {
-
+    public void updateFriction() {    	    	
         Vector2 impulse = getLateralVelocity().mul(-body.getMass());
         
         if ( impulse.len() > m_maxLateralImpulse ){        	
@@ -94,8 +97,8 @@ public class Tire {
         body.applyLinearImpulse( impulse.mul(m_currentTraction), body.getWorldCenter());
 
         //angular velocity
-        body.applyAngularImpulse( m_currentTraction * 0.1f * body.getInertia() * -body.getAngularVelocity() );
-
+        body.applyAngularImpulse( m_currentTraction * 0.1f * body.getInertia() * -body.getAngularVelocity() );        
+        
         //forward linear velocity
         Vector2 currentForwardNormal = getForwardVelocity();
         Vector2 currentForwardNormalCpy = new Vector2(currentForwardNormal.x, currentForwardNormal.y);
@@ -103,18 +106,17 @@ public class Tire {
         // TODO currentForwardNormal.nomalize
         float currentForwardSpeed = currentForwardNormalCpy.nor().len();
         float dragForceMagnitude = -2 * currentForwardSpeed;
-        body.applyForce( currentForwardNormal.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );
+        body.applyForce( currentForwardNormal.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );        
     }
     
-    public void updateDrive(BitSet controls) {
-
+    public void updateDrive(BitSet controls) {    	
         float desiredSpeed = 0;
                 
         if(controls.get(Controls.TDC_UP.ordinal())){
         	desiredSpeed = m_maxForwardSpeed;
         }else if(controls.get(Controls.TDC_DOWN.ordinal())){
         		desiredSpeed = m_maxBackwardSpeed;
-        }else{
+        }else{        	
         	return;
         }
 
@@ -131,7 +133,7 @@ public class Tire {
         else
             return;
         
-        body.applyForce( currentForwardNormal.mul(m_currentTraction).mul(force), body.getWorldCenter() );
+        body.applyForce( currentForwardNormal.mul(m_currentTraction).mul(force), body.getWorldCenter() );        
     }
     
 
