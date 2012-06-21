@@ -15,11 +15,13 @@ import com.car.utils.TiledMapHelper;
 public class Race {
 
 	private Car player;
+	private Car opponent;
 	private World world;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);		
-		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());		
+		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());
+		opponent = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15);
 		createChainFromVertexs(tiledHelper.getBoudaryLimitsLine(), true);
 		createChainFromVertexs(tiledHelper.getInsideTrackLine(), true);
 		createChainFromVertexs(tiledHelper.getOutsideTrackLine(), true);

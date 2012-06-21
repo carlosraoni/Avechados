@@ -2,6 +2,7 @@ package com.car.main;
 
 import java.util.BitSet;
 
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -16,7 +17,7 @@ public class AvechadosGame implements ApplicationListener{
 		private TiledMapHelper tiledMapHelper;
 		private Race race;
 		private RaceRenderer raceRenderer;
-
+		private Music music;
 		private int screenPixelWidth;
 		private int screenPixelHeight;
 		
@@ -41,6 +42,10 @@ public class AvechadosGame implements ApplicationListener{
 				screenPixelWidth = Gdx.graphics.getWidth();
 				screenPixelHeight = Gdx.graphics.getHeight();
 			}
+			
+			music = Gdx.audio.newMusic(Gdx.files.internal("res/racerx.mp3"));			
+			music.setLooping(true);
+			music.play();
 			
 			//tiledMapHelper = new TiledMapHelper("res/NatalArena.tmx", "res");
 			tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
