@@ -8,11 +8,14 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.car.ai.WallSensor;
 import com.car.utils.Controls;
 
 public class Car {
@@ -23,6 +26,7 @@ public class Car {
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
 	RevoluteJoint flJoint, frJoint;
+	private WallSensor wallSensors[] = new WallSensor[3];
 	
 	public Car(World world, float posX, float posY){
         //create car body
@@ -50,6 +54,7 @@ public class Car {
         polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );         
         body.createFixture(polygonShape, 0.1f);//shape, density
         setWidthAndHeight(vertices);
+        
         
         //prepare common joint parameters
         RevoluteJointDef jointDef = new RevoluteJointDef();
@@ -97,9 +102,24 @@ public class Car {
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( 3, 8.5f );
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
-        tires.add(tire);                
+        tires.add(tire);
+        
+        //inicializa os sensores de parede
+        initWallSensors(body);
 	}
 
+	private void initWallSensors(Body body){
+		
+		this.wallSensors[0] = new WallSensor(body, this, new Vector2(0,10), new Vector2(0,30));
+		this.wallSensors[1] = new WallSensor(body, this, new Vector2(0,10), new Vector2(15,10));
+		this.wallSensors[2] = new WallSensor(body, this, new Vector2(0,10), new Vector2(-15,10));
+		
+		/*this.wallSensors[1] = new WallSensor(world, this,45 * MathUtils.degreesToRadians , 10000f);
+		this.wallSensors[2]  = new WallSensor(world, this,90 * MathUtils.degreesToRadians , 10000f);
+		this.wallSensors[3]  = new WallSensor(world, this,180 * MathUtils.degreesToRadians , 10000f);
+		this.wallSensors[4]  = new WallSensor(world, this,270 * MathUtils.degreesToRadians , 10000f);
+		this.wallSensors[5]  = new WallSensor(world, this,315 * MathUtils.degreesToRadians , 10000f);*/
+	}
 
 	private void setWidthAndHeight(List<Vector2> vertices) {
 		if(vertices == null || vertices.size() == 0)
@@ -182,5 +202,16 @@ public class Car {
 	public Vector2 getBoundingBoxLocalCenter(){		
 		return boundingBoxLocalCenter;
 	}
+	
+	public WallSensor[] getWallSensors() {
+		return wallSensors;
+	}
+
+	public void clearWallSensors() {
+		for(WallSensor sensor : wallSensors){
+			sensor.setValue(0);
+		}
+	}
+
 }
 
