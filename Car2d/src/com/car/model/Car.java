@@ -8,9 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.EdgeShape;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
+import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
@@ -23,12 +22,20 @@ public class Car {
 	private float width;
 	private float height;
 	private Vector2 boundingBoxLocalCenter;
+	private Vector2 wallSensorsOrigin;
 	private Body body;
 	private List<Tire> tires = new ArrayList<Tire>();
-	RevoluteJoint flJoint, frJoint;
-	private WallSensor wallSensors[] = new WallSensor[3];
+	private List<WallSensor> wallSensors = new ArrayList<WallSensor>();
+	private RevoluteJoint flJoint, frJoint;
+	private CarType type;	
 	
-	public Car(World world, float posX, float posY){
+	public static enum CarType{
+		PLAYER, COMPUTER;
+	};
+	
+	public Car(World world, float posX, float posY, CarType type){
+		this.type = type;
+		
         //create car body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
@@ -50,12 +57,14 @@ public class Car {
         vertices.add( new Vector2(-3,2.5f) );
         vertices.add( new Vector2(-1.5f,0) );
         
+        // Origem dos sensores na frente/meio do carrinho
+        this.wallSensorsOrigin = new Vector2(0f, 10f);
+        
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );         
         body.createFixture(polygonShape, 0.1f);//shape, density
         setWidthAndHeight(vertices);
-        
-        
+                
         //prepare common joint parameters
         RevoluteJointDef jointDef = new RevoluteJointDef();
         jointDef.bodyA = body;
@@ -105,20 +114,14 @@ public class Car {
         tires.add(tire);
         
         //inicializa os sensores de parede
-        initWallSensors(body);
+        //if(type == CarType.COMPUTER)
+        	initWallSensors();
 	}
 
-	private void initWallSensors(Body body){
-		
-		this.wallSensors[0] = new WallSensor(body, this, new Vector2(0,10), new Vector2(0,30));
-		this.wallSensors[1] = new WallSensor(body, this, new Vector2(0,10), new Vector2(15,10));
-		this.wallSensors[2] = new WallSensor(body, this, new Vector2(0,10), new Vector2(-15,10));
-		
-		/*this.wallSensors[1] = new WallSensor(world, this,45 * MathUtils.degreesToRadians , 10000f);
-		this.wallSensors[2]  = new WallSensor(world, this,90 * MathUtils.degreesToRadians , 10000f);
-		this.wallSensors[3]  = new WallSensor(world, this,180 * MathUtils.degreesToRadians , 10000f);
-		this.wallSensors[4]  = new WallSensor(world, this,270 * MathUtils.degreesToRadians , 10000f);
-		this.wallSensors[5]  = new WallSensor(world, this,315 * MathUtils.degreesToRadians , 10000f);*/
+	private void initWallSensors(){
+		for(WallSensor.WallSensorType sensorType: WallSensor.WallSensorType.values()){
+			wallSensors.add(new WallSensor(this, sensorType));
+		}
 	}
 
 	private void setWidthAndHeight(List<Vector2> vertices) {
@@ -203,14 +206,27 @@ public class Car {
 		return boundingBoxLocalCenter;
 	}
 	
-	public WallSensor[] getWallSensors() {
+	public List<WallSensor> getWallSensors() {
 		return wallSensors;
 	}
 
 	public void clearWallSensors() {
 		for(WallSensor sensor : wallSensors){
-			sensor.setValue(0);
+			sensor.clearSensorValue();
 		}
+	}
+	
+	public Vector2 getWallSensorsOrigin() {
+		return wallSensorsOrigin;
+	}
+
+	public void printSensors() {
+		System.out.println("-----------------------------------------------------");
+		for(WallSensor sensor: wallSensors){
+			System.out.println(sensor);
+		}
+		System.out.println("-----------------------------------------------------");
+		
 	}
 
 }

@@ -38,11 +38,18 @@ public interface Constants {
 	public static final int GALAXY_5_W = 240;
 	public static final int GALAXY_5_H = 320;
 	
-	// change to target resolution
+//	// change to target resolution
 	public static final int TARGET_RES_W = GALAXY_5_W;
 	public static final int TARGET_RES_H = GALAXY_5_H;
+//	public static final int TARGET_RES_W = HTC_EVO_3D_W;
+//	public static final int TARGET_RES_H = HTC_EVO_3D_H;
 	
 	public static final float ASPECT_RATIO = 0.68f;
 	public static final float VIEW_W = 150f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
+	
+	// Range dos sensores da parede
+	public static final float WALL_SENSOR_RANGE = 20f;
+	public static final float WALL_SENSOR_APERTURE = 0.1f;
+	public static final float WALL_SENSOR_CLEAR_VALUE = Float.MAX_VALUE;
 }

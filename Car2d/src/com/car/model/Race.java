@@ -1,17 +1,15 @@
 package com.car.model;
 
 import java.util.BitSet;
-import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.ChainShape;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.CarArtificialIntelligence;
-import com.car.ai.Inputs;
 import com.car.ai.WallSensor;
 import com.car.utils.TiledMapHelper;
 
@@ -19,20 +17,29 @@ public class Race {
 
 	private Car player;
 	private Car opponent;
-	private World world;
+	private World world;	
 	private CarArtificialIntelligence carArtificialIntelligence;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);		
-		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld());
-		opponent = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15);
+		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld(), Car.CarType.PLAYER);
+		opponent = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER);
 		
 		carArtificialIntelligence = new CarArtificialIntelligence();
-		createChainFromVertexs(tiledHelper.getBoudaryLimitsLine(), true);
-		createChainFromVertexs(tiledHelper.getInsideTrackLine(), true);
-		createChainFromVertexs(tiledHelper.getOutsideTrackLine(), true);
+		
+		createRaceWalls(tiledHelper, world);
+	}	
+
+	private void createRaceWalls(TiledMapHelper tiledHelper, World world) {
+		Wall insideWall = new Wall(this, tiledHelper.getInsideTrackLine(), Wall.WallType.INSIDE);
+		Wall outsideWall = new Wall(this, tiledHelper.getOutsideTrackLine(), Wall.WallType.OUTSIDE);
+		Wall boundaryWall = new Wall(this, tiledHelper.getBoudaryLimitsLine(), Wall.WallType.BOUNDARY);
+		
+		insideWall.createWallInPhysicalWorld(world);
+		outsideWall.createWallInPhysicalWorld(world);
+		boundaryWall.createWallInPhysicalWorld(world);
 	}
-	
+
 	public float getPlayerX(){
 		return player.getBody().getPosition().x;
 	}
@@ -54,8 +61,16 @@ public class Race {
 		BitSet opponentControls = carArtificialIntelligence.getCarNextControls(opponent);
 		//opponent.update(opponentControls);
 		player.update(controls);
-		opponent.clearWallSensors();
-		world.step(timeStep, velocityIterations, positionIterations);	
+		player.clearWallSensors();
+		//opponent.clearWallSensors();
+		world.step(timeStep, velocityIterations, positionIterations);
+		
+		for(Contact contact: world.getContactList()){
+			checkWallSensorWallContact(contact);
+		}
+		
+		player.printSensors();
+		
 		//System.out.println(player.getBody().getPosition());
 		//System.out.println("-------------------------------");
 	}
@@ -64,24 +79,43 @@ public class Race {
 		return player.getBoundingBoxLocalCenter();
 	}
 
-	private void createChainFromVertexs(List<Vector2> vertexs, boolean closed){
-		if(vertexs == null || vertexs.size() < 3)
+	private void checkWallSensorWallContact(Contact contact) {
+//		System.out.println("Begin check Contact");
+//		System.out.println("isSensorA: " + contact.getFixtureA().isSensor());
+//		System.out.println("isSensorB: " + contact.getFixtureB().isSensor());
+		
+		if(contact.getFixtureA().getUserData() == null || contact.getFixtureB().getUserData() == null){
+//			System.out.println("User Data Nulo finalizando check contact");
 			return;
-		
-		Vector2 [] vsArr = vertexs.toArray(new Vector2[vertexs.size()]);
-		
-		ChainShape chain = new ChainShape();
-		if(closed){
-			chain.createLoop(vsArr);
 		}
-		else{
-			chain.createChain(vsArr);
+		if(contact.isTouching()){			
+			Object fAUserData = contact.getFixtureA().getUserData();
+			Object fBUserData = contact.getFixtureB().getUserData();
+			Wall wall = null;
+			WallSensor wallSensor = null;
+			
+			if(fAUserData instanceof Wall){
+				wall = (Wall) fAUserData;
+			}
+			if(fBUserData instanceof Wall){
+				wall = (Wall) fBUserData;
+			}
+			
+			if(fAUserData instanceof WallSensor){
+				wallSensor = (WallSensor) fAUserData;
+			}
+			if(fBUserData instanceof WallSensor){
+				wallSensor = (WallSensor) fBUserData;
+			}
+			
+			if(wall != null && wallSensor != null){
+				processContactWallSensorWall(wallSensor, wall, contact);
+			}
 		}
-		
-		BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyType.StaticBody;
-        Body body = world.createBody(bodyDef);	
-        
-        body.createFixture(chain, 0);
-	} 
+	}
+
+	private void processContactWallSensorWall(WallSensor wallSensor, Wall wall, Contact contact) {
+		wallSensor.processContact(contact);
+	}
+
 }
