@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.car.ai.WallSensor;
+import com.car.ai.WallSensorRayCast;
 import com.car.utils.Controls;
 
 public class Car {
@@ -24,8 +25,10 @@ public class Car {
 	private Vector2 boundingBoxLocalCenter;
 	private Vector2 wallSensorsOrigin;
 	private Body body;
+	private World world;
 	private List<Tire> tires = new ArrayList<Tire>();
-	private List<WallSensor> wallSensors = new ArrayList<WallSensor>();
+	//private List<WallSensor> wallSensors = new ArrayList<WallSensor>();
+	private List<WallSensorRayCast> wallSensors = new ArrayList<WallSensorRayCast>();
 	private RevoluteJoint flJoint, frJoint;
 	private CarType type;	
 	
@@ -34,6 +37,7 @@ public class Car {
 	};
 	
 	public Car(World world, float posX, float posY, CarType type){
+		this.world = world;
 		this.type = type;
 		
         //create car body
@@ -119,8 +123,8 @@ public class Car {
 	}
 
 	private void initWallSensors(){
-		for(WallSensor.WallSensorType sensorType: WallSensor.WallSensorType.values()){
-			wallSensors.add(new WallSensor(this, sensorType));
+		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
+			wallSensors.add(new WallSensorRayCast(world,this, sensorType));
 		}
 	}
 
@@ -206,15 +210,15 @@ public class Car {
 		return boundingBoxLocalCenter;
 	}
 	
-	public List<WallSensor> getWallSensors() {
-		return wallSensors;
-	}
+//	public List<WallSensor> getWallSensors() {
+//		return wallSensors;
+//	}
 
-	public void clearWallSensors() {
-		for(WallSensor sensor : wallSensors){
-			sensor.clearSensorValue();
-		}
-	}
+//	public void clearWallSensors() {
+//		for(WallSensor sensor : wallSensors){
+//			sensor.clearSensorValue();
+//		}
+//	}
 	
 	public Vector2 getWallSensorsOrigin() {
 		return wallSensorsOrigin;
@@ -222,10 +226,18 @@ public class Car {
 
 	public void printSensors() {
 		System.out.println("-----------------------------------------------------");
-		for(WallSensor sensor: wallSensors){
+		for(WallSensorRayCast sensor: wallSensors){
 			System.out.println(sensor);
 		}
 		System.out.println("-----------------------------------------------------");
+		
+	}
+
+	public void updateSensors(BitSet controls) {
+		
+		for(WallSensorRayCast sensor: wallSensors){
+			sensor.updateSensor();
+		}
 		
 	}
 

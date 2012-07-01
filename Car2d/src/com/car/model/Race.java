@@ -57,65 +57,16 @@ public class Race {
 	}
 
 	public void update(float timeStep, int velocityIterations, int positionIterations, BitSet controls) {
-
+		player.updateSensors(controls);		
 		BitSet opponentControls = carArtificialIntelligence.getCarNextControls(opponent);
 		//opponent.update(opponentControls);
 		player.update(controls);
-		player.clearWallSensors();
-		//opponent.clearWallSensors();
-		world.step(timeStep, velocityIterations, positionIterations);
 		
-		for(Contact contact: world.getContactList()){
-			checkWallSensorWallContact(contact);
-		}
-		
-		player.printSensors();
-		
-		//System.out.println(player.getBody().getPosition());
-		//System.out.println("-------------------------------");
+		world.step(timeStep, velocityIterations, positionIterations);				
+		player.printSensors();		
 	}
 
 	public Vector2 getBoundingBoxPlayerCenter() {		
 		return player.getBoundingBoxLocalCenter();
 	}
-
-	private void checkWallSensorWallContact(Contact contact) {
-//		System.out.println("Begin check Contact");
-//		System.out.println("isSensorA: " + contact.getFixtureA().isSensor());
-//		System.out.println("isSensorB: " + contact.getFixtureB().isSensor());
-		
-		if(contact.getFixtureA().getUserData() == null || contact.getFixtureB().getUserData() == null){
-//			System.out.println("User Data Nulo finalizando check contact");
-			return;
-		}
-		if(contact.isTouching()){			
-			Object fAUserData = contact.getFixtureA().getUserData();
-			Object fBUserData = contact.getFixtureB().getUserData();
-			Wall wall = null;
-			WallSensor wallSensor = null;
-			
-			if(fAUserData instanceof Wall){
-				wall = (Wall) fAUserData;
-			}
-			if(fBUserData instanceof Wall){
-				wall = (Wall) fBUserData;
-			}
-			
-			if(fAUserData instanceof WallSensor){
-				wallSensor = (WallSensor) fAUserData;
-			}
-			if(fBUserData instanceof WallSensor){
-				wallSensor = (WallSensor) fBUserData;
-			}
-			
-			if(wall != null && wallSensor != null){
-				processContactWallSensorWall(wallSensor, wall, contact);
-			}
-		}
-	}
-
-	private void processContactWallSensorWall(WallSensor wallSensor, Wall wall, Contact contact) {
-		wallSensor.processContact(contact);
-	}
-
 }
