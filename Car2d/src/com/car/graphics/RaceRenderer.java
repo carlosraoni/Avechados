@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.car.model.Car;
 import com.car.model.Race;
 import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
@@ -68,15 +69,8 @@ public class RaceRenderer {
 		updateCameraPosition();
 		tileMapRenderer.getProjectionMatrix().set(camera.combined);
 
-//		Vector3 tmp = new Vector3();
-//		tmp.set(0, 0, 0);
-//		camera.unproject(tmp);
-
-//		tileMapRenderer.render((int) tmp.x, (int) tmp.y,
-//				Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), layersList);
-
 		tileMapRenderer.render(camera);
-		renderCar();
+		renderCars();
 		debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 
@@ -84,11 +78,11 @@ public class RaceRenderer {
 		
 		float minX = 0.5f * Constants.VIEW_W;
 		float maxX = mapW - minX;
-		float camX = MathUtils.clamp(raceWorld.getPlayerX(), minX, maxX);
+		float camX = MathUtils.clamp(raceWorld.getFocusCarX(), minX, maxX);
 
 		float minY = 0.5f * Constants.VIEW_H;
 		float maxY = mapH - minY;
-		float camY = MathUtils.clamp(raceWorld.getPlayerY(), minY, maxY);
+		float camY = MathUtils.clamp(raceWorld.getFocusCarY(), minY, maxY);
 				
 		camera.position.x = camX;
 		camera.position.y = camY;		
@@ -96,28 +90,28 @@ public class RaceRenderer {
 	}
 
 	
-	private void renderCar() {
-		drawCarRotated(raceWorld.getPlayerX(), raceWorld.getPlayerY(), raceWorld.getPlayerAngleInDegrees());		
+	private void renderCars() {
+		carSprite.setProjectionMatrix(getCamera().combined);
+		carSprite.begin();
+		for(Car car: raceWorld.getCars()){
+			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter());
+		}
+		carSprite.end();
 	}
 
-	private void drawCarRotated(float coordX, float coordY, float angle) {
-		// Centro local do jogador
-		Vector2 playerCenter = raceWorld.getBoundingBoxPlayerCenter();
+	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter) {		
 		// Centro local da textura em coordenadas do mundo
 		float textureCenterX = carTexture.getWidth() / (2 * Constants.PPM);
 		float textureCenterY = carTexture.getHeight() / (2 * Constants.PPM);
-		// Deslocamento necessário para alinhar o centro do carrinho e o centro da textura
-		float centerDx = textureCenterX - playerCenter.x;
-		float centerDy = textureCenterY - playerCenter.y;
-				
-		carSprite.setProjectionMatrix(getCamera().combined);
-		carSprite.begin();
+		// Deslocamento necessï¿½rio para alinhar o centro do carrinho e o centro da textura
+		float centerDx = textureCenterX - carLocalCenter.x;
+		float centerDy = textureCenterY - carLocalCenter.y;
+						
 		carSprite.draw(carTextureRegion, coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
                 centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
                 (float) carTexture.getWidth() / Constants.PPM, (float) carTexture.getHeight() / Constants.PPM, // the width and height of the box
                 1f, 1f, // the scale on the x- and y-axis
-                angle);		
-		carSprite.end();
+                angle);				
 	}
 
 	

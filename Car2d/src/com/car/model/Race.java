@@ -1,30 +1,35 @@
 package com.car.model;
 
+import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.List;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.CarArtificialIntelligence;
-import com.car.ai.WallSensor;
 import com.car.utils.TiledMapHelper;
 
 public class Race {
-
+	// Carros da corrida
+	private List<Car> cars = new ArrayList<Car>();
+	// Carro do jogador
 	private Car player;
-	private Car opponent;
+	// Carro para qual a camera deve manter o foco, criado apenas para facilitar testes da IA
+	private Car focusCar;
+	
 	private World world;	
 	private CarArtificialIntelligence carArtificialIntelligence;
 	
 	public Race(TiledMapHelper tiledHelper){				
-		world = new World(new Vector2(0, 0), false);		
+		world = new World(new Vector2(0, 0), false);
+		// Player
 		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld(), Car.CarType.PLAYER);
-		opponent = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER);
-		
+		cars.add(player);
+		focusCar = player;
+		// Opponents
+		cars.add(new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
+		//cars.add(new Car(world, tiledHelper.getStartPlayerXWorld() + 15, tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
 		carArtificialIntelligence = new CarArtificialIntelligence();
 		
 		createRaceWalls(tiledHelper, world);
@@ -48,6 +53,14 @@ public class Race {
 		return player.getBody().getPosition().y;
 	}
 	
+	public float getFocusCarX(){
+		return focusCar.getBody().getPosition().x;
+	}
+	
+	public float getFocusCarY(){
+		return focusCar.getBody().getPosition().y;
+	}
+	
 	public World getWorld(){
 		return world;
 	}
@@ -56,17 +69,23 @@ public class Race {
 		return player.getBody().getAngle() * MathUtils.radiansToDegrees;
 	}
 
-	public void update(float timeStep, int velocityIterations, int positionIterations, BitSet controls) {
-		player.updateSensors(controls);		
-		BitSet opponentControls = carArtificialIntelligence.getCarNextControls(opponent);
-		//opponent.update(opponentControls);
-		player.update(controls);
+	public void update(float timeStep, int velocityIterations, int positionIterations, BitSet playerControls) {
+		for(Car car: cars){
+			car.updateSensors();
+			BitSet controls = playerControls;
+			if(car.getType() == Car.CarType.COMPUTER){
+				controls = carArtificialIntelligence.getCarNextControls(car);
+			}
+			else{
+				car.printSensors();
+			}
+			car.update(controls);			
+		}
 		
 		world.step(timeStep, velocityIterations, positionIterations);				
-		player.printSensors();		
 	}
 
-	public Vector2 getBoundingBoxPlayerCenter() {		
-		return player.getBoundingBoxLocalCenter();
+	public List<Car> getCars() {		
+		return cars;
 	}
 }

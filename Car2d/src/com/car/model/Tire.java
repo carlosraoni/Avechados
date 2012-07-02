@@ -72,19 +72,17 @@ public class Tire {
     }
     
 	public Vector2 getLateralVelocity() {
-		Vector2 currentRightNormal = body.getWorldVector( new Vector2(1,0) );
-		Vector2 currentRightNormalCpy = new Vector2(currentRightNormal.x, currentRightNormal.y);
+		Vector2 tmp = body.getWorldVector( new Vector2(1,0) );
+		Vector2 currentRightNormal = new Vector2(tmp.x, tmp.y);
 		
-		// TODO possivel falha		
-		return currentRightNormalCpy.mul( currentRightNormalCpy.dot(body.getLinearVelocity()) );
+		return currentRightNormal.mul( currentRightNormal.dot(body.getLinearVelocity()) );
 	}
 	
     public Vector2 getForwardVelocity() {
-    	Vector2 currentForwardNormal = body.getWorldVector(new Vector2(0,1) );
-    	Vector2 currentForwardNormalCpy = new Vector2(currentForwardNormal.x, currentForwardNormal.y);
-    	
-		// TODO possivel falha    	
-        return currentForwardNormalCpy.mul( currentForwardNormalCpy.dot(body.getLinearVelocity()) );
+    	Vector2 tmp = body.getWorldVector(new Vector2(0,1) );
+    	Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
+    	    	
+        return currentForwardNormal.mul( currentForwardNormal.dot(body.getLinearVelocity()) );
     }
     
     public void updateFriction() {    	    	
@@ -122,7 +120,8 @@ public class Tire {
 
         //find current speed in forward direction
         // TODO verificar b2Dot
-        Vector2 currentForwardNormal = body.getWorldVector( new Vector2(0,1) );
+        Vector2 tmp = body.getWorldVector( new Vector2(0,1) );
+        Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
         float currentSpeed = currentForwardNormal.dot( getForwardVelocity() );        
         //apply necessary force
         float force = 0;

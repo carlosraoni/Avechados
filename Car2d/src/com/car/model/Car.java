@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.car.ai.WallSensor;
 import com.car.ai.WallSensorRayCast;
+import com.car.model.Car.CarType;
 import com.car.utils.Controls;
 
 public class Car {
@@ -27,7 +28,6 @@ public class Car {
 	private Body body;
 	private World world;
 	private List<Tire> tires = new ArrayList<Tire>();
-	//private List<WallSensor> wallSensors = new ArrayList<WallSensor>();
 	private List<WallSensorRayCast> wallSensors = new ArrayList<WallSensorRayCast>();
 	private RevoluteJoint flJoint, frJoint;
 	private CarType type;	
@@ -209,17 +209,7 @@ public class Car {
 	public Vector2 getBoundingBoxLocalCenter(){		
 		return boundingBoxLocalCenter;
 	}
-	
-//	public List<WallSensor> getWallSensors() {
-//		return wallSensors;
-//	}
-
-//	public void clearWallSensors() {
-//		for(WallSensor sensor : wallSensors){
-//			sensor.clearSensorValue();
-//		}
-//	}
-	
+		
 	public Vector2 getWallSensorsOrigin() {
 		return wallSensorsOrigin;
 	}
@@ -233,13 +223,27 @@ public class Car {
 		
 	}
 
-	public void updateSensors(BitSet controls) {
-		
+	public void updateSensors() {		
 		for(WallSensorRayCast sensor: wallSensors){
 			sensor.updateSensor();
 		}
 		
 	}
 
+	public CarType getType() {		
+		return type;
+	}
+
+	public float getX(){
+		return getBody().getPosition().x;
+	}
+	
+	public float getY(){
+		return getBody().getPosition().y;
+	}
+	
+	public float getAngleInDegrees(){
+		return getBody().getAngle() * MathUtils.radiansToDegrees;		
+	}
 }
 
