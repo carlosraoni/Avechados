@@ -28,7 +28,9 @@ package com.car.utils;
  */
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
@@ -49,8 +51,10 @@ public class TiledMapHelper {
 	private List<Vector2> boudaryLimitsLine;
 	private List<Vector2> insideTrackLine;
 	private List<Vector2> outsideTrackLine;
+	private Map<Integer, Vector2> racePositions;	
 
 	public TiledMapHelper(String tmxFile, String packDirectory) {
+		racePositions = new HashMap<Integer, Vector2>();
 		packFileDirectory = Gdx.files.internal(packDirectory);
 		map = TiledLoader.createMap(Gdx.files.internal(tmxFile));
 		tileAtlas = new TileAtlas(map, packFileDirectory);
@@ -71,9 +75,22 @@ public class TiledMapHelper {
 					else if(Constants.OUTSIDE_TRACK_LIMITS_NAME.equals(object.name)){
 						this.outsideTrackLine = buildWorldLineFromTiledObject(object);
 					}
+					else if(Constants.CAR_POSITION_NAME.equals(object.name)){
+						createCarPosition(object);
+					}
 				}
 			}			
 		}
+	}
+
+	private void createCarPosition(TiledObject object) {
+		int position = Integer.parseInt(object.properties.get(Constants.CAR_POSITION_KEY));
+		float coordX = getWorldXFromMapX(object.x);
+		float coordY = getWorldYFromMapY(object.y);
+		
+		Vector2 worldPos = new Vector2(coordX, coordY);
+		System.out.println("Position " + position + " loaded at " + worldPos);
+		racePositions.put(position, worldPos);
 	}
 
 	public List<Vector2> getInsideTrackLine() {
@@ -205,6 +222,14 @@ public class TiledMapHelper {
 	
 	public float getStartPlayerYWorld(){
 		return getWorldYFromMapY(getStartPlayerYMap());
+	}
+	
+	public Map<Integer, Vector2> getRacePositions() {
+		return racePositions;
+	}
+	
+	public Vector2 getPosition(int position){	
+		return racePositions.get(position);
 	}
 	
 	public static void main(String[] args) {

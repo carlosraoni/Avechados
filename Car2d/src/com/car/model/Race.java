@@ -24,11 +24,13 @@ public class Race {
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);
 		// Player
-		player = new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld(), Car.CarType.PLAYER);
+		Vector2 racePos = tiledHelper.getPosition(1);
+		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER);
 		cars.add(player);
 		focusCar = player;
 		// Opponents
-		cars.add(new Car(world, tiledHelper.getStartPlayerXWorld(), tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
+		racePos = tiledHelper.getPosition(2);
+		cars.add(new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER));
 		//cars.add(new Car(world, tiledHelper.getStartPlayerXWorld() + 15, tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
 		carArtificialIntelligence = new CarArtificialIntelligence();
 		

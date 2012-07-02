@@ -76,7 +76,8 @@ public class RaceScreen implements Screen{
 			screenPixelHeight = Gdx.graphics.getHeight();
 		}
 
-		tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
+		//tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
+		tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 		
@@ -86,7 +87,7 @@ public class RaceScreen implements Screen{
 	@Override
 	public void dispose() {
 		// TODO Auto-generated method stub
-		
+		raceRenderer.dispose();
 	}
 
 	@Override

@@ -1317,5 +1317,15 @@
   <object name="outsideTrackLimits" x="635" y="764">
    <polyline points="0,0 -505,2 -506,-156 -537,-156 -537,-347 -445,-347 -443,-380 -413,-379 -410,-479 -473,-478 -474,-639 -255,-637 -253,-381 -127,-378 -125,-190 -281,-190 -282,-157 -93,-155 -92,-414 -185,-415 -186,-669 -61,-667 -61,-637 -26,-636 -28,-607 68,-604 67,-316 131,-315 134,-606 322,-604 324,2"/>
   </object>
+  <object name="CarPosition" x="648" y="715" width="17" height="15">
+   <properties>
+    <property name="position" value="1"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="649" y="742" width="17" height="15">
+   <properties>
+    <property name="position" value="2"/>
+   </properties>
+  </object>
  </objectgroup>
 </map>

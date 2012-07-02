@@ -118,4 +118,11 @@ public class RaceRenderer {
 	public OrthographicCamera getCamera() {
 		return camera;
 	}
+
+	public void dispose() {		
+		carSprite.dispose();
+		tiledHelper.dispose();
+		tileMapRenderer.dispose();
+		debugRenderer.dispose();
+	}
 }

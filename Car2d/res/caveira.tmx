@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1024" tileheight="768">
+ <properties>
+  <property name="startPlayerColumn" value="0"/>
+  <property name="startPlayerLine" value="0"/>
+ </properties>
+ <tileset firstgid="0" name="DangerDerbyRedimensionado" tilewidth="1024" tileheight="768">
+  <image source="TilesPacked/DangerDerbyRedimensionado.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="pista" width="1" height="1">
+  <data>
+   <tile gid="1"/>
+  </data>
+ </layer>
+ <objectgroup name="physicalLayer" width="1" height="1">
+  <object name="insideTrackLimits" x="805" y="444">
+   <polyline points="0,0 -1,-213 -16,-224 -269,-226 -306,-206 -321,-170 -319,-138 -330,-100 -350,-56 -386,-14 -423,15 -459,31 -502,42 -546,43 -577,45 -589,75 -570,101 -95,108 -30,67 -2,0"/>
+  </object>
+  <object name="outsideTrackLimits" x="868" y="656">
+   <polyline points="0,0 93,-124 114,-378 93,-506 3,-596 -49,-614 -308,-618 -425,-592 -540,-488 -558,-376 -619,-343 -660,-346 -690,-336 -718,-324 -744,-309 -758,-291 -790,-256 -814,-205 -825,-150 -817,-69 -783,-10 -726,35 -658,63 -304,73 -126,63 -1,-1"/>
+  </object>
+  <object name="CarPosition" x="659" y="567" width="20" height="16">
+   <properties>
+    <property name="position" value="1"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="660" y="606" width="20" height="16">
+   <properties>
+    <property name="position" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
+</map>
