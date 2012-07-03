@@ -245,5 +245,9 @@ public class Car {
 	public float getAngleInDegrees(){
 		return getBody().getAngle() * MathUtils.radiansToDegrees;		
 	}
+	
+	public List<WallSensorRayCast> getWallSensors() {
+		return wallSensors;
+	}
 }
 

@@ -138,4 +138,12 @@ public class WallSensorRayCast {
 	public String toString() {
 		return "WallSensor [type=" + type + ", value=" + (isSensorCleared() ? "CLEAR" : Float.toString(value)) + "]";
 	}
+	
+	public WallSensorType getType() {
+		return type;
+	}
+	
+	public boolean isActivated(){
+		return this.value  != Constants.WALL_SENSOR_CLEAR_VALUE;
+	}
 }
