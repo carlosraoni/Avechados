@@ -15,6 +15,8 @@ public class Race {
 	private List<Car> cars = new ArrayList<Car>();
 	// Carro do jogador
 	private Car player;
+	// Carro do oponente
+	private Car opponent;
 	// Carro para qual a camera deve manter o foco, criado apenas para facilitar testes da IA
 	private Car focusCar;
 	
@@ -26,11 +28,13 @@ public class Race {
 		// Player
 		Vector2 racePos = tiledHelper.getPosition(1);
 		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER);
+		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER);
 		cars.add(player);
-		focusCar = player;
+		cars.add(opponent);
+		focusCar = opponent;
+
 		// Opponents
 		racePos = tiledHelper.getPosition(2);
-		cars.add(new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER));
 		//cars.add(new Car(world, tiledHelper.getStartPlayerXWorld() + 15, tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
 		carArtificialIntelligence = new CarArtificialIntelligence();
 		
