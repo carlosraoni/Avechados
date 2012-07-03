@@ -13,8 +13,12 @@ import com.car.model.Car;
 import com.car.utils.Constants;
 import com.car.utils.Controls;
 
-public class CarArtificialIntelligence {
+public class WallSensorIntelligence implements CarIntelligenceInterface {
 
+	/* (non-Javadoc)
+	 * @see com.car.ai.CarIntelligenceInterface#getCarNextControls(com.car.model.Car)
+	 */
+	@Override
 	public BitSet getCarNextControls(Car opponent) {
 
 		BitSet controls = new BitSet();		

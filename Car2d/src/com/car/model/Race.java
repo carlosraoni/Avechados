@@ -7,7 +7,9 @@ import java.util.List;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
-import com.car.ai.CarArtificialIntelligence;
+import com.car.ai.SeekWaypointSensorIntelligence;
+import com.car.ai.WallSensorIntelligence;
+import com.car.ai.CarIntelligenceInterface;
 import com.car.ai.WayPointsLine;
 import com.car.utils.TiledMapHelper;
 
@@ -18,11 +20,11 @@ public class Race {
 	private Car player;
 	// Carro do oponente
 	private Car opponent;
+	
 	// Carro para qual a camera deve manter o foco, criado apenas para facilitar testes da IA
 	private Car focusCar;
 	
 	private World world;	
-	private CarArtificialIntelligence carArtificialIntelligence;
 	
 	private WayPointsLine wayPointsLine;
 	
@@ -32,19 +34,18 @@ public class Race {
 		// Player
 		Vector2 racePos = tiledHelper.getPosition(1);
 		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER,wayPointsLine);
+		//player = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER, wayPointsLine,new SeekWaypointSensorIntelligence());
 		cars.add(player);
 		
 		// Opponents
 		racePos = tiledHelper.getPosition(2);
-		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER,wayPointsLine);
+		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER, wayPointsLine, new SeekWaypointSensorIntelligence());
 		cars.add(opponent);
 		
 		//foco da camera
 		//focusCar = opponent;
 		focusCar = player;
-
-		carArtificialIntelligence = new CarArtificialIntelligence();
-		
+	
 		createRaceWalls(tiledHelper, world);
 		
 
@@ -89,12 +90,9 @@ public class Race {
 			car.updateSensors();
 			BitSet controls = playerControls;
 			if(car.getType() == Car.CarType.COMPUTER){
-				controls = carArtificialIntelligence.getCarNextControls(car);
+				controls = car.getCarNextControls();
 			}
-			else{
-				//car.printSensors();
-				car.getWaypointSensor().getValue();
-			}
+			
 			car.update(controls);			
 		}
 		

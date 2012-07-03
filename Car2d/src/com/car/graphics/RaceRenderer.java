@@ -71,7 +71,7 @@ public class RaceRenderer {
 
 		tileMapRenderer.render(camera);
 		renderCars();
-		debugRenderer.render(raceWorld.getWorld(), camera.combined);
+//		debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 
 	private void updateCameraPosition() {

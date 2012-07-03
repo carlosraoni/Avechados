@@ -52,7 +52,8 @@ public interface Constants {
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	
 	// Range dos sensores da parede
-	public static final float WALL_SENSOR_RANGE = 30f;
+	public static final float WALL_SENSOR_RANGE = 70f;
 	public static final float WALL_SENSOR_APERTURE = 0.1f;
 	public static final float WALL_SENSOR_CLEAR_VALUE = Float.MAX_VALUE;
+	public static final float WAYPOINT_RANGE = 60f;
 }

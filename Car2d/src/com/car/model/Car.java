@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
+import com.car.ai.CarIntelligenceInterface;
+import com.car.ai.SeekWaypointSensorIntelligence;
 import com.car.ai.WallSensor;
 import com.car.ai.WallSensorRayCast;
 import com.car.ai.WayPointSensor;
@@ -33,13 +35,20 @@ public class Car {
 	private List<WallSensorRayCast> wallSensors = new ArrayList<WallSensorRayCast>();
 	private WayPointSensor wayPointSensor;
 	private RevoluteJoint flJoint, frJoint;
-	private CarType type;	
+	private CarType type;
+	private CarIntelligenceInterface intelligence;
 	
 	public static enum CarType{
 		PLAYER, COMPUTER;
 	};
 	
 	public Car(World world, float posX, float posY, CarType type, WayPointsLine wayPointsLine){
+		init(world, posX, posY, type, wayPointsLine);
+        
+	}
+
+	private void init(World world, float posX, float posY, CarType type,
+			WayPointsLine wayPointsLine) {
 		this.world = world;
 		this.type = type;
 		
@@ -55,17 +64,17 @@ public class Car {
         
         List<Vector2> vertices = new ArrayList<Vector2>();
 
-        vertices.add( new Vector2(1.5f,0f) );        
-        vertices.add( new Vector2(3,2.5f) );
-        vertices.add( new Vector2(2.8f,5.5f) );
-        vertices.add( new Vector2(1,10) );
-        vertices.add( new Vector2(-1,10) );
-        vertices.add( new Vector2(-2.8f,5.5f) );
-        vertices.add( new Vector2(-3,2.5f) );
-        vertices.add( new Vector2(-1.5f,0) );
+        vertices.add( new Vector2(1.5f,-5f) );        
+        vertices.add( new Vector2(3,-2.5f) );
+        vertices.add( new Vector2(2.8f,0.5f) );
+        vertices.add( new Vector2(1,5) );
+        vertices.add( new Vector2(-1,5) );
+        vertices.add( new Vector2(-2.8f,0.5f) );
+        vertices.add( new Vector2(-3,-2.5f) );
+        vertices.add( new Vector2(-1.5f,-5) );
         
         // Origem dos sensores na frente/meio do carrinho
-        this.wallSensorsOrigin = new Vector2(0f, 10f);
+        this.wallSensorsOrigin = new Vector2(0f, 5f);
         
         PolygonShape polygonShape = new PolygonShape();
         polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );         
@@ -87,12 +96,12 @@ public class Car {
         float frontTireMaxDriveForce = 500;
         float backTireMaxLateralImpulse = 8.5f;
         float frontTireMaxLateralImpulse = 7.5f;
-        
+        float shift =-5f;
         //back left tire
         Tire tire = new Tire(world, posX - 0.75f, posY - 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set(-3, 0.75f);
+        jointDef.localAnchorA.set(-3, 0.75f+ shift);
         world.createJoint(jointDef);
         tires.add(tire);
         
@@ -100,7 +109,7 @@ public class Car {
         tire = new Tire(world, posX - 0.75f, posY + 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set(3, 0.75f);
+        jointDef.localAnchorA.set(3, 0.75f+ shift);
         world.createJoint(jointDef);
         tires.add(tire);
 
@@ -108,7 +117,7 @@ public class Car {
         tire = new Tire(world, posX - 8.5f, posY - 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set( -3, 8.5f );
+        jointDef.localAnchorA.set( -3, 8.5f + shift);
         flJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
 
@@ -116,7 +125,7 @@ public class Car {
         tire = new Tire(world, posX - 8.5f, posY + 3f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set( 3, 8.5f );
+        jointDef.localAnchorA.set( 3, 8.5f + shift);
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
         
@@ -125,7 +134,13 @@ public class Car {
         initWallSensors();
         
         wayPointSensor = new WayPointSensor(world,this,wayPointsLine);
-        
+	}
+
+	public Car(World world, float x, float y, CarType type,
+			WayPointsLine wayPointsLine,
+			CarIntelligenceInterface seekWaypointSensorIntelligence) {
+		this.intelligence = seekWaypointSensorIntelligence;
+		init(world, x, y, type, wayPointsLine);
 	}
 
 	private void initWallSensors(){
@@ -181,8 +196,7 @@ public class Car {
 		float newAngle = angleNow + angleToTurn;
 		flJoint.setLimits( newAngle, newAngle );
 		frJoint.setLimits( newAngle, newAngle );
-		
-		wayPointSensor.update();
+
     }
 
 
@@ -232,7 +246,8 @@ public class Car {
 		
 	}
 
-	public void updateSensors() {		
+	public void updateSensors() {	
+		wayPointSensor.update();
 		for(WallSensorRayCast sensor: wallSensors){
 			sensor.updateSensor();
 		}
@@ -261,6 +276,11 @@ public class Car {
 
 	public WayPointSensor getWaypointSensor() {
 		return wayPointSensor;
+	}
+
+	public BitSet getCarNextControls() {
+		
+		return intelligence.getCarNextControls(this);
 	}
 }
 

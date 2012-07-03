@@ -5,6 +5,7 @@ import java.util.List;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.model.Car;
+import com.car.utils.Constants;
 
 public class WayPointSensor {
 
@@ -20,18 +21,30 @@ public class WayPointSensor {
 	}
 
 	public float getValue() {
-		Vector2 waypoint = waypoints.get(index);
-		Vector2 v =  car.getBody().getLocalPoint(waypoint);
-		System.out.println("Tipo Carro :" +car.getType());
-		if(car.getType().equals(Car.CarType.PLAYER)){
-			System.out.println("Waypoint " + v + " :: Angle "+ normalizeAngle(v.angle()));
-		}
-		
 		return value;
 	}
 
 	public void update() {
+		Vector2 waypoint = getCurrentWayPoint();
+		Vector2 v =  car.getBody().getLocalPoint(waypoint);
+		this.value  = v.x;
+//		this.value = normalizeAngle(v.angle());
+//		
+//		System.out.println("Tipo Carro :" +car.getType());
+//		if(car.getType().equals(Car.CarType.PLAYER)){
+//			System.out.println("Waypoint " + v + " :: Angle " + this.value);
+//		}		
+	}
+
+	private Vector2 getCurrentWayPoint() {
+		Vector2 waypoint = waypoints.get(index);
+		Vector2 v =  car.getBody().getLocalPoint(waypoint);
 		
+		if(v.len() < Constants.WAYPOINT_RANGE){
+			index = (index + 1) % waypoints.size();
+		}
+		
+		return waypoints.get(index);
 	}
 	
 	//Entre +180 e -180

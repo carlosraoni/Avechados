@@ -50,6 +50,9 @@ public class AvechadosGame extends Game implements ApplicationListener{
 
 		@Override
 		public void dispose() {
+//			music.dispose();
+//			raceScreen.dispose();
+//			splashScreen.dispose();
 		}
 
 		public SplashScreen getSplashScreen() {
