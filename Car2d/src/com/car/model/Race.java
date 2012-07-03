@@ -79,7 +79,7 @@ public class Race {
 				controls = carArtificialIntelligence.getCarNextControls(car);
 			}
 			else{
-				car.printSensors();
+				//car.printSensors();
 			}
 			car.update(controls);			
 		}

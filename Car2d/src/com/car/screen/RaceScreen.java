@@ -77,7 +77,8 @@ public class RaceScreen implements Screen{
 		}
 
 		//tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
-		tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
+		//tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
+		tiledMapHelper = new TiledMapHelper("res/CleanRace.tmx", "res");
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 		
