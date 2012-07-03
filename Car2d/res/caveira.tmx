@@ -8,8 +8,8 @@
   <image source="TilesPacked/DangerDerbyRedimensionado.png" width="1024" height="1024"/>
  </tileset>
  <layer name="pista" width="1" height="1">
-  <data>
-   <tile gid="1"/>
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
   </data>
  </layer>
  <objectgroup name="physicalLayer" width="1" height="1">
@@ -28,6 +28,9 @@
    <properties>
     <property name="position" value="2"/>
    </properties>
+  </object>
+  <object name="waypoints" x="635" y="650">
+   <polyline points="0,0 -274,11 -473,-40 -464,-210 -266,-279 -166,-460 29,-518 220,-469 264,-305 215,-99 1,0"/>
   </object>
  </objectgroup>
 </map>

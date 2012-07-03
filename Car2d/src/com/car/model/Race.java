@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.CarArtificialIntelligence;
+import com.car.ai.WayPointsLine;
 import com.car.utils.TiledMapHelper;
 
 public class Race {
@@ -23,24 +24,32 @@ public class Race {
 	private World world;	
 	private CarArtificialIntelligence carArtificialIntelligence;
 	
+	private WayPointsLine wayPointsLine;
+	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);
+		wayPointsLine = new WayPointsLine(tiledHelper, world);
 		// Player
 		Vector2 racePos = tiledHelper.getPosition(1);
-		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER);
-		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER);
+		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER,wayPointsLine);
 		cars.add(player);
-		cars.add(opponent);
-		focusCar = opponent;
-
+		
 		// Opponents
 		racePos = tiledHelper.getPosition(2);
-		//cars.add(new Car(world, tiledHelper.getStartPlayerXWorld() + 15, tiledHelper.getStartPlayerYWorld()-15, Car.CarType.COMPUTER));
+		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER,wayPointsLine);
+		cars.add(opponent);
+		
+		//foco da camera
+		//focusCar = opponent;
+		focusCar = player;
+
 		carArtificialIntelligence = new CarArtificialIntelligence();
 		
 		createRaceWalls(tiledHelper, world);
-	}	
+		
 
+	}	
+	
 	private void createRaceWalls(TiledMapHelper tiledHelper, World world) {
 		Wall insideWall = new Wall(this, tiledHelper.getInsideTrackLine(), Wall.WallType.INSIDE);
 		Wall outsideWall = new Wall(this, tiledHelper.getOutsideTrackLine(), Wall.WallType.OUTSIDE);
@@ -84,6 +93,7 @@ public class Race {
 			}
 			else{
 				//car.printSensors();
+				car.getWaypointSensor().getValue();
 			}
 			car.update(controls);			
 		}

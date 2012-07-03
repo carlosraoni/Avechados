@@ -18,6 +18,11 @@ public class CarArtificialIntelligence {
 	public BitSet getCarNextControls(Car opponent) {
 
 		BitSet controls = new BitSet();		
+		
+		/*WayPointSensor waypointSensor = opponent.getWaypointSensor();
+		
+		System.out.println("Waypoint sensor value:" + waypointSensor.getValue());*/
+		
 		List<WallSensorRayCast> sensors = opponent.getWallSensors();
 		Map<WallSensorType, WallSensorRayCast> sensorsMap = new HashMap<WallSensorRayCast.WallSensorType, WallSensorRayCast>();
 		int sensorAtivacted = 0;

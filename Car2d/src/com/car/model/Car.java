@@ -16,6 +16,8 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.car.ai.WallSensor;
 import com.car.ai.WallSensorRayCast;
+import com.car.ai.WayPointSensor;
+import com.car.ai.WayPointsLine;
 import com.car.model.Car.CarType;
 import com.car.utils.Controls;
 
@@ -29,6 +31,7 @@ public class Car {
 	private World world;
 	private List<Tire> tires = new ArrayList<Tire>();
 	private List<WallSensorRayCast> wallSensors = new ArrayList<WallSensorRayCast>();
+	private WayPointSensor wayPointSensor;
 	private RevoluteJoint flJoint, frJoint;
 	private CarType type;	
 	
@@ -36,7 +39,7 @@ public class Car {
 		PLAYER, COMPUTER;
 	};
 	
-	public Car(World world, float posX, float posY, CarType type){
+	public Car(World world, float posX, float posY, CarType type, WayPointsLine wayPointsLine){
 		this.world = world;
 		this.type = type;
 		
@@ -119,7 +122,10 @@ public class Car {
         
         //inicializa os sensores de parede
         //if(type == CarType.COMPUTER)
-        	initWallSensors();
+        initWallSensors();
+        
+        wayPointSensor = new WayPointSensor(world,this,wayPointsLine);
+        
 	}
 
 	private void initWallSensors(){
@@ -127,6 +133,7 @@ public class Car {
 			wallSensors.add(new WallSensorRayCast(world,this, sensorType));
 		}
 	}
+
 
 	private void setWidthAndHeight(List<Vector2> vertices) {
 		if(vertices == null || vertices.size() == 0)
@@ -174,6 +181,8 @@ public class Car {
 		float newAngle = angleNow + angleToTurn;
 		flJoint.setLimits( newAngle, newAngle );
 		frJoint.setLimits( newAngle, newAngle );
+		
+		wayPointSensor.update();
     }
 
 
@@ -248,6 +257,10 @@ public class Car {
 	
 	public List<WallSensorRayCast> getWallSensors() {
 		return wallSensors;
+	}
+
+	public WayPointSensor getWaypointSensor() {
+		return wayPointSensor;
 	}
 }
 

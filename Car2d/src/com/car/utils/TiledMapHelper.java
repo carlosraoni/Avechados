@@ -51,6 +51,7 @@ public class TiledMapHelper {
 	private List<Vector2> boudaryLimitsLine;
 	private List<Vector2> insideTrackLine;
 	private List<Vector2> outsideTrackLine;
+	private List<Vector2> waypoints;
 	private Map<Integer, Vector2> racePositions;	
 
 	public TiledMapHelper(String tmxFile, String packDirectory) {
@@ -77,6 +78,9 @@ public class TiledMapHelper {
 					}
 					else if(Constants.CAR_POSITION_NAME.equals(object.name)){
 						createCarPosition(object);
+					}
+					else if(Constants.WAYPOINTS_NAME.equals(object.name)){
+						this.waypoints = buildWorldLineFromTiledObject(object);
 					}
 				}
 			}			
@@ -122,6 +126,10 @@ public class TiledMapHelper {
 
 	public List<Vector2> getBoudaryLimitsLine() {
 		return boudaryLimitsLine;
+	}
+	
+	public List<Vector2> getWaypoints() {
+		return waypoints;
 	}
 
 	public void dispose() {
