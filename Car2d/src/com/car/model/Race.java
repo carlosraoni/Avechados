@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.SeekWaypointSensorIntelligence;
 import com.car.ai.WayPointsLine;
+import com.car.listener.Car2dContactListener;
 import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
 
@@ -23,13 +24,28 @@ public class Race {
 	private Car focusCar;
 	private World world;	
 	private WayPointsLine wayPointsLine;
+	private List<Checkpoint> checkpoints;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);
+		world.setContactListener(new Car2dContactListener());
 		wayPointsLine = new WayPointsLine(tiledHelper, world);
+		checkpoints = createCheckPoints(tiledHelper,world);
 		loadRaceCars(tiledHelper);
-	
-		createRaceWalls(tiledHelper, world);		
+		createRaceWalls(tiledHelper, world);
+		
+		
+	}
+
+	private List<Checkpoint> createCheckPoints(TiledMapHelper tiledHelper,
+			World world) {
+		List<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
+		Map<Integer,List<Vector2>> checkpointsTiled = tiledHelper.getCheckPointsTiled();
+		for(Integer i : checkpointsTiled.keySet()){
+			checkpoints.add(new Checkpoint(this,checkpointsTiled.get(i),i));
+			checkpoints.get(i).makeItPhysical(world);
+		}
+		return checkpoints;
 	}
 
 	private void loadRaceCars(TiledMapHelper tiledHelper) {
@@ -50,8 +66,8 @@ public class Race {
 		}
 		
 		//foco da camera
-		focusCar = lastComputerCar;
-		//focusCar = player;
+		//focusCar = lastComputerCar;
+		focusCar = player;
 	}	
 	
 	private void createRaceWalls(TiledMapHelper tiledHelper, World world) {

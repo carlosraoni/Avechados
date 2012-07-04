@@ -60,4 +60,5 @@ public interface Constants {
 	public static final String WALL_SENSOR_RANGE_KEY = "WallSensorRange";
 	public static final String WAYPOINT_RANGE_KEY = "WayPointRange";
 	public static final int CAR_PLAYER_INITIAL_POSITION = 1;
+	public static final String CHECKPOINT_TYPE = "checkpoint";
 }

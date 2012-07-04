@@ -9,18 +9,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.car.ai.CarIntelligenceInterface;
-import com.car.ai.SeekWaypointSensorIntelligence;
-import com.car.ai.WallSensor;
 import com.car.ai.WallSensorRayCast;
 import com.car.ai.WayPointSensor;
 import com.car.ai.WayPointsLine;
-import com.car.model.Car.CarType;
 import com.car.utils.Controls;
 import com.car.utils.TiledMapHelper;
 
@@ -38,6 +35,8 @@ public class Car {
 	private RevoluteJoint flJoint, frJoint;
 	private CarType type;
 	private CarIntelligenceInterface intelligence;
+	private List<Checkpoint> checkpointsPassed = new ArrayList<Checkpoint>();
+	private int lap = -1;
 	
 	public static enum CarType{
 		PLAYER, COMPUTER;
@@ -81,8 +80,9 @@ public class Car {
         this.wallSensorsOrigin = new Vector2(0f, 5f);
         
         PolygonShape polygonShape = new PolygonShape();
-        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );         
-        body.createFixture(polygonShape, 0.1f);//shape, density
+        polygonShape.set( vertices.toArray(new Vector2[vertices.size()]) );
+        Fixture fixture = body.createFixture(polygonShape, 0.1f);//shape, density
+        fixture.setUserData(this);
         setWidthAndHeight(vertices);
                 
         //prepare common joint parameters
@@ -283,6 +283,33 @@ public class Car {
 	public BitSet getCarNextControls() {
 		
 		return intelligence.getCarNextControls(this);
+	}
+
+	public int getLap() {
+		return lap;
+	}
+
+	public void checkpoint(Checkpoint checkPoint) {
+		int index = checkPoint.getIndex();
+		boolean allCheckPointsBeforesChecked = true;
+		for(int i=0;i<index;i++){
+			boolean checkpointIndexPassed = false;
+			for(Checkpoint checkpointPassed : this.checkpointsPassed){
+				if(checkpointPassed.getIndex() == i){
+					checkpointIndexPassed = true;
+					break;
+				}
+			}
+			if(checkpointIndexPassed == false){
+				allCheckPointsBeforesChecked = false;
+				break;				
+			}
+		}
+		if(allCheckPointsBeforesChecked){
+			this.checkpointsPassed.add(checkPoint);
+			if(type.equals(CarType.PLAYER))
+			System.out.println("Checkpoint " + checkPoint.getIndex() + "passed by cartype : " + type);
+		}
 	}
 }
 

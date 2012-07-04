@@ -58,6 +58,7 @@ public class TiledMapHelper {
 	private List<Vector2> insideTrackLine;
 	private List<Vector2> outsideTrackLine;
 	private List<Vector2> waypoints;
+	private Map<Integer,List<Vector2>> checkpoints = new HashMap<Integer, List<Vector2>>();
 	
 	// Posicoes do Mapa
 	private Map<Integer, CarPosition> racePositions;	
@@ -95,6 +96,9 @@ public class TiledMapHelper {
 					}
 					else if(Constants.WAYPOINTS_NAME.equals(object.name)){
 						this.waypoints = buildWorldLineFromTiledObject(object);
+					}
+					else if(Constants.CHECKPOINT_TYPE.equals(object.type)){
+						this.checkpoints.put(Integer.parseInt(object.properties.get("index"))-1, buildWorldLineFromTiledObject(object));
 					}
 				}
 			}			
@@ -264,6 +268,11 @@ public class TiledMapHelper {
 		return wayPointRange;
 	}
 
+
+	public Map<Integer,List<Vector2>> getCheckPointsTiled() {
+		return checkpoints;
+	}	
+	
 	public static void main(String[] args) {
 		System.out.println("--- map ---");
 		TiledMap map = TiledLoader.createMap(new FileHandle("res/NatalArenaLimits.tmx"));
@@ -311,5 +320,6 @@ public class TiledMapHelper {
 				}
 			}
 		}
-	}	
+	}
+
 }
