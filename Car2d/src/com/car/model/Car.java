@@ -22,6 +22,7 @@ import com.car.ai.WayPointSensor;
 import com.car.ai.WayPointsLine;
 import com.car.model.Car.CarType;
 import com.car.utils.Controls;
+import com.car.utils.TiledMapHelper;
 
 public class Car {
 	
@@ -42,13 +43,16 @@ public class Car {
 		PLAYER, COMPUTER;
 	};
 	
-	public Car(World world, float posX, float posY, CarType type, WayPointsLine wayPointsLine){
-		init(world, posX, posY, type, wayPointsLine);
-        
+	public Car(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, WayPointsLine wayPointsLine){
+		init(tiledMapHelper, world, posX, posY, initialAngle, CarType.PLAYER, wayPointsLine);        
 	}
 
-	private void init(World world, float posX, float posY, CarType type,
-			WayPointsLine wayPointsLine) {
+	public Car(TiledMapHelper tiledMapHelper, World world, float x, float y, float initialAngle, WayPointsLine wayPointsLine, CarIntelligenceInterface seekWaypointSensorIntelligence) {
+		this.intelligence = seekWaypointSensorIntelligence;
+		init(tiledMapHelper, world, x, y, initialAngle, CarType.COMPUTER, wayPointsLine);
+	}
+	
+	private void init(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine) {
 		this.world = world;
 		this.type = type;
 		
@@ -57,7 +61,7 @@ public class Car {
         bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.x = posX;
         bodyDef.position.y = posY;
-        bodyDef.angle = 90 * MathUtils.degreesToRadians;
+        bodyDef.angle = initialAngle * MathUtils.degreesToRadians;
         		
         body = world.createBody(bodyDef);
         body.setAngularDamping(3f);
@@ -98,7 +102,7 @@ public class Car {
         float frontTireMaxLateralImpulse = 7.5f;
         float shift =-5f;
         //back left tire
-        Tire tire = new Tire(world, posX - 0.75f, posY - 3f);
+        Tire tire = new Tire(world, posX - 0.75f, posY - 3f, initialAngle);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set(-3, 0.75f+ shift);
@@ -106,7 +110,7 @@ public class Car {
         tires.add(tire);
         
         //back right tire
-        tire = new Tire(world, posX - 0.75f, posY + 3f);
+        tire = new Tire(world, posX - 0.75f, posY + 3f, initialAngle);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set(3, 0.75f+ shift);
@@ -114,7 +118,7 @@ public class Car {
         tires.add(tire);
 
         //front left tire
-        tire = new Tire(world, posX - 8.5f, posY - 3f);
+        tire = new Tire(world, posX - 8.5f, posY - 3f, initialAngle);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( -3, 8.5f + shift);
@@ -122,30 +126,28 @@ public class Car {
         tires.add(tire);
 
         //front right tire
-        tire = new Tire(world, posX - 8.5f, posY + 3f);
+        tire = new Tire(world, posX - 8.5f, posY + 3f, initialAngle);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
         jointDef.localAnchorA.set( 3, 8.5f + shift);
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
         
-        //inicializa os sensores de parede
-        //if(type == CarType.COMPUTER)
-        initWallSensors();
-        
-        wayPointSensor = new WayPointSensor(world,this,wayPointsLine);
+        initSensors(tiledMapHelper, world, wayPointsLine);
 	}
 
-	public Car(World world, float x, float y, CarType type,
-			WayPointsLine wayPointsLine,
-			CarIntelligenceInterface seekWaypointSensorIntelligence) {
-		this.intelligence = seekWaypointSensorIntelligence;
-		init(world, x, y, type, wayPointsLine);
+	private void initSensors(TiledMapHelper tiledMapHelper, World world, WayPointsLine wayPointsLine) {
+		initWallSensors(tiledMapHelper.getWallSensorRange());        
+        initWayPointSensors(tiledMapHelper.getWayPointRange(), world, wayPointsLine);
 	}
 
-	private void initWallSensors(){
+	private void initWayPointSensors(float wayPointRange, World world, WayPointsLine wayPointsLine) {
+		wayPointSensor = new WayPointSensor(world,this,wayPointsLine, wayPointRange);
+	}
+
+	private void initWallSensors(float wallSensorRange){
 		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
-			wallSensors.add(new WallSensorRayCast(world,this, sensorType));
+			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
 		}
 	}
 

@@ -3,52 +3,55 @@ package com.car.model;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.SeekWaypointSensorIntelligence;
-import com.car.ai.WallSensorIntelligence;
-import com.car.ai.CarIntelligenceInterface;
 import com.car.ai.WayPointsLine;
+import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
 
 public class Race {
 	// Carros da corrida
-	private List<Car> cars = new ArrayList<Car>();
+	private List<Car> cars = new ArrayList<Car>();	
 	// Carro do jogador
 	private Car player;
-	// Carro do oponente
-	private Car opponent;
 	
 	// Carro para qual a camera deve manter o foco, criado apenas para facilitar testes da IA
 	private Car focusCar;
-	
 	private World world;	
-	
 	private WayPointsLine wayPointsLine;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		world = new World(new Vector2(0, 0), false);
 		wayPointsLine = new WayPointsLine(tiledHelper, world);
-		// Player
-		Vector2 racePos = tiledHelper.getPosition(1);
-		player = new Car(world, racePos.x, racePos.y, Car.CarType.PLAYER,wayPointsLine);
-		//player = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER, wayPointsLine,new SeekWaypointSensorIntelligence());
-		cars.add(player);
-		
-		// Opponents
-		racePos = tiledHelper.getPosition(2);
-		opponent = new Car(world, racePos.x, racePos.y, Car.CarType.COMPUTER, wayPointsLine, new SeekWaypointSensorIntelligence());
-		cars.add(opponent);
+		loadRaceCars(tiledHelper);
+	
+		createRaceWalls(tiledHelper, world);		
+	}
+
+	private void loadRaceCars(TiledMapHelper tiledHelper) {
+		Map<Integer, CarPosition> carPositions = tiledHelper.getRacePositions();
+		Car lastComputerCar = null;
+		for(Integer position: carPositions.keySet()){			
+			CarPosition carPos = carPositions.get(position);
+			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
+				// Player
+				player = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine);
+				cars.add(player);
+			}
+			else{
+				Car computer = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine, new SeekWaypointSensorIntelligence());
+				cars.add(computer);
+				lastComputerCar = computer;
+			}
+		}
 		
 		//foco da camera
-		//focusCar = opponent;
-		focusCar = player;
-	
-		createRaceWalls(tiledHelper, world);
-		
-
+		focusCar = lastComputerCar;
+		//focusCar = player;
 	}	
 	
 	private void createRaceWalls(TiledMapHelper tiledHelper, World world) {

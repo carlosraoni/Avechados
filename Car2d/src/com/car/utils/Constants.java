@@ -27,6 +27,7 @@ public interface Constants {
 	public static final String WAYPOINTS_NAME = "waypoints";
 	public static final String CAR_POSITION_NAME = "CarPosition";
 	public static final String CAR_POSITION_KEY = "position";
+	public static final String CAR_ANGLE_KEY = "angle";
 	
 	public static final String TILE_LOCATION_KEY = "location";
 	public static final String TILE_GROUND_KEY = "ground";
@@ -52,8 +53,11 @@ public interface Constants {
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	
 	// Range dos sensores da parede
-	public static final float WALL_SENSOR_RANGE = 70f;
+	
 	public static final float WALL_SENSOR_APERTURE = 0.1f;
 	public static final float WALL_SENSOR_CLEAR_VALUE = Float.MAX_VALUE;
-	public static final float WAYPOINT_RANGE = 60f;
+	
+	public static final String WALL_SENSOR_RANGE_KEY = "WallSensorRange";
+	public static final String WAYPOINT_RANGE_KEY = "WayPointRange";
+	public static final int CAR_PLAYER_INITIAL_POSITION = 1;
 }

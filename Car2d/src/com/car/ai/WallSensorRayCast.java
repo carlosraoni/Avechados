@@ -23,6 +23,7 @@ public class WallSensorRayCast {
 	private WallSensorType type;
 	
 	private float value;
+	private float wallSensorRange;
 	
 	private WallSensorRayCastCallback callback;
 	
@@ -42,11 +43,12 @@ public class WallSensorRayCast {
 	};
 
 		
-	public WallSensorRayCast(World world, Car car, WallSensorType type) {
+	public WallSensorRayCast(World world, Car car, WallSensorType type, float wallSensorRange) {
 		this.world = world;
 		this.car = car;
 		this.body = car.getBody();	
 		this.type = type;
+		this.wallSensorRange = wallSensorRange;
 		
 		calculateSensorPoints();
 		           
@@ -66,7 +68,7 @@ public class WallSensorRayCast {
 
 	private void calculateSensorPoints() {
 		this.sensorPointBegin = car.getWallSensorsOrigin();
-		this.sensorPointEnd = getArcPointAtAngle(sensorPointBegin, type.getAngleInDegrees(), Constants.WALL_SENSOR_RANGE);		
+		this.sensorPointEnd = getArcPointAtAngle(sensorPointBegin, type.getAngleInDegrees(), wallSensorRange);		
 	}	
 	
 	private Vector2 getArcPointAtAngle(Vector2 center, float angle, float r){

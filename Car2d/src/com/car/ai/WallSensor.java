@@ -21,6 +21,7 @@ public class WallSensor {
 	
 	private Vector2 sensorPointOrigin, sensorPointArcBegin, sensorPointArcMiddle, sensorPointArcEnd;
 	private WallSensorType type;
+	private float wallSensorRange;
 	
 	private float value;
 		
@@ -40,7 +41,7 @@ public class WallSensor {
 	};
 
 		
-	public WallSensor(Car car, WallSensorType type) {
+	public WallSensor(Car car, WallSensorType type, float wallSensorRange) {
 		this.car = car;
 		this.body = car.getBody();	
 		this.type = type;
@@ -71,9 +72,9 @@ public class WallSensor {
 
 	private void calculateSensorPoints() {
 		this.sensorPointOrigin = car.getWallSensorsOrigin();
-		this.sensorPointArcBegin = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees() - Constants.WALL_SENSOR_APERTURE, Constants.WALL_SENSOR_RANGE);
-		this.sensorPointArcMiddle = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees(), Constants.WALL_SENSOR_RANGE);
-		this.sensorPointArcEnd = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees() + Constants.WALL_SENSOR_APERTURE, Constants.WALL_SENSOR_RANGE);		
+		this.sensorPointArcBegin = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees() - Constants.WALL_SENSOR_APERTURE, wallSensorRange);
+		this.sensorPointArcMiddle = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees(), wallSensorRange);
+		this.sensorPointArcEnd = getArcPointAtAngle(sensorPointOrigin, type.getAngleInDegrees() + Constants.WALL_SENSOR_APERTURE, wallSensorRange);		
 	}	
 	
 	private Vector2 getArcPointAtAngle(Vector2 center, float angle, float r){

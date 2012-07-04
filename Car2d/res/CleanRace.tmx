@@ -1,11 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1024" tileheight="1024">
+ <properties>
+  <property name="WallSensorRange" value="30"/>
+  <property name="WayPointRange" value="30"/>
+ </properties>
  <tileset firstgid="0" name="CleanRace" tilewidth="1024" tileheight="1024">
   <image source="TilesPacked/CleanRace.png" width="1024" height="1024"/>
  </tileset>
  <layer name="pista" width="1" height="1">
-  <data>
-   <tile gid="1"/>
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
   </data>
  </layer>
  <objectgroup name="physicalLayer" width="1" height="1">
@@ -17,12 +21,41 @@
   </object>
   <object name="CarPosition" x="548" y="736" width="23" height="19">
    <properties>
+    <property name="angle" value="90"/>
     <property name="position" value="1"/>
    </properties>
   </object>
   <object name="CarPosition" x="549" y="772" width="23" height="19">
    <properties>
+    <property name="angle" value="90"/>
     <property name="position" value="2"/>
+   </properties>
+  </object>
+  <object name="waypoints" x="493" y="760">
+   <polyline points="0,0 -61,10 -150,44 -228,114 -275,176 -315,210 -365,185 -411,137 -409,46 -341,-27 -164,-154 -155,-220 -196,-318 -262,-407 -397,-464 -441,-528 -427,-635 -383,-693 -295,-706 -223,-688 -90,-648 96,-643 265,-670 396,-668 467,-617 474,-537 439,-451 357,-409 247,-383 15,-355 10,-291 51,-149 253,-121 361,-100 467,-33 474,81 423,193 375,186 302,121 147,8 4,0"/>
+  </object>
+  <object name="CarPosition" x="594" y="779" width="23" height="19">
+   <properties>
+    <property name="angle" value="80"/>
+    <property name="position" value="4"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="592" y="744" width="23" height="19">
+   <properties>
+    <property name="angle" value="80"/>
+    <property name="position" value="3"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="633" y="791" width="23" height="19">
+   <properties>
+    <property name="angle" value="80"/>
+    <property name="position" value="6"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="630" y="754" width="23" height="19">
+   <properties>
+    <property name="angle" value="80"/>
+    <property name="position" value="5"/>
    </properties>
   </object>
  </objectgroup>

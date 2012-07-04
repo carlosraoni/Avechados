@@ -24,12 +24,12 @@ public class Tire {
     Set<GroundAreaFUD> m_groundAreas;
     float m_currentTraction;	
 	
-	public Tire(World world, float posX, float posY){
+	public Tire(World world, float posX, float posY, float initialAngle){
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
         bodyDef.position.x = posX;
         bodyDef.position.y = posY;
-        bodyDef.angle = 90 * MathUtils.degreesToRadians;
+        bodyDef.angle = initialAngle * MathUtils.degreesToRadians;
         body = world.createBody(bodyDef);	
 
         PolygonShape polygonShape = new PolygonShape();

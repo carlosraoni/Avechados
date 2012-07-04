@@ -41,6 +41,7 @@ import com.badlogic.gdx.graphics.g2d.tiled.TiledMap;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObject;
 import com.badlogic.gdx.graphics.g2d.tiled.TiledObjectGroup;
 import com.badlogic.gdx.math.Vector2;
+import com.car.model.CarPosition;
 
 public class TiledMapHelper {
 
@@ -48,21 +49,34 @@ public class TiledMapHelper {
 	private TileAtlas tileAtlas;	
 	private TiledMap map;
 	
+	// Propriedades do Mapa
+	private float wallSensorRange;
+	private float wayPointRange;
+		
+	// Linhas do mapa
 	private List<Vector2> boudaryLimitsLine;
 	private List<Vector2> insideTrackLine;
 	private List<Vector2> outsideTrackLine;
 	private List<Vector2> waypoints;
-	private Map<Integer, Vector2> racePositions;	
+	
+	// Posicoes do Mapa
+	private Map<Integer, CarPosition> racePositions;	
 
 	public TiledMapHelper(String tmxFile, String packDirectory) {
-		racePositions = new HashMap<Integer, Vector2>();
+		racePositions = new HashMap<Integer, CarPosition>();
 		packFileDirectory = Gdx.files.internal(packDirectory);
 		map = TiledLoader.createMap(Gdx.files.internal(tmxFile));
 		tileAtlas = new TileAtlas(map, packFileDirectory);
 		
+		loadMapProperties();
 		parseMapObjects();
 	}
 	
+	private void loadMapProperties() {
+		this.wallSensorRange = Float.parseFloat(map.properties.get(Constants.WALL_SENSOR_RANGE_KEY));
+		this.wayPointRange = Float.parseFloat(map.properties.get(Constants.WAYPOINT_RANGE_KEY));		
+	}
+
 	private void parseMapObjects() {
 		for (TiledObjectGroup group : map.objectGroups) {
 			if(Constants.PHYSICAL_LAYER_NAME.equals(group.name)){
@@ -89,12 +103,14 @@ public class TiledMapHelper {
 
 	private void createCarPosition(TiledObject object) {
 		int position = Integer.parseInt(object.properties.get(Constants.CAR_POSITION_KEY));
+		float angle = Integer.parseInt(object.properties.get(Constants.CAR_ANGLE_KEY));
+		
 		float coordX = getWorldXFromMapX(object.x);
 		float coordY = getWorldYFromMapY(object.y);
 		
 		Vector2 worldPos = new Vector2(coordX, coordY);
-		System.out.println("Position " + position + " loaded at " + worldPos);
-		racePositions.put(position, worldPos);
+		System.out.println("Position " + position + " loaded at " + worldPos + " angle " + angle);
+		racePositions.put(position, new CarPosition(position, coordX, coordY, angle));
 	}
 
 	public List<Vector2> getInsideTrackLine() {
@@ -232,14 +248,22 @@ public class TiledMapHelper {
 		return getWorldYFromMapY(getStartPlayerYMap());
 	}
 	
-	public Map<Integer, Vector2> getRacePositions() {
+	public Map<Integer, CarPosition> getRacePositions() {
 		return racePositions;
 	}
 	
-	public Vector2 getPosition(int position){	
+	public CarPosition getPosition(int position){	
 		return racePositions.get(position);
 	}
 	
+	public float getWallSensorRange() {
+		return wallSensorRange;
+	}
+
+	public float getWayPointRange() {
+		return wayPointRange;
+	}
+
 	public static void main(String[] args) {
 		System.out.println("--- map ---");
 		TiledMap map = TiledLoader.createMap(new FileHandle("res/NatalArenaLimits.tmx"));

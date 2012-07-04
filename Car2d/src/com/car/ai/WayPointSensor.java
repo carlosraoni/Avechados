@@ -10,13 +10,15 @@ import com.car.utils.Constants;
 public class WayPointSensor {
 
 	private float value;
+	private float wayPointRange;
 	private List<Vector2> waypoints;
 	private Car car;
 	
 	int index = 0;
 	
-	public WayPointSensor(World world, Car car, WayPointsLine wayPointsLine) {
+	public WayPointSensor(World world, Car car, WayPointsLine wayPointsLine, float wayPointRange) {
 		this.waypoints = wayPointsLine.getWayPoints();
+		this.wayPointRange = wayPointRange;
 		this.car = car;
 	}
 
@@ -40,7 +42,7 @@ public class WayPointSensor {
 		Vector2 waypoint = waypoints.get(index);
 		Vector2 v =  car.getBody().getLocalPoint(waypoint);
 		
-		if(v.len() < Constants.WAYPOINT_RANGE){
+		if(v.len() < wayPointRange){
 			index = (index + 1) % waypoints.size();
 		}
 		
