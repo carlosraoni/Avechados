@@ -35,23 +35,25 @@ public class Car {
 	private RevoluteJoint flJoint, frJoint;
 	private CarType type;
 	private CarIntelligenceInterface intelligence;
-	private List<Checkpoint> checkpointsPassed = new ArrayList<Checkpoint>();
-	private int lap = -1;
+	private Checkpoint lastCheckpointPassed = null;
+	private Race race;
+	private int lap = 0;
 	
 	public static enum CarType{
 		PLAYER, COMPUTER;
 	};
 	
-	public Car(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, WayPointsLine wayPointsLine){
-		init(tiledMapHelper, world, posX, posY, initialAngle, CarType.PLAYER, wayPointsLine);        
+	public Car(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, WayPointsLine wayPointsLine, Race race){
+		init(tiledMapHelper, world, posX, posY, initialAngle, CarType.PLAYER, wayPointsLine, race);        
 	}
 
-	public Car(TiledMapHelper tiledMapHelper, World world, float x, float y, float initialAngle, WayPointsLine wayPointsLine, CarIntelligenceInterface seekWaypointSensorIntelligence) {
-		this.intelligence = seekWaypointSensorIntelligence;
-		init(tiledMapHelper, world, x, y, initialAngle, CarType.COMPUTER, wayPointsLine);
+	public Car(TiledMapHelper tiledMapHelper, World world, float x, float y, float initialAngle, WayPointsLine wayPointsLine,Race race, CarIntelligenceInterface sensorIntelligence) {
+		this.intelligence = sensorIntelligence;
+		init(tiledMapHelper, world, x, y, initialAngle, CarType.COMPUTER, wayPointsLine,race);
 	}
 	
-	private void init(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine) {
+	private void init(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine, Race race) {
+		this.race = race;
 		this.world = world;
 		this.type = type;
 		
@@ -290,25 +292,20 @@ public class Car {
 	}
 
 	public void checkpoint(Checkpoint checkPoint) {
-		int index = checkPoint.getIndex();
-		boolean allCheckPointsBeforesChecked = true;
-		for(int i=0;i<index;i++){
-			boolean checkpointIndexPassed = false;
-			for(Checkpoint checkpointPassed : this.checkpointsPassed){
-				if(checkpointPassed.getIndex() == i){
-					checkpointIndexPassed = true;
-					break;
-				}
-			}
-			if(checkpointIndexPassed == false){
-				allCheckPointsBeforesChecked = false;
-				break;				
-			}
+		if(lastCheckpointPassed != null 
+				&& checkPoint.getIndex() == 0 
+				&& (lastCheckpointPassed.getIndex() +1 == race.getCheckpoints().size())){
+			lastCheckpointPassed = null;
+			this.lap++;
+			System.out.println("Lap: " + this.lap + " by cartype : " + type);
 		}
-		if(allCheckPointsBeforesChecked){
-			this.checkpointsPassed.add(checkPoint);
-			if(type.equals(CarType.PLAYER))
-			System.out.println("Checkpoint " + checkPoint.getIndex() + "passed by cartype : " + type);
+		if((lastCheckpointPassed == null  && checkPoint.getIndex() == 0)
+				|| (lastCheckpointPassed!=null && checkPoint.getIndex() -1 == lastCheckpointPassed.getIndex())){
+			
+			lastCheckpointPassed = checkPoint;
+			if(type.equals(CarType.PLAYER)){
+				System.out.println("Checkpoint " + checkPoint.getIndex() + " passed by cartype : " + type);
+			}
 		}
 	}
 }

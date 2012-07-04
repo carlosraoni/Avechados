@@ -55,11 +55,11 @@ public class Race {
 			CarPosition carPos = carPositions.get(position);
 			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
 				// Player
-				player = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine);
+				player = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine,this);
 				cars.add(player);
 			}
 			else{
-				Car computer = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine, new SeekWaypointSensorIntelligence());
+				Car computer = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine,this, new SeekWaypointSensorIntelligence());
 				cars.add(computer);
 				lastComputerCar = computer;
 			}
@@ -120,5 +120,9 @@ public class Race {
 
 	public List<Car> getCars() {		
 		return cars;
+	}
+
+	public List<Checkpoint> getCheckpoints() {
+		return checkpoints;
 	}
 }
