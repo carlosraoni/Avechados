@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.car.ai.SeekWaypointSensorIntelligence;
 import com.car.ai.WayPointsLine;
 import com.car.listener.Car2dContactListener;
+import com.car.model.Car.CarColor;
 import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
 
@@ -68,11 +69,11 @@ public class Race {
 			CarPosition carPos = carPositions.get(position);
 			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
 				// Player
-				player = new Car(this, carPos);
+				player = new Car(this, carPos,CarColor.value(position));
 				cars.add(player);
 			}
 			else{
-				Car computer = new Car(this, carPos, new SeekWaypointSensorIntelligence());
+				Car computer = new Car(this, carPos, CarColor.value(position)!= null ? CarColor.value(position) : CarColor.YELLOW,new SeekWaypointSensorIntelligence());
 				cars.add(computer);
 				lastComputerCar = computer;
 			}

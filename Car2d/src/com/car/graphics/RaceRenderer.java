@@ -1,5 +1,7 @@
 package com.car.graphics;
 
+import java.util.List;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,6 +13,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.car.model.Car;
+import com.car.model.Car.CarColor;
 import com.car.model.Race;
 import com.car.utils.Constants;
 import com.car.utils.TiledMapHelper;
@@ -20,8 +23,8 @@ public class RaceRenderer {
 	private TiledMapHelper tiledHelper;
 	
 	private SpriteBatch carSprite;
-	private Texture carTexture;
-	private TextureRegion carTextureRegion;
+	private Texture[] carTexture;
+	private TextureRegion[] carTextureRegion;
 	
 	private static final int[] layersList = { 0 };	
 	private TileMapRenderer tileMapRenderer;
@@ -50,8 +53,17 @@ public class RaceRenderer {
 
 		debugRenderer = new Box2DDebugRenderer();
 		
-		carTexture = new Texture(Gdx.files.internal("res/cars/carro90.png"));
-		carTextureRegion = new TextureRegion(carTexture);
+		carTexture = new Texture[raceWorld.getCars().size()];
+		carTextureRegion = new TextureRegion[raceWorld.getCars().size()];
+		List<Car> cars = raceWorld.getCars();
+		for(Car car : cars){
+			int index = car.getId() - 1;
+			carTexture[index] = new Texture(Gdx.files.internal("res/cars/carro90_"+car.getColor().code()+".png"));
+			carTextureRegion[index] = new TextureRegion(carTexture[index]);
+		}
+
+		
+
 		carSprite = new SpriteBatch();
 	}
 	
@@ -94,22 +106,23 @@ public class RaceRenderer {
 		carSprite.setProjectionMatrix(getCamera().combined);
 		carSprite.begin();
 		for(Car car: raceWorld.getCars()){
-			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter());
+			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter(),car.getId());
 		}
 		carSprite.end();
 	}
 
-	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter) {		
+	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter,int carId) {
+		carId--;		
 		// Centro local da textura em coordenadas do mundo
-		float textureCenterX = carTexture.getWidth() / (2 * Constants.PPM);
-		float textureCenterY = carTexture.getHeight() / (2 * Constants.PPM);
+		float textureCenterX = carTexture[carId].getWidth() / (2 * Constants.PPM);
+		float textureCenterY = carTexture[carId].getHeight() / (2 * Constants.PPM);
 		// Deslocamento necess�rio para alinhar o centro do carrinho e o centro da textura
 		float centerDx = textureCenterX - carLocalCenter.x;
 		float centerDy = textureCenterY - carLocalCenter.y;
 						
-		carSprite.draw(carTextureRegion, coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
+		carSprite.draw(carTextureRegion[carId], coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
                 centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
-                (float) carTexture.getWidth() / Constants.PPM, (float) carTexture.getHeight() / Constants.PPM, // the width and height of the box
+                (float) carTexture[carId].getWidth() / Constants.PPM, (float) carTexture[carId].getHeight() / Constants.PPM, // the width and height of the box
                 1f, 1f, // the scale on the x- and y-axis
                 angle);				
 	}

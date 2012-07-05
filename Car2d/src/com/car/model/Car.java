@@ -44,25 +44,54 @@ public class Car {
 	private Long lastCheckpointTime = null;
 	private Race race;
 	private int lap = 0;
+	private CarColor color = CarColor.BLUE;
 	
 	public static enum CarType{
 		PLAYER, COMPUTER;
 	};
 	
-	public Car(Race race, CarPosition position){	
-		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.PLAYER, race.getWayPointsLine(), race);        
+	
+	public enum CarColor {
+		BLUE("azul"),
+		LIGHT_BLUE ("azul_claro"),
+		YELLOW ("amarelo"),
+		RED ("vermelho"),
+		PURPLE ("roxo"),
+		GREEN ("verde");
+		
+		private String code;
+		
+		CarColor(String code){
+			this.code = code;
+		}
+		public String code(){
+			return code;
+		}
+		
+		public static CarColor value(int ordinal){
+			for (CarColor color : CarColor.values()){
+				if(color.ordinal() == ordinal)
+					return color;
+			}
+			return null;
+		}
 	}
 
-	public Car(Race race, CarPosition position, CarIntelligenceInterface sensorIntelligence) {
+	public Car(Race race, CarPosition position, CarColor color){	
+		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.PLAYER, race.getWayPointsLine(), color, race);        
+	}
+
+	public Car(Race race, CarPosition position, CarColor color, CarIntelligenceInterface sensorIntelligence) {
 		this.intelligence = sensorIntelligence;
-		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.COMPUTER, race.getWayPointsLine(), race);
+		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.COMPUTER, race.getWayPointsLine(), color, race);
 	}
 	
-	private void init(int id, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine, Race race) {
+	private void init(int id, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine, CarColor color,Race race) {
 		this.id = id;
 		this.race = race;
 		this.world = world;
 		this.type = type;
+		this.color = color;
 		
         //create car body
         BodyDef bodyDef = new BodyDef();
@@ -350,6 +379,11 @@ public class Car {
 		return "Car [id=" + id + ", type=" + type + ", lastCheckpointPassed="
 				+ getLastCheckpointIndex() + ", lastCheckpointTime="
 				+ getLastCheckpointTime() + ", lap=" + lap + "]";
+	}
+
+	public CarColor getColor() {
+		// TODO Auto-generated method stub
+		return this.color;
 	}
 }
 
