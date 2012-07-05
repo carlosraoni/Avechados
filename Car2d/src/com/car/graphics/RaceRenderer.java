@@ -3,9 +3,11 @@ package com.car.graphics;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
@@ -22,7 +24,8 @@ public class RaceRenderer {
 	private Race raceWorld;
 	private TiledMapHelper tiledHelper;
 	
-	private SpriteBatch carSprite;
+	private SpriteBatch spriteBatch;
+	private BitmapFont font;
 	private Texture[] carTexture;
 	private TextureRegion[] carTextureRegion;
 	
@@ -35,6 +38,9 @@ public class RaceRenderer {
 	private float mapW, mapH;
 			
 	private OrthographicCamera camera;
+	
+	private long firstTime;
+	private long now;
 	
 	public RaceRenderer(Race race, TiledMapHelper tiledHelper, int screenPixelWidth, int screenPixelHeight){
 		this.raceWorld = race;
@@ -62,9 +68,9 @@ public class RaceRenderer {
 			carTextureRegion[index] = new TextureRegion(carTexture[index]);
 		}
 
-		
-
-		carSprite = new SpriteBatch();
+		spriteBatch = new SpriteBatch();
+		font = new BitmapFont();
+		this.firstTime = System.currentTimeMillis();
 	}
 	
 	private void prepareCamera(float viewW, float viewH) {
@@ -76,14 +82,57 @@ public class RaceRenderer {
 	 * Renders the part of the map that should be visible to the user.
 	 */
 	public void render() {
+		this.now = System.currentTimeMillis();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updateCameraPosition();
 		tileMapRenderer.getProjectionMatrix().set(camera.combined);
 
 		tileMapRenderer.render(camera);
-		renderCars();
+		
+		renderCars();		
+		renderInfo();
 		//debugRenderer.render(raceWorld.getWorld(), camera.combined);
+	}
+
+	private void renderInfo() {
+		float left = camera.position.x - (Constants.VIEW_W * 0.5f);
+		float rigth = camera.position.x + (Constants.VIEW_W * 0.28f);
+		float bottom = camera.position.y - (Constants.VIEW_H * 0.45f);
+		float upper = camera.position.y + (Constants.VIEW_H * 0.5f);
+		
+		float middleLeft = camera.position.x - (Constants.VIEW_W * 0.35f);
+		float middle = camera.position.y;
+		
+		spriteBatch.begin();			
+			font.setColor(Constants.FONT_INFO_R/255f, Constants.FONT_INFO_G/255f, Constants.FONT_INFO_B/255f, 1f);
+			font.setScale(0.7f);			
+			font.draw(spriteBatch, 
+						"Pos: " +raceWorld.getPlayerPosition(), 
+						left, 
+						upper);
+			font.draw(spriteBatch, 
+					raceWorld.getPlayerLaps() + "/" + raceWorld.getTotalLaps(), 
+					rigth, 
+					upper);
+			font.draw(spriteBatch, 
+					raceWorld.getPlayerSpeed() + "km/h", 
+					rigth, 
+					bottom);	
+			if(!raceWorld.isRaceFinished()){
+				font.draw(spriteBatch, 
+							" " + (now - firstTime)/1000 + "." + (now - firstTime) % 1000, 
+							left, 
+							bottom);			
+			}
+			else{
+				font.setScale(1f);
+				font.draw(spriteBatch, 
+						"Final Position: " + raceWorld.getPlayerPosition(), 
+						middleLeft, 
+						middle);
+			}
+		spriteBatch.end();
 	}
 
 	private void updateCameraPosition() {
@@ -103,12 +152,12 @@ public class RaceRenderer {
 
 	
 	private void renderCars() {
-		carSprite.setProjectionMatrix(getCamera().combined);
-		carSprite.begin();
+		spriteBatch.setProjectionMatrix(getCamera().combined);
+		spriteBatch.begin();
 		for(Car car: raceWorld.getCars()){
 			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter(),car.getId());
-		}
-		carSprite.end();
+		}		
+		spriteBatch.end();
 	}
 
 	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter,int carId) {
@@ -120,7 +169,7 @@ public class RaceRenderer {
 		float centerDx = textureCenterX - carLocalCenter.x;
 		float centerDy = textureCenterY - carLocalCenter.y;
 						
-		carSprite.draw(carTextureRegion[carId], coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
+		spriteBatch.draw(carTextureRegion[carId], coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
                 centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
                 (float) carTexture[carId].getWidth() / Constants.PPM, (float) carTexture[carId].getHeight() / Constants.PPM, // the width and height of the box
                 1f, 1f, // the scale on the x- and y-axis
@@ -133,7 +182,7 @@ public class RaceRenderer {
 	}
 
 	public void dispose() {		
-		carSprite.dispose();
+		spriteBatch.dispose();
 		tiledHelper.dispose();
 		tileMapRenderer.dispose();
 		debugRenderer.dispose();

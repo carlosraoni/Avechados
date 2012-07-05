@@ -5,6 +5,9 @@ import java.util.BitSet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.car.graphics.RaceRenderer;
 import com.car.main.AvechadosGame;
 import com.car.model.Race;
@@ -22,7 +25,7 @@ public class RaceScreen implements Screen{
 	private int screenPixelWidth;
 	private int screenPixelHeight;
 	private AvechadosGame myGame;
-	private boolean disposed = false;        
+	private boolean disposed = false;      
 	
     /**
      * Constructor for the splash screen
@@ -32,7 +35,7 @@ public class RaceScreen implements Screen{
     	myGame = g;
 		screenPixelWidth = -1;
 		screenPixelHeight = -1;
-		firstTime = System.nanoTime();
+		firstTime = System.nanoTime();		
     }
 
     @Override
@@ -42,12 +45,15 @@ public class RaceScreen implements Screen{
 
 		float targetFPS = 30;
     	float timeStep = (1 / targetFPS);
-    	int iterations = 1;
-
-    	if(!race.isRaceFinished() && isStartTimeElapsed())
+    	int iterations = 10;
+    	
+    	
+    	if(!race.isRaceFinished() && isStartTimeElapsed()){
     		race.update(timeStep, iterations, iterations, getPlayerControls());
+    	}
 		raceRenderer.render();
 		
+				
 		now = System.nanoTime();
 		if (now - lastRender < 30000000) { // 30 ms, ~33FPS
 			try {
