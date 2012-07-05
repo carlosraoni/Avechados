@@ -22,11 +22,11 @@ public class SplashScreen implements Screen{
     private Image splashImage;
     private AvechadosGame game;
     private Stage stage;
+    private int anyWidth = 10;
+    private int anyHeight = 10;
     
     // the fixed viewport dimensions (ratio: 1.6)
-    public static final int GAME_VIEWPORT_WIDTH = 400, GAME_VIEWPORT_HEIGHT = 240;
-    public static final int MENU_VIEWPORT_WIDTH = 800, MENU_VIEWPORT_HEIGHT = 480;
-	        
+            
     /**
      * Constructor for the splash screen
      * @param g Game which called this splash screen.
@@ -34,9 +34,7 @@ public class SplashScreen implements Screen{
     public SplashScreen(AvechadosGame g){
     	game = g;
     	
-        int width = ( isGameScreen() ? GAME_VIEWPORT_WIDTH : MENU_VIEWPORT_WIDTH );
-        int height = ( isGameScreen() ? GAME_VIEWPORT_HEIGHT : MENU_VIEWPORT_HEIGHT );
-        this.stage = new Stage( width, height, true );
+        this.stage = new Stage( anyWidth, anyHeight, true );
     }
     
     protected boolean isGameScreen()
@@ -65,8 +63,8 @@ public class SplashScreen implements Screen{
         // here we create the splash image actor; its size is set when the
         // resize() method gets called
         splashImage = new Image( new Texture(Gdx.files.internal("res/car3.jpg")), Scaling.stretch );
-        splashImage.width = stage.width();
-        splashImage.height = stage.height();
+        splashImage.width = anyWidth;
+        splashImage.height = anyHeight;
 
         // this is needed for the fade-in effect to work correctly; we're just
         // making the image completely transparent
