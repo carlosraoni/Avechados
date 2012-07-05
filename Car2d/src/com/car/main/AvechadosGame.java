@@ -13,6 +13,9 @@ public class AvechadosGame extends Game implements ApplicationListener{
 		private SplashScreen splashScreen;
 		private RaceScreen raceScreen;
 		
+		public static final String LOG = AvechadosGame.class.getSimpleName();
+
+		
 		public AvechadosGame() {
 			super();
 		}
