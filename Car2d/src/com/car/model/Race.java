@@ -69,11 +69,11 @@ public class Race {
 			CarPosition carPos = carPositions.get(position);
 			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
 				// Player
-				player = new Car(this, carPos,CarColor.value(position));
+				player = new Car(this, carPos,CarColor.value(position-1));
 				cars.add(player);
 			}
 			else{
-				Car computer = new Car(this, carPos, CarColor.value(position)!= null ? CarColor.value(position) : CarColor.YELLOW,new SeekWaypointSensorIntelligence());
+				Car computer = new Car(this, carPos, CarColor.value(position-1),new SeekWaypointSensorIntelligence());
 				cars.add(computer);
 				lastComputerCar = computer;
 			}
