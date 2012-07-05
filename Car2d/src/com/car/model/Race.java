@@ -203,6 +203,27 @@ public class Race {
 		return raceFinished;
 	}
 
+
+	public int getPlayerLaps() {		
+		return player.getLap();
+	}
+
+
+	public int getPlayerPosition() {
+		for(int i=0; i<cars.size(); i++){
+			Car c = cars.get(i);
+			if(c.getType() == Car.CarType.PLAYER){
+				return i+1;
+			}
+		}
+		return 0;
+	}
+
+
+	public int getPlayerSpeed() {
+		return (int) player.getCurrentForwardVelocity();		
+	}
+
 	
 	
 }

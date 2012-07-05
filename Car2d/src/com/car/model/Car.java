@@ -385,5 +385,12 @@ public class Car {
 		// TODO Auto-generated method stub
 		return this.color;
 	}
+
+	public float getCurrentForwardVelocity() {
+		Vector2 tmp = body.getWorldVector(new Vector2(0,1) );
+    	Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
+    	    	
+        return currentForwardNormal.mul(currentForwardNormal.dot(body.getLinearVelocity()) ).len();		
+	}
 }
 
