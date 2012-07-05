@@ -2,6 +2,8 @@ package com.car.model;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,16 +28,27 @@ public class Race {
 	private WayPointsLine wayPointsLine;
 	private List<Checkpoint> checkpoints;
 	
+	// Constantes dos sensores
+	private float wallSensorRange;
+	private float wayPointRange;
+	
+	// Total de voltas
+	private int totalLaps;
+	
+	private boolean raceFinished = false;
+	
 	public Race(TiledMapHelper tiledHelper){				
-		world = new World(new Vector2(0, 0), false);
+		this.world = new World(new Vector2(0, 0), false);
 		world.setContactListener(new Car2dContactListener());
 		wayPointsLine = new WayPointsLine(tiledHelper, world);
 		checkpoints = createCheckPoints(tiledHelper,world);
+		this.wallSensorRange = tiledHelper.getWallSensorRange();
+		this.wayPointRange = tiledHelper.getWayPointRange();
+		this.totalLaps = tiledHelper.getTotalLaps();
 		loadRaceCars(tiledHelper);
 		createRaceWalls(tiledHelper, world);
-		
-		
 	}
+
 
 	private List<Checkpoint> createCheckPoints(TiledMapHelper tiledHelper,
 			World world) {
@@ -55,11 +68,11 @@ public class Race {
 			CarPosition carPos = carPositions.get(position);
 			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
 				// Player
-				player = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine,this);
+				player = new Car(this, carPos);
 				cars.add(player);
 			}
 			else{
-				Car computer = new Car(tiledHelper, world, carPos.getX(), carPos.getY(), carPos.getAngle(), wayPointsLine,this, new SeekWaypointSensorIntelligence());
+				Car computer = new Car(this, carPos, new SeekWaypointSensorIntelligence());
 				cars.add(computer);
 				lastComputerCar = computer;
 			}
@@ -118,6 +131,43 @@ public class Race {
 		world.step(timeStep, velocityIterations, positionIterations);				
 	}
 
+	public void updatePositions() {
+		Collections.sort(getCars(), new Comparator<Car>() {
+
+			@Override
+			public int compare(Car c1, Car c2) {
+				if(c1.getLap() != c2.getLap()){
+					return c2.getLap() - c1.getLap();
+				}
+				if(c1.getLastCheckpointIndex() != c2.getLastCheckpointIndex()){
+					return c2.getLastCheckpointIndex() - c1.getLastCheckpointIndex();
+				}
+				if(c1.getLastCheckpointTime() < c2.getLastCheckpointTime()){
+					return -1;
+				}
+				else if(c2.getLastCheckpointTime() < c1.getLastCheckpointTime()){
+					return 1;
+				}				
+				return 0;
+			}
+		});
+		
+		printRacePositions();
+		
+	}
+	
+	private void printRacePositions() {
+		System.out.println("-----------------------------------------");
+		for(int i=0; i<cars.size(); i++){
+			Car c = cars.get(i);
+			if(c.getType() == Car.CarType.PLAYER){
+				System.out.println("Place " + (i+1) +" = " + c);
+			}
+		}
+		System.out.println("-----------------------------------------");
+	}
+
+
 	public List<Car> getCars() {		
 		return cars;
 	}
@@ -125,4 +175,33 @@ public class Race {
 	public List<Checkpoint> getCheckpoints() {
 		return checkpoints;
 	}
+
+	public WayPointsLine getWayPointsLine() {		
+		return wayPointsLine;
+	}
+	
+	public float getWallSensorRange() {
+		return wallSensorRange;
+	}
+
+	public float getWayPointRange() {
+		return wayPointRange;
+	}
+
+	public int getTotalLaps() {
+		return totalLaps;
+	}
+
+
+	public void finishRace() {
+		this.raceFinished = true;
+	}
+
+
+	public boolean isRaceFinished() {
+		return raceFinished;
+	}
+
+	
+	
 }

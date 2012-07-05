@@ -8,11 +8,13 @@ import com.badlogic.gdx.Screen;
 import com.car.graphics.RaceRenderer;
 import com.car.main.AvechadosGame;
 import com.car.model.Race;
+import com.car.utils.Constants;
 import com.car.utils.Controls;
 import com.car.utils.TiledMapHelper;
 
 public class RaceScreen implements Screen{
 
+	private long firstTime;
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
 	private Race race;
@@ -20,7 +22,8 @@ public class RaceScreen implements Screen{
 	private int screenPixelWidth;
 	private int screenPixelHeight;
 	private AvechadosGame myGame;
-	        
+	private boolean disposed = false;        
+	
     /**
      * Constructor for the splash screen
      * @param g Game which called this splash screen.
@@ -29,6 +32,7 @@ public class RaceScreen implements Screen{
     	myGame = g;
 		screenPixelWidth = -1;
 		screenPixelHeight = -1;
+		firstTime = System.nanoTime();
     }
 
     @Override
@@ -40,7 +44,8 @@ public class RaceScreen implements Screen{
     	float timeStep = (1 / targetFPS);
     	int iterations = 1;
 
-    	race.update(timeStep, iterations, iterations, getPlayerControls());
+    	if(!race.isRaceFinished() && isStartTimeElapsed())
+    		race.update(timeStep, iterations, iterations, getPlayerControls());
 		raceRenderer.render();
 		
 		now = System.nanoTime();
@@ -53,6 +58,10 @@ public class RaceScreen implements Screen{
 		
 	   lastRender = now;
     }
+
+	public boolean isStartTimeElapsed() {
+		return ((lastRender - firstTime) / 1000000000l) > Constants.RACE_START_TIME_SECONDS;
+	}
 
 	private BitSet getPlayerControls() {
 		// Uso de bitSet para interpretação dos controles devido a necessidade de realizar mais de um controle
@@ -77,8 +86,8 @@ public class RaceScreen implements Screen{
 		}
 
 		//tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
-		tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
-		//tiledMapHelper = new TiledMapHelper("res/CleanRace.tmx", "res");
+		//tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
+		tiledMapHelper = new TiledMapHelper("res/CleanRace.tmx", "res");
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 		
@@ -87,7 +96,7 @@ public class RaceScreen implements Screen{
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		// TODO Auto-generated method stub		
 		raceRenderer.dispose();
 	}
 

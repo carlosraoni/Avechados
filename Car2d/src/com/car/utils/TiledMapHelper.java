@@ -52,7 +52,10 @@ public class TiledMapHelper {
 	// Propriedades do Mapa
 	private float wallSensorRange;
 	private float wayPointRange;
-		
+
+	// Numero total de voltas do mapa
+	private int totalLaps;
+	
 	// Linhas do mapa
 	private List<Vector2> boudaryLimitsLine;
 	private List<Vector2> insideTrackLine;
@@ -76,6 +79,7 @@ public class TiledMapHelper {
 	private void loadMapProperties() {
 		this.wallSensorRange = Float.parseFloat(map.properties.get(Constants.WALL_SENSOR_RANGE_KEY));
 		this.wayPointRange = Float.parseFloat(map.properties.get(Constants.WAYPOINT_RANGE_KEY));		
+		this.totalLaps = Integer.parseInt(map.properties.get(Constants.TOTAL_LAPS_KEY));
 	}
 
 	private void parseMapObjects() {
@@ -97,12 +101,16 @@ public class TiledMapHelper {
 					else if(Constants.WAYPOINTS_NAME.equals(object.name)){
 						this.waypoints = buildWorldLineFromTiledObject(object);
 					}
-					else if(Constants.CHECKPOINT_TYPE.equals(object.type)){
-						this.checkpoints.put(Integer.parseInt(object.properties.get("index"))-1, buildWorldLineFromTiledObject(object));
+					else if(Constants.CHECKPOINT_NAME.equals(object.name)){
+						this.checkpoints.put(Integer.parseInt(object.properties.get(Constants.CHECKPOINT_INDEX_KEY)), buildWorldLineFromTiledObject(object));
 					}
 				}
 			}			
 		}
+	}
+
+	public int getTotalLaps() {
+		return totalLaps;
 	}
 
 	private void createCarPosition(TiledObject object) {

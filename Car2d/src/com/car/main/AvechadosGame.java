@@ -46,10 +46,11 @@ public class AvechadosGame extends Game implements ApplicationListener{
 
 		@Override
 		public void pause() {
+			super.pause();
 		}
 
 		@Override
-		public void dispose() {
+		public void dispose() {			
 //			music.dispose();
 //			raceScreen.dispose();
 //			splashScreen.dispose();

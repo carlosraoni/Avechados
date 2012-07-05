@@ -12,7 +12,7 @@ public class SeekWaypointSensorIntelligence implements CarIntelligenceInterface{
 		BitSet controls = new BitSet();
 		float value = opponent.getWaypointSensor().getValue();
 		controls.set(Controls.TDC_UP.ordinal(), true);
-		if(Math.abs(value) < 10f){
+		if(Math.abs(value) < 15f){
 			return controls;
 		}
 		if(value > 0.0){

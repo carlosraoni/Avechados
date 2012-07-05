@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1024" tileheight="768">
  <properties>
+  <property name="TotalLaps" value="3"/>
   <property name="WallSensorRange" value="60"/>
   <property name="WayPointRange" value="60"/>
  </properties>
@@ -58,27 +59,27 @@
   <object name="waypoints" x="646" y="638">
    <polyline points="0,0 172,-64 249,-208 239,-414 165,-505 -105,-510 -198,-470 -257,-332 -328,-246 -466,-225 -519,-127 -478,-39 -401,1 -75,-2"/>
   </object>
-  <object name="1" type="checkpoint" x="639" y="549">
+  <object name="Checkpoint" x="639" y="549">
    <properties>
-    <property name="index" value="1"/>
+    <property name="index" value="0"/>
    </properties>
    <polyline points="-1,176 -1,1"/>
   </object>
-  <object name="4" type="checkpoint" x="244" y="547">
-   <properties>
-    <property name="index" value="4"/>
-   </properties>
-   <polyline points="-1,176 -1,1"/>
-  </object>
-  <object name="3" type="checkpoint" x="400" y="240">
+  <object name="Checkpoint" x="244" y="547">
    <properties>
     <property name="index" value="3"/>
    </properties>
-   <polyline points="18,-157 111,-12"/>
+   <polyline points="-1,176 -1,1"/>
   </object>
-  <object name="2" type="checkpoint" x="897" y="273">
+  <object name="Checkpoint" x="400" y="240">
    <properties>
     <property name="index" value="2"/>
+   </properties>
+   <polyline points="18,-157 111,-12"/>
+  </object>
+  <object name="Checkpoint" x="897" y="273">
+   <properties>
+    <property name="index" value="1"/>
    </properties>
    <polyline points="86,74 -91,72"/>
   </object>

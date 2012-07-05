@@ -50,7 +50,7 @@ public class RaceRenderer {
 
 		debugRenderer = new Box2DDebugRenderer();
 		
-		carTexture = new Texture(Gdx.files.internal("res/carro90.png"));
+		carTexture = new Texture(Gdx.files.internal("res/cars/carro90.png"));
 		carTextureRegion = new TextureRegion(carTexture);
 		carSprite = new SpriteBatch();
 	}
@@ -71,7 +71,7 @@ public class RaceRenderer {
 
 		tileMapRenderer.render(camera);
 		renderCars();
-		debugRenderer.render(raceWorld.getWorld(), camera.combined);
+		//debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 
 	private void updateCameraPosition() {

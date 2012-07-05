@@ -2,7 +2,11 @@ package com.car.model;
 
 import java.util.ArrayList;
 import java.util.BitSet;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+
+import javax.swing.text.Position;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +27,7 @@ import com.car.utils.TiledMapHelper;
 
 public class Car {
 	
+	private int id;
 	private float width;
 	private float height;
 	private Vector2 boundingBoxLocalCenter;
@@ -36,6 +41,7 @@ public class Car {
 	private CarType type;
 	private CarIntelligenceInterface intelligence;
 	private Checkpoint lastCheckpointPassed = null;
+	private Long lastCheckpointTime = null;
 	private Race race;
 	private int lap = 0;
 	
@@ -43,16 +49,17 @@ public class Car {
 		PLAYER, COMPUTER;
 	};
 	
-	public Car(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, WayPointsLine wayPointsLine, Race race){
-		init(tiledMapHelper, world, posX, posY, initialAngle, CarType.PLAYER, wayPointsLine, race);        
+	public Car(Race race, CarPosition position){	
+		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.PLAYER, race.getWayPointsLine(), race);        
 	}
 
-	public Car(TiledMapHelper tiledMapHelper, World world, float x, float y, float initialAngle, WayPointsLine wayPointsLine,Race race, CarIntelligenceInterface sensorIntelligence) {
+	public Car(Race race, CarPosition position, CarIntelligenceInterface sensorIntelligence) {
 		this.intelligence = sensorIntelligence;
-		init(tiledMapHelper, world, x, y, initialAngle, CarType.COMPUTER, wayPointsLine,race);
+		init(position.getPosition(), race.getWorld(), position.getX(), position.getY(), position.getAngle(), CarType.COMPUTER, race.getWayPointsLine(), race);
 	}
 	
-	private void init(TiledMapHelper tiledMapHelper, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine, Race race) {
+	private void init(int id, World world, float posX, float posY, float initialAngle, CarType type, WayPointsLine wayPointsLine, Race race) {
+		this.id = id;
 		this.race = race;
 		this.world = world;
 		this.type = type;
@@ -135,12 +142,12 @@ public class Car {
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
         
-        initSensors(tiledMapHelper, world, wayPointsLine);
+        initSensors(race, world, wayPointsLine);
 	}
 
-	private void initSensors(TiledMapHelper tiledMapHelper, World world, WayPointsLine wayPointsLine) {
-		initWallSensors(tiledMapHelper.getWallSensorRange());        
-        initWayPointSensors(tiledMapHelper.getWayPointRange(), world, wayPointsLine);
+	private void initSensors(Race race, World world, WayPointsLine wayPointsLine) {
+		initWallSensors(race.getWallSensorRange());        
+        initWayPointSensors(race.getWayPointRange(), world, wayPointsLine);
 	}
 
 	private void initWayPointSensors(float wayPointRange, World world, WayPointsLine wayPointsLine) {
@@ -202,7 +209,6 @@ public class Car {
 		frJoint.setLimits( newAngle, newAngle );
 
     }
-
 
 	public Body getBody() {
 		return body;
@@ -290,12 +296,19 @@ public class Car {
 	public int getLap() {
 		return lap;
 	}
+	
+	public int getId() {
+		return id;
+	}
 
 	public void checkpoint(Checkpoint checkPoint) {
+		boolean checkPointUpdated = false;
 		if(lastCheckpointPassed != null 
 				&& checkPoint.getIndex() == 0 
 				&& (lastCheckpointPassed.getIndex() +1 == race.getCheckpoints().size())){
 			lastCheckpointPassed = null;
+			lastCheckpointTime = System.currentTimeMillis();
+			checkPointUpdated = true;
 			this.lap++;
 			System.out.println("Lap: " + this.lap + " by cartype : " + type);
 		}
@@ -303,10 +316,40 @@ public class Car {
 				|| (lastCheckpointPassed!=null && checkPoint.getIndex() -1 == lastCheckpointPassed.getIndex())){
 			
 			lastCheckpointPassed = checkPoint;
+			lastCheckpointTime = System.currentTimeMillis();
+			checkPointUpdated = true;
 			if(type.equals(CarType.PLAYER)){
 				System.out.println("Checkpoint " + checkPoint.getIndex() + " passed by cartype : " + type);
 			}
 		}
+		if(type == CarType.PLAYER && lap == race.getTotalLaps()){
+			race.finishRace();
+		}
+		if(checkPointUpdated){
+			race.updatePositions();
+		}
+	}
+
+	public int getLastCheckpointIndex() {
+		if(lastCheckpointPassed == null)
+			return 0;
+		return lastCheckpointPassed.getIndex() + 1;
+	}
+
+	public Long getLastCheckpointTime() {
+		if(lastCheckpointTime == null){
+			return Long.MAX_VALUE;
+		}
+		
+		return lastCheckpointTime;
+	}
+	
+
+	@Override
+	public String toString() {
+		return "Car [id=" + id + ", type=" + type + ", lastCheckpointPassed="
+				+ getLastCheckpointIndex() + ", lastCheckpointTime="
+				+ getLastCheckpointTime() + ", lap=" + lap + "]";
 	}
 }
 
