@@ -22,8 +22,10 @@ public class SplashScreen implements Screen{
     private Image splashImage;
     private AvechadosGame game;
     private Stage stage;
-    private int anyWidth = 10;
-    private int anyHeight = 10;
+    
+    //Podem ser qualque interiro positivo
+    private int anyWidth = 100;
+    private int anyHeight = 100;
     
     // the fixed viewport dimensions (ratio: 1.6)
             
