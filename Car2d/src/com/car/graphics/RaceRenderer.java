@@ -37,8 +37,10 @@ public class RaceRenderer {
 	private Box2DDebugRenderer debugRenderer;
 	
 	private float mapW, mapH;
-			
-	private OrthographicCamera camera;
+	private int screenPixelWidth, screenPixelHeight;
+	
+	private OrthographicCamera raceCamera;
+	private OrthographicCamera infoCamera;
 	
 	private long firstTime;
 	private long now;
@@ -46,6 +48,8 @@ public class RaceRenderer {
 	public RaceRenderer(Race race, TiledMapHelper tiledHelper, int screenPixelWidth, int screenPixelHeight){
 		this.raceWorld = race;
 		this.tiledHelper = tiledHelper;
+		this.screenPixelWidth = screenPixelWidth;
+		this.screenPixelHeight = screenPixelHeight;
 		
 		// setup map renderer
 		float unitsPerTileX = tiledHelper.getWorldUnitsPerTileX();
@@ -56,8 +60,9 @@ public class RaceRenderer {
 		mapW = tiledHelper.getWorldMapWidth();
 		mapH = tiledHelper.getWorldMapHeight();
 		
-		prepareCamera(Constants.VIEW_W, Constants.VIEW_H);
-
+		prepareRaceCamera(Constants.VIEW_W, Constants.VIEW_H);
+		prepareInfoCamera(screenPixelWidth, screenPixelHeight);
+		
 		debugRenderer = new Box2DDebugRenderer();
 		
 		carTexture = new Texture[raceWorld.getCars().size()];
@@ -77,9 +82,14 @@ public class RaceRenderer {
 		this.firstTime = System.currentTimeMillis();
 	}
 	
-	private void prepareCamera(float viewW, float viewH) {
-		camera = new OrthographicCamera(viewW, viewH);
-		camera.position.set(0, 0, 0);
+	private void prepareInfoCamera(int screenPixelWidth, int screenPixelHeight) {
+		infoCamera = new OrthographicCamera(screenPixelWidth, screenPixelHeight);
+		infoCamera.position.set(0, 0, 0);		
+	}
+
+	private void prepareRaceCamera(float viewW, float viewH) {
+		raceCamera = new OrthographicCamera(viewW, viewH);
+		raceCamera.position.set(0, 0, 0);
 	}
 	
 	/**
@@ -90,27 +100,28 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updateCameraPosition();
-		tileMapRenderer.getProjectionMatrix().set(camera.combined);
+		tileMapRenderer.getProjectionMatrix().set(raceCamera.combined);
 
-		tileMapRenderer.render(camera);
+		tileMapRenderer.render(raceCamera);
 		
 		renderCars();		
 		renderInfo();
 		//debugRenderer.render(raceWorld.getWorld(), camera.combined);
 	}
 
-	private void renderInfo() {
-		float left = camera.position.x - (Constants.VIEW_W * 0.5f);
-		float rigth = camera.position.x + (Constants.VIEW_W * 0.28f);
-		float bottom = camera.position.y - (Constants.VIEW_H * 0.45f);
-		float upper = camera.position.y + (Constants.VIEW_H * 0.5f);
+	private void renderInfo() {		
+		float left = -screenPixelWidth / 2;
+		float rigth = screenPixelWidth / 4;
+		float bottom = -screenPixelHeight / 2.2f;
+		float upper = screenPixelHeight / 2;
 		
-		float middleLeft = camera.position.x - (Constants.VIEW_W * 0.35f);
-		float middle = camera.position.y;
+		float leftMiddle = -screenPixelWidth / 4;
+		float middle = 0;
 		
+		spriteBatch.setProjectionMatrix(infoCamera.combined);
 		spriteBatch.begin();			
 //			font.setColor(Constants.FONT_INFO_R/255f, Constants.FONT_INFO_G/255f, Constants.FONT_INFO_B/255f, 1f);
-			font.setScale(0.3f);			
+			font.setScale(1f);			
 			font.draw(spriteBatch, 
 						"Pos: " +raceWorld.getPlayerPosition(), 
 						left, 
@@ -133,7 +144,7 @@ public class RaceRenderer {
 				font.setScale(1f);
 				font.draw(spriteBatch, 
 						"Final Position: " + raceWorld.getPlayerPosition(), 
-						middleLeft, 
+						leftMiddle, 
 						middle);
 			}
 		spriteBatch.end();
@@ -149,14 +160,14 @@ public class RaceRenderer {
 		float maxY = mapH - minY;
 		float camY = MathUtils.clamp(raceWorld.getFocusCarY(), minY, maxY);
 				
-		camera.position.x = camX;
-		camera.position.y = camY;		
-		camera.update();
+		raceCamera.position.x = camX;
+		raceCamera.position.y = camY;		
+		raceCamera.update();
 	}
 
 	
 	private void renderCars() {
-		spriteBatch.setProjectionMatrix(getCamera().combined);
+		spriteBatch.setProjectionMatrix(getRaceCamera().combined);
 		spriteBatch.begin();
 		for(Car car: raceWorld.getCars()){
 			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter(),car.getId());
@@ -181,8 +192,8 @@ public class RaceRenderer {
 	}
 
 	
-	public OrthographicCamera getCamera() {
-		return camera;
+	public OrthographicCamera getRaceCamera() {
+		return raceCamera;
 	}
 
 	public void dispose() {		
