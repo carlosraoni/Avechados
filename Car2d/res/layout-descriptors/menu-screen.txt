@@ -1,0 +1,7 @@
+debug
+* spacing:5 padding:0 align:center
+'Car2D!' spacingBottom:20
+---
+[caveiraButton] width:40% minwidth:100 maxwidth:250 height:12% minheight:30 maxheight:50
+---
+[cleanRaceButton] width:40% minwidth:100 maxwidth:250 height:12% minheight:30 maxheight:50

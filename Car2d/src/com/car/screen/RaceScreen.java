@@ -16,7 +16,7 @@ import com.car.utils.Controls;
 import com.car.utils.TiledMapHelper;
 
 public class RaceScreen implements Screen{
-
+	
 	private long firstTime;
 	private long lastRender;
 	private TiledMapHelper tiledMapHelper;
@@ -25,14 +25,16 @@ public class RaceScreen implements Screen{
 	private int screenPixelWidth;
 	private int screenPixelHeight;
 	private AvechadosGame myGame;
+	private String raceMap;
 	private boolean disposed = false;      
 	
     /**
      * Constructor for the splash screen
      * @param g Game which called this splash screen.
      */
-    public RaceScreen(AvechadosGame g){
-    	myGame = g;
+    public RaceScreen(AvechadosGame g, String raceMap){
+    	this.raceMap = raceMap;    	
+    	this.myGame = g;
 		screenPixelWidth = -1;
 		screenPixelHeight = -1;
 		firstTime = System.nanoTime();		
@@ -47,6 +49,9 @@ public class RaceScreen implements Screen{
     	float timeStep = (1 / targetFPS);
     	int iterations = 10;
     	
+    	if(race.isRaceFinished() && Gdx.input.justTouched()){
+    		myGame.setScreen(new MenuScreen(myGame));
+    	}
     	
     	if(!race.isRaceFinished() && isStartTimeElapsed()){
     		race.update(timeStep, iterations, iterations, getPlayerControls());
@@ -66,7 +71,7 @@ public class RaceScreen implements Screen{
     }
 
 	public boolean isStartTimeElapsed() {
-		return ((lastRender - firstTime) / 1000000000l) > Constants.RACE_START_TIME_SECONDS;
+		return ((lastRender - firstTime) / 1000000000l) >= Constants.RACE_START_TIME_SECONDS;
 	}
 
 	private BitSet getPlayerControls() {
@@ -92,8 +97,8 @@ public class RaceScreen implements Screen{
 		}
 
 		//tiledMapHelper = new TiledMapHelper("res/NatalArenaLimits.tmx", "res");
-//		tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");
-		tiledMapHelper = new TiledMapHelper("res/CleanRace.tmx", "res");
+//		tiledMapHelper = new TiledMapHelper("res/caveira.tmx", "res");		
+		tiledMapHelper = new TiledMapHelper(raceMap, "res");
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 		
