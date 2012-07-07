@@ -75,8 +75,8 @@ public class RaceRenderer {
 		}
 
 		spriteBatch = new SpriteBatch();
-		FileHandle fontFile = Gdx.files.internal("res/fonts/comicSans.fnt");
-		FileHandle imageFontFile = Gdx.files.internal("res/fonts/comicSans.png");
+		FileHandle fontFile = Gdx.files.internal("res/fonts/courierNew.fnt");
+		FileHandle imageFontFile = Gdx.files.internal("res/fonts/courierNew.png");
 		font = new BitmapFont(fontFile, imageFontFile, false);
 		
 		this.firstTime = System.currentTimeMillis();
