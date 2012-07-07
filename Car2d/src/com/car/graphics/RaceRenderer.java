@@ -3,6 +3,7 @@ package com.car.graphics;
 import java.util.List;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -69,7 +70,10 @@ public class RaceRenderer {
 		}
 
 		spriteBatch = new SpriteBatch();
-		font = new BitmapFont();
+		FileHandle fontFile = Gdx.files.internal("res/fonts/comicSans.fnt");
+		FileHandle imageFontFile = Gdx.files.internal("res/fonts/comicSans.png");
+		font = new BitmapFont(fontFile, imageFontFile, false);
+		
 		this.firstTime = System.currentTimeMillis();
 	}
 	
@@ -105,8 +109,8 @@ public class RaceRenderer {
 		float middle = camera.position.y;
 		
 		spriteBatch.begin();			
-			font.setColor(Constants.FONT_INFO_R/255f, Constants.FONT_INFO_G/255f, Constants.FONT_INFO_B/255f, 1f);
-			font.setScale(0.7f);			
+//			font.setColor(Constants.FONT_INFO_R/255f, Constants.FONT_INFO_G/255f, Constants.FONT_INFO_B/255f, 1f);
+			font.setScale(0.3f);			
 			font.draw(spriteBatch, 
 						"Pos: " +raceWorld.getPlayerPosition(), 
 						left, 

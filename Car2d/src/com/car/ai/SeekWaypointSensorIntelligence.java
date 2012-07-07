@@ -38,7 +38,7 @@ public class SeekWaypointSensorIntelligence implements CarIntelligenceInterface{
 		else{
 			controls.set(Controls.TDC_LEFT.ordinal(), true);
 		}
-		System.out.println("CAR ID [" + opponent.getId() + "] controls = [" + controls.toString() + "]");
+//		System.out.println("CAR ID [" + opponent.getId() + "] controls = [" + controls.toString() + "]");
 
 		return controls;
 	}
