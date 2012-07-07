@@ -118,12 +118,14 @@ public class RaceRenderer {
 		float leftMiddle = -screenPixelWidth / 4;
 		float middle = 0;
 		
+		long renderTime = (raceWorld.isRaceFinished()) ? raceWorld.getRaceFinishTime(): now;
+		int playerPosition = raceWorld.getPlayerPosition();
+		
 		spriteBatch.setProjectionMatrix(infoCamera.combined);
 		spriteBatch.begin();			
-//			font.setColor(Constants.FONT_INFO_R/255f, Constants.FONT_INFO_G/255f, Constants.FONT_INFO_B/255f, 1f);
-			font.setScale(1f);			
+			font.setScale(1f);						
 			font.draw(spriteBatch, 
-						"Pos: " +raceWorld.getPlayerPosition(), 
+						playerPosition + getPositionSuffix(playerPosition), 
 						left, 
 						upper);
 			font.draw(spriteBatch, 
@@ -133,21 +135,37 @@ public class RaceRenderer {
 			font.draw(spriteBatch, 
 					raceWorld.getPlayerSpeed() + "km/h", 
 					rigth, 
-					bottom);	
-			if(!raceWorld.isRaceFinished()){
-				font.draw(spriteBatch, 
-							" " + (now - firstTime)/1000 + "." + (now - firstTime) % 1000, 
-							left, 
-							bottom);			
-			}
-			else{
+					bottom);				
+			font.draw(spriteBatch, 
+						" " + (renderTime - firstTime)/1000 + "." + (renderTime - firstTime) % 1000, 
+						left, 
+						bottom);						
+			if(raceWorld.isRaceFinished()){
 				font.setScale(1f);
 				font.draw(spriteBatch, 
-						"Final Position: " + raceWorld.getPlayerPosition(), 
+						getFinalResultMessage(playerPosition), 
 						leftMiddle, 
 						middle);
 			}
 		spriteBatch.end();
+	}
+
+	private String getFinalResultMessage(int playerPosition) {
+		switch(playerPosition){
+		case 1: return "Congratulations!"; 
+		case 2: return "Great Job!"; 
+		case 3: return "Good Job!"; 		
+		}
+		return "Barrichelo!";
+	}
+
+	private String getPositionSuffix(int position) {
+		switch(position){
+		case 1: return "st"; 
+		case 2: return "nd"; 
+		case 3: return "rd"; 		
+		}
+		return "th";
 	}
 
 	private void updateCameraPosition() {

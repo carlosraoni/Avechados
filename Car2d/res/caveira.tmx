@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1024" tileheight="768">
  <properties>
-  <property name="TotalLaps" value="3"/>
+  <property name="TotalLaps" value="1"/>
   <property name="WallSensorRange" value="60"/>
   <property name="WayPointRange" value="60"/>
  </properties>
@@ -16,37 +16,37 @@
  <objectgroup name="physicalLayer" width="1" height="1">
   <object name="CarPosition" x="586" y="566" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="1"/>
    </properties>
   </object>
   <object name="CarPosition" x="586" y="604" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="2"/>
    </properties>
   </object>
   <object name="CarPosition" x="584" y="658" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="3"/>
    </properties>
   </object>
   <object name="CarPosition" x="585" y="693" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="4"/>
    </properties>
   </object>
   <object name="CarPosition" x="535" y="568" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="5"/>
    </properties>
   </object>
   <object name="CarPosition" x="535" y="603" width="20" height="16">
    <properties>
-    <property name="angle" value="270"/>
+    <property name="angle" value="-90"/>
     <property name="position" value="6"/>
    </properties>
   </object>
