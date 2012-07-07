@@ -30,17 +30,14 @@ public class RaceRenderer {
 	private Texture[] carTexture;
 	private TextureRegion[] carTextureRegion;
 	
-	private static final int[] layersList = { 0 };	
-	private TileMapRenderer tileMapRenderer;
-	
-	private long lastRender;
+	private TileMapRenderer tileMapRenderer;	
 	private Box2DDebugRenderer debugRenderer;
 	
 	private float mapW, mapH;
 	private int screenPixelWidth, screenPixelHeight;
 	
-	private OrthographicCamera raceCamera;
-	private OrthographicCamera infoCamera;
+	private OrthographicCamera physicsCamera;
+	private OrthographicCamera screenCamera;
 	
 	private long firstTime;
 	private long now;
@@ -60,8 +57,8 @@ public class RaceRenderer {
 		mapW = tiledHelper.getWorldMapWidth();
 		mapH = tiledHelper.getWorldMapHeight();
 		
-		prepareRaceCamera(Constants.VIEW_W, Constants.VIEW_H);
-		prepareInfoCamera(screenPixelWidth, screenPixelHeight);
+		preparePhysicsCamera(Constants.VIEW_W, Constants.VIEW_H);
+		prepareScreenCamera(screenPixelWidth, screenPixelHeight);
 		
 		debugRenderer = new Box2DDebugRenderer();
 		
@@ -82,14 +79,14 @@ public class RaceRenderer {
 		this.firstTime = System.currentTimeMillis();
 	}
 	
-	private void prepareInfoCamera(int screenPixelWidth, int screenPixelHeight) {
-		infoCamera = new OrthographicCamera(screenPixelWidth, screenPixelHeight);
-		infoCamera.position.set(0, 0, 0);		
+	private void prepareScreenCamera(int screenPixelWidth, int screenPixelHeight) {
+		screenCamera = new OrthographicCamera(screenPixelWidth, screenPixelHeight);
+		screenCamera.position.set(0, 0, 0);		
 	}
 
-	private void prepareRaceCamera(float viewW, float viewH) {
-		raceCamera = new OrthographicCamera(viewW, viewH);
-		raceCamera.position.set(0, 0, 0);
+	private void preparePhysicsCamera(float viewW, float viewH) {
+		physicsCamera = new OrthographicCamera(viewW, viewH);
+		physicsCamera.position.set(0, 0, 0);
 	}
 	
 	/**
@@ -99,10 +96,10 @@ public class RaceRenderer {
 		this.now = System.currentTimeMillis();
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
-		updateCameraPosition();
-		tileMapRenderer.getProjectionMatrix().set(raceCamera.combined);
+		updatePhysicsCameraPosition();
+		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
 
-		tileMapRenderer.render(raceCamera);
+		tileMapRenderer.render(physicsCamera);
 		
 		renderCars();		
 		renderInfo();
@@ -116,12 +113,10 @@ public class RaceRenderer {
 		float upper = screenPixelHeight / 2;
 		
 		float leftMiddle = -screenPixelWidth / 4;
-		float middle = 0;
-		
-		long renderTime = (raceWorld.isRaceFinished()) ? raceWorld.getRaceFinishTime(): now;
+		float middle = 0;		
 		int playerPosition = raceWorld.getPlayerPosition();
-		
-		spriteBatch.setProjectionMatrix(infoCamera.combined);
+								
+		spriteBatch.setProjectionMatrix(screenCamera.combined);
 		spriteBatch.begin();			
 			font.setScale(1f);						
 			font.draw(spriteBatch, 
@@ -129,15 +124,15 @@ public class RaceRenderer {
 						left, 
 						upper);
 			font.draw(spriteBatch, 
-					raceWorld.getPlayerLaps() + "/" + raceWorld.getTotalLaps(), 
-					rigth, 
-					upper);
+						raceWorld.getPlayerLaps() + "/" + raceWorld.getTotalLaps(), 
+						rigth, 
+						upper);
 			font.draw(spriteBatch, 
-					raceWorld.getPlayerSpeed() + "km/h", 
-					rigth, 
-					bottom);				
+						raceWorld.getPlayerSpeed() + "km/h", 
+						rigth, 
+						bottom);							
 			font.draw(spriteBatch, 
-						" " + (renderTime - firstTime)/1000 + "." + (renderTime - firstTime) % 1000, 
+						getRaceTimeString(), 
 						left, 
 						bottom);						
 			if(raceWorld.isRaceFinished()){
@@ -148,6 +143,17 @@ public class RaceRenderer {
 						middle);
 			}
 		spriteBatch.end();
+	}
+
+	private String getRaceTimeString() {
+		long renderTime = (raceWorld.isRaceFinished()) ? raceWorld.getRaceFinishTime(): now;
+		long timeMinutes = (renderTime - firstTime) / 60000;
+		long timeSeconds = ((renderTime - firstTime) % 60000) / 1000;		
+		long timeMilliSeconds = ((renderTime - firstTime) % 60000) % 1000;
+		
+		String timeStr = (timeMinutes > 0) ? timeMinutes + ":": "";
+		timeStr += (timeSeconds <= 9 && timeMinutes > 0 ? "0" + timeSeconds: timeSeconds) + "." + timeMilliSeconds;
+		return timeStr;
 	}
 
 	private String getFinalResultMessage(int playerPosition) {
@@ -168,7 +174,7 @@ public class RaceRenderer {
 		return "th";
 	}
 
-	private void updateCameraPosition() {
+	private void updatePhysicsCameraPosition() {
 		
 		float minX = 0.5f * Constants.VIEW_W;
 		float maxX = mapW - minX;
@@ -178,14 +184,14 @@ public class RaceRenderer {
 		float maxY = mapH - minY;
 		float camY = MathUtils.clamp(raceWorld.getFocusCarY(), minY, maxY);
 				
-		raceCamera.position.x = camX;
-		raceCamera.position.y = camY;		
-		raceCamera.update();
+		physicsCamera.position.x = camX;
+		physicsCamera.position.y = camY;		
+		physicsCamera.update();
 	}
 
 	
 	private void renderCars() {
-		spriteBatch.setProjectionMatrix(getRaceCamera().combined);
+		spriteBatch.setProjectionMatrix(getPhysicsCamera().combined);
 		spriteBatch.begin();
 		for(Car car: raceWorld.getCars()){
 			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter(),car.getId());
@@ -210,8 +216,8 @@ public class RaceRenderer {
 	}
 
 	
-	public OrthographicCamera getRaceCamera() {
-		return raceCamera;
+	public OrthographicCamera getPhysicsCamera() {
+		return physicsCamera;
 	}
 
 	public void dispose() {		
