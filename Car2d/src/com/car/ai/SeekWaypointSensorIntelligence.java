@@ -9,10 +9,11 @@ import com.car.utils.Controls;
 public class SeekWaypointSensorIntelligence implements CarIntelligenceInterface{
 
 	private int countBacking = 0;
+	private final BitSet controls = new BitSet();
 	
 	@Override
 	public BitSet getCarNextControls(Car opponent) {
-		BitSet controls = new BitSet();
+		controls.clear();
 		float value = opponent.getWaypointSensor().getValue();
 		
 		if(countBacking > 0 || opponent.getWallSensors().get(WallSensorType.FRONT.ordinal()).getValue() < 0.001){

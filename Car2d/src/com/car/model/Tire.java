@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 import com.car.fixture.GroundAreaFUD;
+import com.car.utils.Constants;
 import com.car.utils.Controls;
 
 public class Tire {
@@ -71,18 +72,22 @@ public class Tire {
         }
     }
     
-	public Vector2 getLateralVelocity() {
-		Vector2 tmp = body.getWorldVector( new Vector2(1,0) );
-		Vector2 currentRightNormal = new Vector2(tmp.x, tmp.y);
+    private final Vector2 currentRightNormalBuffer = new Vector2();
+    
+	public Vector2 getLateralVelocity() {		
+		Vector2 tmp = body.getWorldVector(Constants.UNIT_VECTOR2_X);
+		currentRightNormalBuffer.set(tmp.x, tmp.y);
 		
-		return currentRightNormal.mul( currentRightNormal.dot(body.getLinearVelocity()) );
+		return currentRightNormalBuffer.mul( currentRightNormalBuffer.dot(body.getLinearVelocity()) );
 	}
 	
-    public Vector2 getForwardVelocity() {
-    	Vector2 tmp = body.getWorldVector(new Vector2(0,1) );
-    	Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
+	private final Vector2 currentForwardNormalBuffer = new Vector2();
+	
+    public Vector2 getForwardVelocity() {    	
+		Vector2 tmp = body.getWorldVector(Constants.UNIT_VECTOR2_Y);
+		currentForwardNormalBuffer.set(tmp.x, tmp.y);
     	    	
-        return currentForwardNormal.mul( currentForwardNormal.dot(body.getLinearVelocity()) );
+        return currentForwardNormalBuffer.mul( currentForwardNormalBuffer.dot(body.getLinearVelocity()) );
     }
     
     public void updateFriction() {    	    	
@@ -98,11 +103,9 @@ public class Tire {
         body.applyAngularImpulse( m_currentTraction * 0.1f * body.getInertia() * -body.getAngularVelocity() );        
         
         //forward linear velocity
-        Vector2 currentForwardNormal = getForwardVelocity();
-        Vector2 currentForwardNormalCpy = new Vector2(currentForwardNormal.x, currentForwardNormal.y);
-        
-        // TODO currentForwardNormal.nomalize
-        float currentForwardSpeed = currentForwardNormalCpy.nor().len();
+        Vector2 currentForwardNormal = getForwardVelocity();        
+        float currentForwardSpeed = currentForwardNormal.len();
+        currentForwardNormal.nor();
         float dragForceMagnitude = -2 * currentForwardSpeed;
         body.applyForce( currentForwardNormal.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );        
     }
@@ -120,7 +123,7 @@ public class Tire {
 
         //find current speed in forward direction
         // TODO verificar b2Dot
-        Vector2 tmp = body.getWorldVector( new Vector2(0,1) );
+        Vector2 tmp = body.getWorldVector( Constants.UNIT_VECTOR2_Y );
         Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
         float currentSpeed = currentForwardNormal.dot( getForwardVelocity() );        
         //apply necessary force

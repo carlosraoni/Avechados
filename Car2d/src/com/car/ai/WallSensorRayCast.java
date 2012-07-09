@@ -19,7 +19,11 @@ public class WallSensorRayCast {
 	private Body body;
 	private Fixture fixture;
 	
-	private Vector2 sensorPointBegin, sensorPointEnd;
+	private Vector2 sensorPointBegin, sensorPointEnd;	
+	// Variaveis temporarias para armazenamento  do inicio e fim do raio
+	private final Vector2 rayPointBeginBuffer = new Vector2();
+	private final Vector2 rayPointEndBuffer = new Vector2();
+	
 	private WallSensorType type;
 	
 	private float value;
@@ -68,7 +72,7 @@ public class WallSensorRayCast {
 
 	private void calculateSensorPoints() {
 		this.sensorPointBegin = car.getWallSensorsOrigin();
-		this.sensorPointEnd = getArcPointAtAngle(sensorPointBegin, type.getAngleInDegrees(), wallSensorRange);		
+		this.sensorPointEnd = getArcPointAtAngle(sensorPointBegin, type.getAngleInDegrees(), wallSensorRange);
 	}	
 	
 	private Vector2 getArcPointAtAngle(Vector2 center, float angle, float r){
@@ -102,15 +106,15 @@ public class WallSensorRayCast {
 		
 		// O retorno de métodos desse tipo sempre retornam uma referencia local do objeto
 		// assim sempre que usar estes métodos é necessário realizar uma cópia do vetor
-		Vector2 tmp = car.getBody().getWorldPoint(sensorPointBegin);
-		Vector2 rayBegin = new Vector2(tmp.x, tmp.y);
+		Vector2 tmp = car.getBody().getWorldPoint(sensorPointBegin);		
+		rayPointBeginBuffer.set(tmp.x, tmp.y);
 		
-		tmp = car.getBody().getWorldPoint(sensorPointEnd);
-		Vector2 rayEnd = new Vector2(tmp.x, tmp.y);
+		tmp = car.getBody().getWorldPoint(sensorPointEnd);		
+		rayPointEndBuffer.set(tmp.x, tmp.y);
 		
 		//System.out.println("RayCast -> rb: " + rayBegin + ", re: " + rayEnd + ", sb: " + sensorPointBegin + ", se: " + sensorPointEnd);
 		
-		world.rayCast(callback, rayBegin, rayEnd);
+		world.rayCast(callback, rayPointBeginBuffer, rayPointEndBuffer);
 	}
 
 	private static class WallSensorRayCastCallback implements RayCastCallback{

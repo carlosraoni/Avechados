@@ -22,6 +22,7 @@ import com.car.ai.CarIntelligenceInterface;
 import com.car.ai.WallSensorRayCast;
 import com.car.ai.WayPointSensor;
 import com.car.ai.WayPointsLine;
+import com.car.utils.Constants;
 import com.car.utils.Controls;
 import com.car.utils.TiledMapHelper;
 
@@ -32,6 +33,7 @@ public class Car {
 	private float height;
 	private Vector2 boundingBoxLocalCenter;
 	private Vector2 wallSensorsOrigin;
+	private final Vector2 currentForwardNormalBuffer = new Vector2();
 	private Body body;
 	private World world;
 	private List<Tire> tires = new ArrayList<Tire>();
@@ -387,10 +389,10 @@ public class Car {
 	}
 
 	public float getCurrentForwardVelocity() {
-		Vector2 tmp = body.getWorldVector(new Vector2(0,1) );
-    	Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
+		Vector2 tmp = body.getWorldVector(Constants.UNIT_VECTOR2_Y );
+		currentForwardNormalBuffer.set(tmp.x, tmp.y);
     	    	
-        return currentForwardNormal.mul(currentForwardNormal.dot(body.getLinearVelocity()) ).len();		
+        return currentForwardNormalBuffer.mul(currentForwardNormalBuffer.dot(body.getLinearVelocity()) ).len();		
 	}
 }
 

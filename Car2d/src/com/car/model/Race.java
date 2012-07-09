@@ -39,6 +39,8 @@ public class Race {
 	private boolean raceFinished = false;
 	private long raceFinishTime;
 	
+	private Comparator<Car> carRacePositionsComparator;
+	
 	public Race(TiledMapHelper tiledHelper){				
 		this.world = new World(new Vector2(0, 0), false);
 		world.setContactListener(new Car2dContactListener());
@@ -49,11 +51,29 @@ public class Race {
 		this.totalLaps = tiledHelper.getTotalLaps();
 		loadRaceCars(tiledHelper);
 		createRaceWalls(tiledHelper, world);
+		
+		carRacePositionsComparator = new Comparator<Car>() {
+			@Override
+			public int compare(Car c1, Car c2) {
+				if(c1.getLap() != c2.getLap()){
+					return c2.getLap() - c1.getLap();
+				}
+				if(c1.getLastCheckpointIndex() != c2.getLastCheckpointIndex()){
+					return c2.getLastCheckpointIndex() - c1.getLastCheckpointIndex();
+				}
+				if(c1.getLastCheckpointTime() < c2.getLastCheckpointTime()){
+					return -1;
+				}
+				else if(c2.getLastCheckpointTime() < c1.getLastCheckpointTime()){
+					return 1;
+				}				
+				return 0;
+			}
+		};		
 	}
 
 
-	private List<Checkpoint> createCheckPoints(TiledMapHelper tiledHelper,
-			World world) {
+	private List<Checkpoint> createCheckPoints(TiledMapHelper tiledHelper, World world) {
 		List<Checkpoint> checkpoints = new ArrayList<Checkpoint>();
 		Map<Integer,List<Vector2>> checkpointsTiled = tiledHelper.getCheckPointsTiled();
 		for(Integer i : checkpointsTiled.keySet()){
@@ -134,25 +154,8 @@ public class Race {
 	}
 
 	public void updatePositions() {
-		Collections.sort(getCars(), new Comparator<Car>() {
-
-			@Override
-			public int compare(Car c1, Car c2) {
-				if(c1.getLap() != c2.getLap()){
-					return c2.getLap() - c1.getLap();
-				}
-				if(c1.getLastCheckpointIndex() != c2.getLastCheckpointIndex()){
-					return c2.getLastCheckpointIndex() - c1.getLastCheckpointIndex();
-				}
-				if(c1.getLastCheckpointTime() < c2.getLastCheckpointTime()){
-					return -1;
-				}
-				else if(c2.getLastCheckpointTime() < c1.getLastCheckpointTime()){
-					return 1;
-				}				
-				return 0;
-			}
-		});
+		
+		Collections.sort(getCars(), carRacePositionsComparator);
 		
 		printRacePositions();
 		
