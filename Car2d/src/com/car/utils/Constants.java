@@ -1,5 +1,7 @@
 package com.car.utils;
 
+import com.badlogic.gdx.math.Vector2;
+
 public interface Constants {
 	public static final int INITIAL_LIFE = 100;
 	public static final float MAP_BOUNDARY = 10.0f;
@@ -73,8 +75,7 @@ public interface Constants {
 	public static final Object CHECKPOINT_INDEX_KEY = "index";
 	
 	public static final long RACE_START_TIME_SECONDS = 5; // segundos
-	
-	public static final float FONT_INFO_R = 0f;  
-	public static final float FONT_INFO_G = 0f;
-	public static final float FONT_INFO_B = 130f;
+
+	public static final Vector2 UNIT_VECTOR2_X = new Vector2(1,0);
+	public static final Vector2 UNIT_VECTOR2_Y = new Vector2(0,1);
 }
