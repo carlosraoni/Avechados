@@ -37,6 +37,7 @@ public class Race {
 	private int totalLaps;
 	
 	private boolean raceFinished = false;
+	private long raceFinishTime;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		this.world = new World(new Vector2(0, 0), false);
@@ -195,7 +196,13 @@ public class Race {
 
 
 	public void finishRace() {
+		this.raceFinishTime = System.currentTimeMillis();
 		this.raceFinished = true;
+	}
+
+
+	public long getRaceFinishTime() {
+		return raceFinishTime;
 	}
 
 

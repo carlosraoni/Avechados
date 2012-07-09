@@ -80,7 +80,7 @@ public class SplashScreen implements Screen{
                 Action action )
             {
                 // when the image is faded out, move on to the next screen
-                game.setScreen( new RaceScreen(game) );
+                game.setScreen( new MenuScreen(game) );
             }
         } );
         splashImage.action( actions );
