@@ -47,10 +47,10 @@ public interface Constants {
 	public static final int DOUBLE_GALAXY_5_H = 640;
 	
 //	// change to target resolution
-	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_W;
-	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_H;
-//	public static final int TARGET_RES_W = GALAXY_5_W;
-//	public static final int TARGET_RES_H = GALAXY_5_H;
+//	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_W;
+//	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_H;
+	public static final int TARGET_RES_W = GALAXY_5_W;
+	public static final int TARGET_RES_H = GALAXY_5_H;
 //	public static final int TARGET_RES_W = HTC_EVO_3D_W;
 //	public static final int TARGET_RES_H = HTC_EVO_3D_H;
 	

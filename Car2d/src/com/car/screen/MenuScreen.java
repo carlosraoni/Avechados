@@ -35,7 +35,7 @@ public class MenuScreen extends AbstractScreen {
         // retrieve the table's layout
         TableLayout layout = table.getTableLayout();
 
-        TextButton cleanRaceButton = new TextButton( "Clean Race", skin );
+        TextButton cleanRaceButton = new TextButton( "Crato Race", skin );
         cleanRaceButton.setClickListener( new ClickListener() {
             @Override
             public void click(
@@ -49,7 +49,7 @@ public class MenuScreen extends AbstractScreen {
         } );
         layout.register( "cleanRaceButton", cleanRaceButton );
 
-        TextButton caveiraButton = new TextButton( "Caveira", skin );
+        TextButton caveiraButton = new TextButton( "Caveira Race", skin );
         caveiraButton.setClickListener( new ClickListener() {
             @Override
             public void click(

@@ -231,6 +231,11 @@ public class Race {
 		return (int) player.getCurrentForwardVelocity();		
 	}
 
+
+	public Car getPlayer() {		
+		return player;
+	}
+
 	
 	
 }

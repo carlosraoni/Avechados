@@ -5,11 +5,9 @@ import java.util.BitSet;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.car.graphics.RaceRenderer;
 import com.car.main.AvechadosGame;
+import com.car.model.Car;
 import com.car.model.Race;
 import com.car.utils.Constants;
 import com.car.utils.Controls;
@@ -78,11 +76,24 @@ public class RaceScreen implements Screen{
 		// Uso de bitSet para interpretação dos controles devido a necessidade de realizar mais de um controle
 		// no carro no mesmo passo da simulação física
 		BitSet controls = new BitSet();
+
 		
 		controls.set(Controls.TDC_DOWN.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN));
-		controls.set(Controls.TDC_UP.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_UP));
+		controls.set(Controls.TDC_UP.ordinal(), !Gdx.input.isKeyPressed(Input.Keys.DPAD_DOWN));
+//		controls.set(Controls.TDC_UP.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_UP));
 		controls.set(Controls.TDC_RIGHT.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_RIGHT));
 		controls.set(Controls.TDC_LEFT.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT));
+		
+		if(Gdx.input.isTouched()){
+			System.out.println("X: " + Gdx.input.getX() + ", Y: " + Gdx.input.getY());
+			if(Gdx.input.getX() > Constants.TARGET_RES_W / 2){
+				controls.set(Controls.TDC_RIGHT.ordinal(), true);
+			}
+			else{
+				controls.set(Controls.TDC_LEFT.ordinal(), true);
+			}
+		}
+
 		
 		return controls;			
 	}

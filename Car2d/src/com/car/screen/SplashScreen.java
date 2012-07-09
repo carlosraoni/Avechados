@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.actions.Sequence;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.utils.Scaling;
 import com.car.main.AvechadosGame;
+import com.car.utils.Constants;
 
 public class SplashScreen implements Screen{
 
@@ -24,8 +25,8 @@ public class SplashScreen implements Screen{
     private Stage stage;
     
     //Podem ser qualque interiro positivo
-    private int anyWidth = 100;
-    private int anyHeight = 100;
+    private int width = Constants.TARGET_RES_W;
+    private int height = Constants.TARGET_RES_H;
     
     // the fixed viewport dimensions (ratio: 1.6)
             
@@ -36,7 +37,7 @@ public class SplashScreen implements Screen{
     public SplashScreen(AvechadosGame g){
     	game = g;
     	
-        this.stage = new Stage( anyWidth, anyHeight, true );
+        this.stage = new Stage( width, height, true );
     }
     
     protected boolean isGameScreen()
@@ -65,8 +66,8 @@ public class SplashScreen implements Screen{
         // here we create the splash image actor; its size is set when the
         // resize() method gets called
         splashImage = new Image( new Texture(Gdx.files.internal("res/car3.jpg")), Scaling.stretch );
-        splashImage.width = anyWidth;
-        splashImage.height = anyHeight;
+        splashImage.width = width;
+        splashImage.height = height;
 
         // this is needed for the fade-in effect to work correctly; we're just
         // making the image completely transparent

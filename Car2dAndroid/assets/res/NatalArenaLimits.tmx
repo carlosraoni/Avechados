@@ -1166,7 +1166,7 @@
    <tile gid="15"/>
    <tile gid="11"/>
    <tile gid="15"/>
-   <tile gid="15"/>
+   <tile gid="22"/>
    <tile gid="15"/>
    <tile gid="15"/>
    <tile gid="15"/>
@@ -1307,4 +1307,25 @@
    <tile gid="23"/>
   </data>
  </layer>
+ <objectgroup name="physicalLayer" width="32" height="27">
+  <object name="insideTrackLimits" x="635" y="704">
+   <polyline points="0,0 -445,0 -443,-126 -476,-128 -475,-226 -380,-225 -380,-287 -350,-288 -349,-479 -413,-480 -414,-514 -314,-513 -314,-260 -186,-259 -186,-193 -346,-192 -347,-37 -31,-33 -28,-413 -123,-414 -122,-545 -93,-545 -94,-516 -62,-514 -60,-485 6,-481 6,-195 194,-192 195,-481 260,-481 261,1"/>
+  </object>
+  <object name="boundaryLimits" x="1023" y="862">
+   <polyline points="0,0 -1023,0 -1022,-861 -1,-862"/>
+  </object>
+  <object name="outsideTrackLimits" x="635" y="764">
+   <polyline points="0,0 -505,2 -506,-156 -537,-156 -537,-347 -445,-347 -443,-380 -413,-379 -410,-479 -473,-478 -474,-639 -255,-637 -253,-381 -127,-378 -125,-190 -281,-190 -282,-157 -93,-155 -92,-414 -185,-415 -186,-669 -61,-667 -61,-637 -26,-636 -28,-607 68,-604 67,-316 131,-315 134,-606 322,-604 324,2"/>
+  </object>
+  <object name="CarPosition" x="648" y="715" width="17" height="15">
+   <properties>
+    <property name="position" value="1"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="649" y="742" width="17" height="15">
+   <properties>
+    <property name="position" value="2"/>
+   </properties>
+  </object>
+ </objectgroup>
 </map>

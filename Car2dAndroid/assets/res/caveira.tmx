@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" width="1" height="1" tilewidth="1024" tileheight="768">
+ <properties>
+  <property name="TotalLaps" value="1"/>
+  <property name="WallSensorRange" value="60"/>
+  <property name="WayPointRange" value="60"/>
+ </properties>
+ <tileset firstgid="0" name="DangerDerbyRedimensionado" tilewidth="1024" tileheight="768">
+  <image source="TilesPacked/DangerDerbyRedimensionado.png" width="1024" height="1024"/>
+ </tileset>
+ <layer name="pista" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJxjZGBgAAAACAAC
+  </data>
+ </layer>
+ <objectgroup name="physicalLayer" width="1" height="1">
+  <object name="CarPosition" x="586" y="566" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="1"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="586" y="604" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="2"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="584" y="658" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="3"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="585" y="693" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="4"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="535" y="568" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="5"/>
+   </properties>
+  </object>
+  <object name="CarPosition" x="535" y="603" width="20" height="16">
+   <properties>
+    <property name="angle" value="-90"/>
+    <property name="position" value="6"/>
+   </properties>
+  </object>
+  <object name="insideTrackLimits" x="640" y="549">
+   <polyline points="0,0 59,0 107,-18 139,-46 159,-80 167,-110 165,-309 157,-324 138,-333 -100,-332 -119,-326 -133,-315 -149,-298 -154,-275 -154,-258 -154,-244 -161,-216 -168,-191 -181,-166 -201,-137 -224,-112 -251,-92 -276,-79 -308,-68 -335,-63 -373,-61 -399,-61 -413,-51 -421,-37 -416,-14 -403,-1 -16,1"/>
+  </object>
+  <object name="outsideTrackLimits" x="647" y="726">
+   <polyline points="0,0 50,0 87,-3 131,-15 174,-34 211,-56 243,-81 267,-107 293,-142 310,-177 326,-215 332,-241 335,-277 336,-493 334,-527 314,-578 290,-613 257,-645 220,-667 189,-679 162,-685 107,-687 40,-687 -33,-686 -74,-686 -119,-685 -145,-682 -172,-675 -197,-666 -219,-654 -254,-631 -281,-601 -307,-568 -324,-525 -334,-488 -339,-443 -347,-427 -360,-419 -380,-417 -410,-415 -441,-414 -470,-406 -499,-393 -528,-372 -554,-345 -579,-312 -599,-267 -607,-223 -601,-176 -594,-141 -578,-109 -557,-74 -535,-52 -509,-32 -474,-13 -441,-3 -350,0 -25,0"/>
+  </object>
+  <object name="waypoints" x="646" y="638">
+   <polyline points="0,0 172,-64 249,-208 239,-414 165,-505 -105,-510 -198,-470 -257,-332 -328,-246 -466,-225 -519,-127 -478,-39 -401,1 -75,-2"/>
+  </object>
+  <object name="Checkpoint" x="639" y="549">
+   <properties>
+    <property name="index" value="0"/>
+   </properties>
+   <polyline points="-1,176 -1,1"/>
+  </object>
+  <object name="Checkpoint" x="244" y="547">
+   <properties>
+    <property name="index" value="3"/>
+   </properties>
+   <polyline points="-1,176 -1,1"/>
+  </object>
+  <object name="Checkpoint" x="400" y="240">
+   <properties>
+    <property name="index" value="2"/>
+   </properties>
+   <polyline points="18,-157 111,-12"/>
+  </object>
+  <object name="Checkpoint" x="897" y="273">
+   <properties>
+    <property name="index" value="1"/>
+   </properties>
+   <polyline points="86,74 -91,72"/>
+  </object>
+ </objectgroup>
+</map>
