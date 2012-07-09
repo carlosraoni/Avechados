@@ -73,41 +73,48 @@ public class Tire {
     }
     
     private final Vector2 currentRightNormalBuffer = new Vector2();
+    private final Vector2 currentLateralVelocity = new Vector2();
     
-	public Vector2 getLateralVelocity() {		
+	public void updateLateralVelocity() {		
 		Vector2 tmp = body.getWorldVector(Constants.UNIT_VECTOR2_X);
-		currentRightNormalBuffer.set(tmp.x, tmp.y);
-		
-		return currentRightNormalBuffer.mul( currentRightNormalBuffer.dot(body.getLinearVelocity()) );
+		currentRightNormalBuffer.set(tmp.x, tmp.y);		
+		currentRightNormalBuffer.mul( currentRightNormalBuffer.dot(body.getLinearVelocity()) );		
+		currentLateralVelocity.set(currentRightNormalBuffer.x, currentRightNormalBuffer.y);
 	}
 	
 	private final Vector2 currentForwardNormalBuffer = new Vector2();
+	private final Vector2 currentForwardVelocity = new Vector2();
 	
-    public Vector2 getForwardVelocity() {    	
+    public void updateForwardVelocity() {    	
 		Vector2 tmp = body.getWorldVector(Constants.UNIT_VECTOR2_Y);
-		currentForwardNormalBuffer.set(tmp.x, tmp.y);
-    	    	
-        return currentForwardNormalBuffer.mul( currentForwardNormalBuffer.dot(body.getLinearVelocity()) );
+		currentForwardNormalBuffer.set(tmp.x, tmp.y);    	    	
+        currentForwardNormalBuffer.mul( currentForwardNormalBuffer.dot(body.getLinearVelocity()) );
+        currentForwardVelocity.set(currentForwardNormalBuffer.x, currentForwardNormalBuffer.y);
     }
     
-    public void updateFriction() {    	    	
-        Vector2 impulse = getLateralVelocity().mul(-body.getMass());
+    private final Vector2 impulseBuffer = new Vector2();
+    
+    public void updateFriction() {
+    	updateLateralVelocity();
+    	impulseBuffer.set(currentLateralVelocity.x, currentLateralVelocity.y);
+        impulseBuffer.mul(-body.getMass());
         
-        if ( impulse.len() > m_maxLateralImpulse ){        	
-            impulse.mul(m_maxLateralImpulse/impulse.len());
+        if ( impulseBuffer.len() > m_maxLateralImpulse ){        	
+        	impulseBuffer.mul(m_maxLateralImpulse/impulseBuffer.len());
         }
         
-        body.applyLinearImpulse( impulse.mul(m_currentTraction), body.getWorldCenter());
+        body.applyLinearImpulse( impulseBuffer.mul(m_currentTraction), body.getWorldCenter());
 
         //angular velocity
         body.applyAngularImpulse( m_currentTraction * 0.1f * body.getInertia() * -body.getAngularVelocity() );        
         
         //forward linear velocity
-        Vector2 currentForwardNormal = getForwardVelocity();        
-        float currentForwardSpeed = currentForwardNormal.len();
-        currentForwardNormal.nor();
+        updateForwardVelocity();
+        currentForwardNormalBuffer.set(currentForwardVelocity.x, currentForwardVelocity.y);        
+        float currentForwardSpeed = currentForwardNormalBuffer.len();
+        currentForwardNormalBuffer.nor();
         float dragForceMagnitude = -2 * currentForwardSpeed;
-        body.applyForce( currentForwardNormal.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );        
+        body.applyForce( currentForwardNormalBuffer.mul(m_currentTraction * dragForceMagnitude) , body.getWorldCenter() );        
     }
     
     public void updateDrive(BitSet controls) {    	
@@ -123,9 +130,10 @@ public class Tire {
 
         //find current speed in forward direction
         // TODO verificar b2Dot
+        updateForwardVelocity();
         Vector2 tmp = body.getWorldVector( Constants.UNIT_VECTOR2_Y );
-        Vector2 currentForwardNormal = new Vector2(tmp.x, tmp.y);
-        float currentSpeed = currentForwardNormal.dot( getForwardVelocity() );        
+        currentForwardNormalBuffer.set(tmp.x, tmp.y);
+        float currentSpeed = currentForwardNormalBuffer.dot(currentForwardVelocity);        
         //apply necessary force
         float force = 0;
         if ( desiredSpeed > currentSpeed )
@@ -135,7 +143,7 @@ public class Tire {
         else
             return;
         
-        body.applyForce( currentForwardNormal.mul(m_currentTraction).mul(force), body.getWorldCenter() );        
+        body.applyForce( currentForwardNormalBuffer.mul(m_currentTraction).mul(force), body.getWorldCenter() );        
     }
     
 

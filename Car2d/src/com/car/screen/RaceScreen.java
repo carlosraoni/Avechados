@@ -45,7 +45,7 @@ public class RaceScreen implements Screen{
 
 		float targetFPS = 30;
     	float timeStep = (1 / targetFPS);
-    	int iterations = 100;
+    	int iterations = 1;
     	
     	if(race.isRaceFinished() && Gdx.input.justTouched()){
     		myGame.setScreen(new MenuScreen(myGame));
