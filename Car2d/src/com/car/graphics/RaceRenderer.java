@@ -99,7 +99,8 @@ public class RaceRenderer {
 		updatePhysicsCameraPosition();
 		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
 
-		tileMapRenderer.render(physicsCamera);
+		//tileMapRenderer.render(physicsCamera, Constants.VIEW_W, Constants.VIEW_H);
+		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
 		
 		renderCars();		
 		renderInfo();
