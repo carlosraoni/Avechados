@@ -186,9 +186,9 @@ public class Car {
 	}
 
 	private void initWallSensors(float wallSensorRange){
-		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
-			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
-		}
+//		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
+//			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
+//		}
 	}
 
 
@@ -341,7 +341,7 @@ public class Car {
 			lastCheckpointTime = System.currentTimeMillis();
 			checkPointUpdated = true;
 			this.lap++;
-			System.out.println("Lap: " + this.lap + " by cartype : " + type);
+//			System.out.println("Lap: " + this.lap + " by cartype : " + type);
 		}
 		if((lastCheckpointPassed == null  && checkPoint.getIndex() == 0)
 				|| (lastCheckpointPassed!=null && checkPoint.getIndex() -1 == lastCheckpointPassed.getIndex())){
@@ -349,9 +349,9 @@ public class Car {
 			lastCheckpointPassed = checkPoint;
 			lastCheckpointTime = System.currentTimeMillis();
 			checkPointUpdated = true;
-			if(type.equals(CarType.PLAYER)){
-				System.out.println("Checkpoint " + checkPoint.getIndex() + " passed by cartype : " + type);
-			}
+//			if(type.equals(CarType.PLAYER)){
+//				System.out.println("Checkpoint " + checkPoint.getIndex() + " passed by cartype : " + type);
+//			}
 		}
 		if(type == CarType.PLAYER && lap == race.getTotalLaps()){
 			race.finishRace();

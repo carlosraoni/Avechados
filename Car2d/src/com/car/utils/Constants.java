@@ -78,4 +78,6 @@ public interface Constants {
 
 	public static final Vector2 UNIT_VECTOR2_X = new Vector2(1,0);
 	public static final Vector2 UNIT_VECTOR2_Y = new Vector2(0,1);
+	
+	public static final int MAX_RACE_CARS = 2;
 }

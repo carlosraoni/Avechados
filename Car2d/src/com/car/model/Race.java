@@ -84,7 +84,7 @@ public class Race {
 	}
 
 	private void loadRaceCars(TiledMapHelper tiledHelper) {
-		Map<Integer, CarPosition> carPositions = tiledHelper.getRacePositions();
+		Map<Integer, CarPosition> carPositions = tiledHelper.getRacePositions();		
 		Car lastComputerCar = null;
 		for(Integer position: carPositions.keySet()){			
 			CarPosition carPos = carPositions.get(position);
@@ -98,6 +98,8 @@ public class Race {
 				cars.add(computer);
 				lastComputerCar = computer;
 			}
+			if(cars.size() == Constants.MAX_RACE_CARS)
+				break;
 		}
 		
 		//foco da camera
@@ -157,7 +159,7 @@ public class Race {
 		
 		Collections.sort(getCars(), carRacePositionsComparator);
 		
-		printRacePositions();
+//		printRacePositions();
 		
 	}
 	

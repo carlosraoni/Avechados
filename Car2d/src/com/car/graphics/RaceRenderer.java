@@ -115,10 +115,13 @@ public class RaceRenderer {
 		float leftMiddle = -screenPixelWidth / 4;
 		float middle = 0;		
 		int playerPosition = raceWorld.getPlayerPosition();
-								
+		
+		float scale = 0.5f;
+		
 		spriteBatch.setProjectionMatrix(screenCamera.combined);
 		spriteBatch.begin();			
-			font.setScale(1f);						
+			
+			font.setScale(scale);						
 			font.draw(spriteBatch, 
 						playerPosition + getPositionSuffix(playerPosition), 
 						left, 
@@ -136,7 +139,7 @@ public class RaceRenderer {
 						left, 
 						bottom);						
 			if(raceWorld.isRaceFinished()){
-				font.setScale(1f);
+				font.setScale(scale);
 				font.draw(spriteBatch, 
 						getFinalResultMessage(playerPosition), 
 						leftMiddle, 
