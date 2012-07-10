@@ -113,6 +113,8 @@ public class RaceScreen implements Screen{
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
 		
+		System.gc();
+		
 		lastRender = System.nanoTime();	
     }
 

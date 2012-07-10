@@ -42,6 +42,8 @@ public class RaceRenderer {
 	private long firstTime;
 	private long now;
 	
+	private final StringBuilder timeStrBuilder = new StringBuilder();
+	
 	public RaceRenderer(Race race, TiledMapHelper tiledHelper, int screenPixelWidth, int screenPixelHeight){
 		this.raceWorld = race;
 		this.tiledHelper = tiledHelper;
@@ -97,10 +99,10 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updatePhysicsCameraPosition();
-		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
+//		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
 
-		//tileMapRenderer.render(physicsCamera, Constants.VIEW_W, Constants.VIEW_H);
-		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
+		tileMapRenderer.render(physicsCamera);
+//		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
 		
 		renderCars();		
 		renderInfo();
@@ -155,9 +157,12 @@ public class RaceRenderer {
 		long timeSeconds = ((renderTime - firstTime) % 60000) / 1000;		
 		long timeMilliSeconds = ((renderTime - firstTime) % 60000) % 1000;
 		
-		String timeStr = (timeMinutes > 0) ? timeMinutes + ":": "";
-		timeStr += (timeSeconds <= 9 && timeMinutes > 0 ? "0" + timeSeconds: timeSeconds) + "." + timeMilliSeconds;
-		return timeStr;
+		timeStrBuilder.delete(0, timeStrBuilder.length());
+		
+		timeStrBuilder.append((timeMinutes > 0) ? timeMinutes + ":": "");
+		timeStrBuilder.append((timeSeconds <= 9 && timeMinutes > 0 ? "0" + timeSeconds: timeSeconds) + "." + timeMilliSeconds);
+		timeStrBuilder.append("s");
+		return timeStrBuilder.toString();
 	}
 
 	private String getFinalResultMessage(int playerPosition) {
