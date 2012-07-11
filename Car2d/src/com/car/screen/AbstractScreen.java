@@ -15,9 +15,7 @@ import com.car.utils.Constants;
 /**
  * The base class for all game screens.
  */
-public abstract class AbstractScreen
-    implements
-        Screen
+public abstract class AbstractScreen  implements Screen
 {
     protected final AvechadosGame game;
     protected final Stage stage;

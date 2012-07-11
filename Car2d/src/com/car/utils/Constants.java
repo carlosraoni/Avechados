@@ -49,16 +49,17 @@ public interface Constants {
 	public static final int DOUBLE_GALAXY_5_H = 640;
 	
 //	// change to target resolution
-//	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_W;
-//	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_H;
-	public static final int TARGET_RES_W = GALAXY_5_W;
-	public static final int TARGET_RES_H = GALAXY_5_H;
+	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_H;
+	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_W;
+//	public static final int TARGET_RES_W = GALAXY_5_H;
+//	public static final int TARGET_RES_H = GALAXY_5_W;
 //	public static final int TARGET_RES_W = HTC_EVO_3D_W;
 //	public static final int TARGET_RES_H = HTC_EVO_3D_H;
 	
-	public static final float ASPECT_RATIO = 0.68f;
+	//public static final float ASPECT_RATIO = 0.68f;
+	public static final float ASPECT_RATIO = TARGET_RES_W  /TARGET_RES_H;
 //	public static final float VIEW_W = 150f;
-	public static final float VIEW_W = 200f;
+	public static final float VIEW_W = 300f;
 //	public static final float VIEW_W = 300f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	

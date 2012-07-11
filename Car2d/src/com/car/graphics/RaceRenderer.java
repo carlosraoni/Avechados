@@ -111,7 +111,7 @@ public class RaceRenderer {
 		
 		renderCars();		
 		renderInfo();
-		//debugRenderer.render(raceWorld.getWorld(), camera.combined);
+//		debugRenderer.render(raceWorld.getWorld(), getPhysicsCamera().combined);
 	}
 
 	private void renderInfo() {		

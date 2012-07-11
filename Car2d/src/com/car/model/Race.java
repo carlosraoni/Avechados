@@ -103,7 +103,7 @@ public class Race {
 		}
 		
 		//foco da camera
-		//focusCar = lastComputerCar;
+//		focusCar = lastComputerCar;
 		focusCar = player;
 	}	
 	
