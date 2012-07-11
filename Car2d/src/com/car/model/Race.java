@@ -10,6 +10,8 @@ import java.util.Map;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
+import com.car.ai.CarIntelligenceInterface;
+import com.car.ai.FuzzyInntelligence;
 import com.car.ai.SeekWaypointSensorIntelligence;
 import com.car.ai.WayPointsLine;
 import com.car.listener.Car2dContactListener;
@@ -40,6 +42,8 @@ public class Race {
 	private long raceFinishTime;
 	
 	private Comparator<Car> carRacePositionsComparator;
+	
+	boolean noPlayer = false;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		this.world = new World(new Vector2(0, 0), false);
@@ -86,15 +90,28 @@ public class Race {
 	private void loadRaceCars(TiledMapHelper tiledHelper) {
 		Map<Integer, CarPosition> carPositions = tiledHelper.getRacePositions();		
 		Car lastComputerCar = null;
+		//createmock player lap, ... controls
+		if(noPlayer){
+			player = new Car(this, new CarPosition(1, 0, 0, 0), null);
+		}
 		for(Integer position: carPositions.keySet()){			
 			CarPosition carPos = carPositions.get(position);
-			if(position == Constants.CAR_PLAYER_INITIAL_POSITION){
+			if(!noPlayer && position == Constants.CAR_PLAYER_INITIAL_POSITION){
 				// Player
 				player = new Car(this, carPos,CarColor.value(position-1));
 				cars.add(player);
 			}
 			else{
-				Car computer = new Car(this, carPos, CarColor.value(position-1),new SeekWaypointSensorIntelligence());
+				
+				CarIntelligenceInterface carIntelligence = null;
+
+				if (position == Constants.MAX_RACE_CARS) {
+					carIntelligence = new FuzzyInntelligence();
+				} else {
+					carIntelligence = new SeekWaypointSensorIntelligence();
+				}
+				
+				Car computer = new Car(this, carPos, CarColor.value(position-1),carIntelligence);
 				cars.add(computer);
 				lastComputerCar = computer;
 			}
@@ -103,8 +120,12 @@ public class Race {
 		}
 		
 		//foco da camera
-		//focusCar = lastComputerCar;
-		focusCar = player;
+		if(noPlayer){
+			focusCar = lastComputerCar;
+		}else {
+			focusCar = lastComputerCar;
+			//focusCar = player;
+		}
 	}	
 	
 	private void createRaceWalls(TiledMapHelper tiledHelper, World world) {

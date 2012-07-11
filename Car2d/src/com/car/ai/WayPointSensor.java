@@ -15,6 +15,7 @@ public class WayPointSensor {
 	private Car car;
 	
 	int index = 0;
+	private float angle;
 	
 	public WayPointSensor(World world, Car car, WayPointsLine wayPointsLine, float wayPointRange) {
 		this.waypoints = wayPointsLine.getWayPoints();
@@ -30,6 +31,7 @@ public class WayPointSensor {
 		Vector2 waypoint = getCurrentWayPoint();
 		Vector2 v =  car.getBody().getLocalPoint(waypoint);
 		this.value  = v.x;
+		this.angle  = v.angle();
 //		this.value = normalizeAngle(v.angle());
 //		
 //		System.out.println("Tipo Carro :" +car.getType());
@@ -52,14 +54,21 @@ public class WayPointSensor {
 	//Entre +180 e -180
 	private float normalizeAngle(float angle){
 		float normalizeAngle;
-		if(angle>=0 && angle<=90){
-			normalizeAngle = 90-angle;
-		}else if(angle >= 270 && angle <= 360){
+		if(angle >= 270 && angle <= 360){
 			normalizeAngle = angle-450;			
 		}else{
 			normalizeAngle = angle-90;
 		}
 		return normalizeAngle;
+	}
+	
+	@Override
+	public String toString() {
+		return "WayPointSensor [ xvalue=" + Float.toString(value) + ", normalizedAngle="+normalizeAngle(angle)+", angle="+angle+"]";
+	}
+
+	public float getAngle() {
+		return normalizeAngle(this.angle);
 	}
 
 }

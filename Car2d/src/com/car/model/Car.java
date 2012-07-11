@@ -2,11 +2,7 @@ package com.car.model;
 
 import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-
-import javax.swing.text.Position;
 
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -24,7 +20,6 @@ import com.car.ai.WayPointSensor;
 import com.car.ai.WayPointsLine;
 import com.car.utils.Constants;
 import com.car.utils.Controls;
-import com.car.utils.TiledMapHelper;
 
 public class Car {
 	
@@ -186,9 +181,9 @@ public class Car {
 	}
 
 	private void initWallSensors(float wallSensorRange){
-//		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
-//			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
-//		}
+		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
+			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
+		}
 	}
 
 
@@ -283,6 +278,7 @@ public class Car {
 		for(WallSensorRayCast sensor: wallSensors){
 			System.out.println(sensor);
 		}
+		System.out.println(wayPointSensor);
 		System.out.println("-----------------------------------------------------");
 		
 	}
