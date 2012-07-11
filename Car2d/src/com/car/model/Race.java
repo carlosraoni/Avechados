@@ -43,7 +43,7 @@ public class Race {
 	
 	private Comparator<Car> carRacePositionsComparator;
 	
-	boolean noPlayer = false;
+	boolean noPlayer = true;
 	
 	public Race(TiledMapHelper tiledHelper){				
 		this.world = new World(new Vector2(0, 0), false);

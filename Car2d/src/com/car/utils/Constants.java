@@ -80,4 +80,5 @@ public interface Constants {
 	public static final Vector2 UNIT_VECTOR2_Y = new Vector2(0,1);
 	
 	public static final int MAX_RACE_CARS = 6;
+	public static final float WALL_SENSOR_FRONT_RANGE = 70;
 }

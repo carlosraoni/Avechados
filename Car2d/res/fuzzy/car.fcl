@@ -71,9 +71,9 @@ END_FUZZIFY
 
 FUZZIFY waypointsensorX
 	TERM tooright :=  (-90 ,0) (-80 ,1) (-70, 1) (-60, 0);
-    TERM right := (-70, 0) (-60, 1) (-30, 1) (-10, 0) ;
-    TERM equal := (-10, 0) (-10, 1) (10, 1) (10, 0); 
-    TERM left := (10, 0) (30,1) (60,1) (70,0);
+    TERM right := (-70, 0) (-60, 1) (-30, 1) (-20, 0) ;
+    TERM equal := (-25, 0) (-10, 1) (10, 1) (25, 0); 
+    TERM left := (20, 0) (30,1) (60,1) (70,0);
     TERM tooleft := (60, 0) (70, 1) (80 ,1) (90,0);
 END_FUZZIFY
 
@@ -98,7 +98,7 @@ DEFUZZIFY changespeed
     // Use 'Center Of Gravity' defuzzification method
     METHOD : COG;
     // Default value is 0 (if no rule activates defuzzifier)
-    DEFAULT := 5;
+    DEFAULT := 7;
 END_DEFUZZIFY
 
 
@@ -127,14 +127,25 @@ RULEBLOCK No1
     // Use 'max' accumulation method
     ACCU : MAX;
 
-    RULE 1 : IF wsfront IS normal OR wsfront IS far OR wsfront IS infinite 
+    RULE 1 : IF (wsfront IS critical AND speedSignal IS positive ) OR wsfront IS normal OR wsfront IS far OR wsfront IS infinite 
                 THEN changespeed IS speedup;
 	
 	RULE 2 : IF (waypointsensorX IS left OR waypointsensorX IS tooleft) THEN direction IS frontright;
 	RULE 3 : IF (waypointsensorX IS right OR waypointsensorX IS tooright) THEN direction IS frontleft;
 	
-	//RULE 4 : IF (wsfrontleft IS touch) THEN direction IS frontright;
-	//RULE 5 : IF (wsfrontright IS touch) THEN direction IS frontleft;
+	RULE 4 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
+				AND (wsfrontright IS critical OR wsfrontright IS normal OR wsfrontright IS far)
+				AND  wsleft IS infinite THEN direction IS left;
+	RULE 5 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
+				AND (wsfrontleft IS critical OR wsfrontleft IS normal OR wsfrontleft IS far) 
+				AND  wsright IS infinite THEN direction IS right;
+	
+	RULE 6 : IF wsfront IS touch AND (speed IS halt) THEN direction IS back;
+	RULE 7 : IF wsfront IS touch AND (speed IS halt) THEN changespeed IS break;
+	
+	RULE 7 : IF wsfront IS critical  AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative THEN direction IS back;
+	RULE 8 : IF wsfront IS critical AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative  THEN changespeed IS break;
+
 
 
 

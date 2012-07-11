@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.joints.RevoluteJoint;
 import com.badlogic.gdx.physics.box2d.joints.RevoluteJointDef;
 import com.car.ai.CarIntelligenceInterface;
 import com.car.ai.WallSensorRayCast;
+import com.car.ai.WallSensorRayCast.WallSensorType;
 import com.car.ai.WayPointSensor;
 import com.car.ai.WayPointsLine;
 import com.car.utils.Constants;
@@ -182,7 +183,12 @@ public class Car {
 
 	private void initWallSensors(float wallSensorRange){
 		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
-			wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
+			if(sensorType.equals(WallSensorType.FRONT)){
+				wallSensors.add(new WallSensorRayCast(world,this, sensorType, Constants.WALL_SENSOR_FRONT_RANGE));
+			}else{
+				wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
+			}
+			
 		}
 	}
 
