@@ -92,9 +92,8 @@ public class SplashScreen implements Screen{
 
 
 	@Override
-	public void dispose() {
-		// TODO Auto-generated method stub
-		
+	public void dispose() {		
+		stage.dispose();		
 	}
 
 	@Override

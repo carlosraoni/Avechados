@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.tiled.TileMapRenderer;
 import com.badlogic.gdx.math.MathUtils;
@@ -27,7 +28,9 @@ public class RaceRenderer {
 	
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
-	private Texture[] carTexture;
+	
+	private TextureAtlas carTextureAtlas;
+//	private Texture[] carTexture;
 	private TextureRegion[] carTextureRegion;
 	
 	private TileMapRenderer tileMapRenderer;	
@@ -41,6 +44,8 @@ public class RaceRenderer {
 	
 	private long firstTime;
 	private long now;
+	
+	private final StringBuilder timeStrBuilder = new StringBuilder();
 	
 	public RaceRenderer(Race race, TiledMapHelper tiledHelper, int screenPixelWidth, int screenPixelHeight){
 		this.raceWorld = race;
@@ -62,13 +67,15 @@ public class RaceRenderer {
 		
 		debugRenderer = new Box2DDebugRenderer();
 		
-		carTexture = new Texture[raceWorld.getCars().size()];
+		carTextureAtlas = new TextureAtlas("res/cars/cars.pack");
+		
+//		carTexture = new Texture[raceWorld.getCars().size()];
 		carTextureRegion = new TextureRegion[raceWorld.getCars().size()];
 		List<Car> cars = raceWorld.getCars();
 		for(Car car : cars){
 			int index = car.getId() - 1;
-			carTexture[index] = new Texture(Gdx.files.internal("res/cars/carro90_"+car.getColor().code()+".png"));
-			carTextureRegion[index] = new TextureRegion(carTexture[index]);
+//			carTexture[index] = new Texture(Gdx.files.internal("res/cars/carro90_"+car.getColor().code()+".png"));
+			carTextureRegion[index] = carTextureAtlas.findRegion("carro90_"+car.getColor().code());
 		}
 
 		spriteBatch = new SpriteBatch();
@@ -97,14 +104,16 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updatePhysicsCameraPosition();
-		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
+//		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
 
-		//tileMapRenderer.render(physicsCamera, Constants.VIEW_W, Constants.VIEW_H);
-		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
+		tileMapRenderer.render(physicsCamera);
+//		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
 		
 		renderCars();		
 		renderInfo();
-		//debugRenderer.render(raceWorld.getWorld(), getPhysicsCamera().combined);
+
+//		debugRenderer.render(raceWorld.getWorld(), getPhysicsCamera().combined);
+
 	}
 
 	private void renderInfo() {		
@@ -155,9 +164,12 @@ public class RaceRenderer {
 		long timeSeconds = ((renderTime - firstTime) % 60000) / 1000;		
 		long timeMilliSeconds = ((renderTime - firstTime) % 60000) % 1000;
 		
-		String timeStr = (timeMinutes > 0) ? timeMinutes + ":": "";
-		timeStr += (timeSeconds <= 9 && timeMinutes > 0 ? "0" + timeSeconds: timeSeconds) + "." + timeMilliSeconds;
-		return timeStr;
+		timeStrBuilder.delete(0, timeStrBuilder.length());
+		
+		timeStrBuilder.append((timeMinutes > 0) ? timeMinutes + ":": "");
+		timeStrBuilder.append((timeSeconds <= 9 && timeMinutes > 0 ? "0" + timeSeconds: timeSeconds) + "." + timeMilliSeconds);
+		timeStrBuilder.append("s");
+		return timeStrBuilder.toString();
 	}
 
 	private String getFinalResultMessage(int playerPosition) {
@@ -206,15 +218,15 @@ public class RaceRenderer {
 	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter,int carId) {
 		carId--;		
 		// Centro local da textura em coordenadas do mundo
-		float textureCenterX = carTexture[carId].getWidth() / (2 * Constants.PPM);
-		float textureCenterY = carTexture[carId].getHeight() / (2 * Constants.PPM);
+		float textureCenterX = carTextureRegion[carId].getRegionWidth() / (2 * Constants.PPM);
+		float textureCenterY = carTextureRegion[carId].getRegionHeight() / (2 * Constants.PPM);
 		// Deslocamento necess�rio para alinhar o centro do carrinho e o centro da textura
 		float centerDx = textureCenterX - carLocalCenter.x;
 		float centerDy = textureCenterY - carLocalCenter.y;
 						
 		spriteBatch.draw(carTextureRegion[carId], coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
                 centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
-                (float) carTexture[carId].getWidth() / Constants.PPM, (float) carTexture[carId].getHeight() / Constants.PPM, // the width and height of the box
+                (float) carTextureRegion[carId].getRegionWidth() / Constants.PPM, (float) carTextureRegion[carId].getRegionHeight() / Constants.PPM, // the width and height of the box
                 1f, 1f, // the scale on the x- and y-axis
                 angle);				
 	}

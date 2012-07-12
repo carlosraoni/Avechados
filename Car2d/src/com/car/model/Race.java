@@ -123,8 +123,7 @@ public class Race {
 		if(noPlayer){
 			focusCar = lastComputerCar;
 		}else {
-			focusCar = lastComputerCar;
-			//focusCar = player;
+			focusCar = player;
 		}
 	}	
 	

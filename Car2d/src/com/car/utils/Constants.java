@@ -3,20 +3,6 @@ package com.car.utils;
 import com.badlogic.gdx.math.Vector2;
 
 public interface Constants {
-	public static final int INITIAL_LIFE = 100;
-	public static final float MAP_BOUNDARY = 10.0f;
-	public static final int DEGREE_TURN = 5;
-	public static final int SLOW_DEGREE_TURN = 3;
-	
-	public static final int TIME = 1;
-	
-	public static final int INITIAL_MAX_SPEED_PLAYER = 70;
-	public static final int INITIAL_ACCELERATION_PLAYER = 1;
-	public static final int BRAKE_SPEED = 5;
-	public static final int SLOW_BRAKE_SPEED = 2;
-	
-	public static final float CONVERT_DELTA_TO_PIXELS = -(1.0f / 20.0f);
-
 	public static int UNFILLED_DISTANCE = -1;
 	
 	public static final String START_PLAYER_COLUMN_KEY = "startPlayerColumn";
@@ -49,16 +35,17 @@ public interface Constants {
 	public static final int DOUBLE_GALAXY_5_H = 640;
 	
 //	// change to target resolution
-//	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_W;
-//	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_H;
-	public static final int TARGET_RES_W = GALAXY_5_W;
-	public static final int TARGET_RES_H = GALAXY_5_H;
+	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_H;
+	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_W;
+//	public static final int TARGET_RES_W = GALAXY_5_H;
+//	public static final int TARGET_RES_H = GALAXY_5_W;
 //	public static final int TARGET_RES_W = HTC_EVO_3D_W;
 //	public static final int TARGET_RES_H = HTC_EVO_3D_H;
 	
-	public static final float ASPECT_RATIO = 0.68f;
+	//public static final float ASPECT_RATIO = 0.68f;
+	public static final float ASPECT_RATIO = TARGET_RES_W  /TARGET_RES_H;
 //	public static final float VIEW_W = 150f;
-	public static final float VIEW_W = 200f;
+	public static final float VIEW_W = 300f;
 //	public static final float VIEW_W = 300f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	
@@ -80,5 +67,7 @@ public interface Constants {
 	public static final Vector2 UNIT_VECTOR2_Y = new Vector2(0,1);
 	
 	public static final int MAX_RACE_CARS = 6;
+
 	public static final float WALL_SENSOR_FRONT_RANGE = 70;
+
 }

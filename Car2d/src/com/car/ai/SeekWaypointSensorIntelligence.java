@@ -16,17 +16,17 @@ public class SeekWaypointSensorIntelligence implements CarIntelligenceInterface{
 		controls.clear();
 		float value = opponent.getWaypointSensor().getValue();
 		
-//		if(countBacking > 0 || opponent.getWallSensors().get(WallSensorType.FRONT.ordinal()).getValue() < 0.001){
-//			countBacking ++;
-//			controls.set(Controls.TDC_DOWN.ordinal(), true);
-//			value = -value;
-//			if(countBacking > 10){
-//				countBacking = 0;
-//			}
-//			
-//		}else{
+		if(countBacking > 0 || opponent.getWallSensors().get(WallSensorType.FRONT.ordinal()).getValue() < 0.001){
+			countBacking ++;
+			controls.set(Controls.TDC_DOWN.ordinal(), true);
+			value = -value;
+			if(countBacking > 10){
+				countBacking = 0;
+			}
+			
+		}else{
 			controls.set(Controls.TDC_UP.ordinal(), true);
-//		}
+		}
 					
 		if(Math.abs(value) < 10f && countBacking == 0){
 			return controls;

@@ -45,7 +45,7 @@ public class RaceScreen implements Screen{
 
 		float targetFPS = 30;
     	float timeStep = (1 / targetFPS);
-    	int iterations = 1;
+    	int iterations = 100;
     	
     	if(race.isRaceFinished() && Gdx.input.justTouched()){
     		myGame.setScreen(new MenuScreen(myGame));
@@ -68,6 +68,28 @@ public class RaceScreen implements Screen{
 	   lastRender = now;
     }
 
+//	private static final float TICK = 1 / 60f;
+//	private static final int COLLISION_SOLVER_ITERATIONS = 1;
+//	private float accumulator = 0;
+//	
+//	@Override
+//	public void render(float delta){
+//	
+//		long now = System.nanoTime();
+//		
+//
+//		if(!race.isRaceFinished() && isStartTimeElapsed()){			
+//			accumulator += Gdx.graphics.getDeltaTime();
+//			while (accumulator > TICK) {
+//				race.update(TICK, COLLISION_SOLVER_ITERATIONS, COLLISION_SOLVER_ITERATIONS, getPlayerControls());
+//				accumulator -= TICK;
+//			}
+//		}
+//		
+//		raceRenderer.render();
+//		lastRender = now;
+//	}
+    
 	public boolean isStartTimeElapsed() {
 		return ((lastRender - firstTime) / 1000000000l) >= Constants.RACE_START_TIME_SECONDS;
 	}
@@ -85,7 +107,7 @@ public class RaceScreen implements Screen{
 		controls.set(Controls.TDC_LEFT.ordinal(), Gdx.input.isKeyPressed(Input.Keys.DPAD_LEFT));
 		
 		if(Gdx.input.isTouched()){
-			System.out.println("X: " + Gdx.input.getX() + ", Y: " + Gdx.input.getY());
+//			System.out.println("X: " + Gdx.input.getX() + ", Y: " + Gdx.input.getY());
 			if(Gdx.input.getX() > Constants.TARGET_RES_W / 2){
 				controls.set(Controls.TDC_RIGHT.ordinal(), true);
 			}
@@ -112,6 +134,8 @@ public class RaceScreen implements Screen{
 		tiledMapHelper = new TiledMapHelper(raceMap, "res");
 		race = new Race(tiledMapHelper);
 		raceRenderer = new RaceRenderer(race, tiledMapHelper, screenPixelWidth, screenPixelHeight);
+		
+		System.gc();
 		
 		lastRender = System.nanoTime();	
     }

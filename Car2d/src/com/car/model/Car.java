@@ -131,6 +131,7 @@ public class Car {
         jointDef.localAnchorB.set(Vector2.Zero); 
         
         float maxForwardSpeed = 250;
+//        float maxForwardSpeed = 20;
         float maxBackwardSpeed = -40;
         float backTireMaxDriveForce = 300;
         float frontTireMaxDriveForce = 500;
@@ -183,12 +184,12 @@ public class Car {
 
 	private void initWallSensors(float wallSensorRange){
 		for(WallSensorRayCast.WallSensorType sensorType: WallSensorRayCast.WallSensorType.values()){
+
 			if(sensorType.equals(WallSensorType.FRONT)){
 				wallSensors.add(new WallSensorRayCast(world,this, sensorType, Constants.WALL_SENSOR_FRONT_RANGE));
 			}else{
 				wallSensors.add(new WallSensorRayCast(world,this, sensorType, wallSensorRange));
 			}
-			
 		}
 	}
 
