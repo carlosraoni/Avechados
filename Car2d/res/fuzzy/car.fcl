@@ -62,19 +62,19 @@ FUZZIFY wsright
 END_FUZZIFY
 
 FUZZIFY waypointsensor
-	TERM tooleft :=  (-90 ,0) (-80 ,1) (-70, 1) (-60, 0);
+	TERM tooleft :=  (-90 ,1) (-80 ,1) (-70, 1) (-60, 0);
     TERM left := (-70, 0) (-60, 1) (-40, 1) (-10, 0) ;
     TERM equal := (-30, 0) (-20, 1) (20, 1) (30, 0); 
     TERM right := (10, 0) (40,1) (60,1) (70,0);
-    TERM tooright := (60, 0) (70, 1) (80 ,1) (90,0);
+    TERM tooright := (60, 0) (70, 1) (80 ,1) (90,1);
 END_FUZZIFY
 
 FUZZIFY waypointsensorX
-	TERM tooright :=  (-90 ,0) (-80 ,1) (-70, 1) (-60, 0);
+	TERM tooright :=  (-90 ,1) (-80 ,1) (-70, 1) (-60, 0);
     TERM right := (-70, 0) (-60, 1) (-30, 1) (-20, 0) ;
     TERM equal := (-25, 0) (-10, 1) (10, 1) (25, 0); 
     TERM left := (20, 0) (30,1) (60,1) (70,0);
-    TERM tooleft := (60, 0) (70, 1) (80 ,1) (90,0);
+    TERM tooleft := (60, 0) (70, 1) (80 ,1) (90,1);
 END_FUZZIFY
 
 FUZZIFY speed
@@ -130,21 +130,24 @@ RULEBLOCK No1
     RULE 1 : IF (wsfront IS critical AND speedSignal IS positive ) OR wsfront IS normal OR wsfront IS far OR wsfront IS infinite 
                 THEN changespeed IS speedup;
 	
-	RULE 2 : IF (waypointsensorX IS left OR waypointsensorX IS tooleft) THEN direction IS frontright;
-	RULE 3 : IF (waypointsensorX IS right OR waypointsensorX IS tooright) THEN direction IS frontleft;
+	RULE 2 : IF (waypointsensorX IS left OR waypointsensorX IS tooleft) AND speedSignal IS positive THEN direction IS frontright;
+	RULE 3 : IF (waypointsensorX IS right OR waypointsensorX IS tooright) AND speedSignal IS positive THEN direction IS frontleft;
 	
-	RULE 4 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
+	RULE 4 : IF (waypointsensorX IS left OR waypointsensorX IS tooleft) AND speedSignal IS negative THEN direction IS frontleft;
+	RULE 5 : IF (waypointsensorX IS right OR waypointsensorX IS tooright) AND speedSignal IS negative THEN direction IS frontright;
+	
+	RULE 6 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
 				AND (wsfrontright IS critical OR wsfrontright IS normal OR wsfrontright IS far)
 				AND  wsleft IS infinite THEN direction IS left;
-	RULE 5 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
+	RULE 7 : IF (wsfront IS critical OR wsfront IS normal OR wsfront IS far)  
 				AND (wsfrontleft IS critical OR wsfrontleft IS normal OR wsfrontleft IS far) 
 				AND  wsright IS infinite THEN direction IS right;
 	
-	RULE 6 : IF wsfront IS touch AND (speed IS halt) THEN direction IS back;
-	RULE 7 : IF wsfront IS touch AND (speed IS halt) THEN changespeed IS break;
+	RULE 8 : IF wsfront IS touch AND (speed IS halt) THEN direction IS back;
+	RULE 9 : IF wsfront IS touch AND (speed IS halt) THEN changespeed IS break;
 	
-	RULE 7 : IF wsfront IS critical  AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative THEN direction IS back;
-	RULE 8 : IF wsfront IS critical AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative  THEN changespeed IS break;
+	RULE 10 : IF wsfront IS critical  AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative THEN direction IS back;
+	RULE 11 : IF wsfront IS critical AND (speed IS halt OR speed IS slide ) AND speedSignal IS negative  THEN changespeed IS break;
 
 
 
