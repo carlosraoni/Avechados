@@ -17,20 +17,25 @@ import com.car.utils.Controls;
 public class Tire {
 
 	private Body body;
+	private Vector2 origin = new Vector2();
 	
-    float m_maxForwardSpeed;
-    float m_maxBackwardSpeed;
-    float m_maxDriveForce;
-    float m_maxLateralImpulse;
-    Set<GroundAreaFUD> m_groundAreas;
-    float m_currentTraction;	
-	
-	public Tire(World world, float posX, float posY, float initialAngle){
+    private float m_maxForwardSpeed;
+    private float m_maxBackwardSpeed;
+    private float m_maxDriveForce;
+    private float m_maxLateralImpulse;
+    private Set<GroundAreaFUD> m_groundAreas;
+    private float m_currentTraction;	
+				
+	public Tire(World world, Body carBody, float localCarX, float localCarY){
 		BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyType.DynamicBody;
-        bodyDef.position.x = posX;
-        bodyDef.position.y = posY;
-        bodyDef.angle = initialAngle * MathUtils.degreesToRadians;
+        
+        origin.set(localCarX, localCarY);
+        Vector2 worldPos = carBody.getWorldPoint(origin);
+        		
+        bodyDef.position.x = worldPos.x;
+        bodyDef.position.y = worldPos.y;
+        bodyDef.angle = carBody.getAngle();
         body = world.createBody(bodyDef);	
 
         PolygonShape polygonShape = new PolygonShape();

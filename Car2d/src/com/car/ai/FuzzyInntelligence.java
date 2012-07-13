@@ -34,7 +34,7 @@ public class FuzzyInntelligence implements CarIntelligenceInterface {
 			sensorsMap.put(sensor.getType(),sensor);
 		}
 		
-		opponent.printSensors();
+//		opponent.printSensors();
 		
         // Set inputs
         fis.setVariable("wsfront", sensorsMap.get(WallSensorRayCast.WallSensorType.FRONT).getValue());
@@ -57,8 +57,8 @@ public class FuzzyInntelligence implements CarIntelligenceInterface {
         fis.setVariable("speedSignal", signal);
         float speed = opponent.getBody().getLocalVector(opponent.getBody().getLinearVelocity()).len()*100/69;
         fis.setVariable("speed", speed);
-        System.out.println("Speed : " + speed);
-        System.out.println("SpeedSignal : " + signal + ":: Y = " + y);
+//        System.out.println("Speed : " + speed);
+//        System.out.println("SpeedSignal : " + signal + ":: Y = " + y);
 
 
         // Evaluate
@@ -67,7 +67,7 @@ public class FuzzyInntelligence implements CarIntelligenceInterface {
         fis.getVariable("changespeed").chartDefuzzifier(false);
         double changeSpeed = fis.getVariable("changespeed").getLatestDefuzzifiedValue();
         double direction = fis.getVariable("direction").getLatestDefuzzifiedValue();
-        System.out.println("ChangeOfSpeed = " + changeSpeed + " :: Direction = " + direction);
+//        System.out.println("ChangeOfSpeed = " + changeSpeed + " :: Direction = " + direction);
         
 		controls.set(Controls.TDC_UP.ordinal(), changeSpeed>5);
 		controls.set(Controls.TDC_DOWN.ordinal(), changeSpeed<5);
@@ -76,43 +76,44 @@ public class FuzzyInntelligence implements CarIntelligenceInterface {
 			if(changeSpeed < 5){
 				controls.set(Controls.TDC_DOWN.ordinal(), true);
 			}
-			System.out.println("going back");
+//			System.out.println("going back");
 		}else if(direction > 0  && direction <2){
 			controls.set(Controls.TDC_LEFT.ordinal(), true);
-			System.out.println("going left");
+//			System.out.println("going left");
 		}else if(direction > 2  && direction <4){
 			controls.set(Controls.TDC_LEFT.ordinal(), true);
 			if(changeSpeed > 5){
 				controls.set(Controls.TDC_UP.ordinal(), true);
 			}
-			System.out.println("going front left");
+//			System.out.println("going front left");
 		}else if(direction > 4  && direction <6){
 			if(changeSpeed > 5){
 				controls.set(Controls.TDC_UP.ordinal(), true);
 			}
-			System.out.println("going equal");
+//			System.out.println("going equal");
 		}else if(direction > 6  && direction <8){
 			if(changeSpeed > 5){
 				controls.set(Controls.TDC_UP.ordinal(), true);
 			}
 			controls.set(Controls.TDC_RIGHT.ordinal(), true);
 			
-			System.out.println("going front right");
+//			System.out.println("going front right");
 		}else if(direction > 8  && direction <10){
 			controls.set(Controls.TDC_RIGHT.ordinal(), true);
-			System.out.println(" going right");
+//			System.out.println(" going right");
 		}
 		return controls;
 	}
-public static void main(String[] args) {
-	String fileName = "res/fuzzy/car.fcl";
-    FIS fis = FIS.load(fileName,true);
 
-    if( fis == null ) { 
-        System.err.println("Can't load file: '" + fileName + "'");
-        return ;
-    }
-    fis.chart();
+	public static void main(String[] args) {
+		String fileName = "res/fuzzy/car.fcl";
+		FIS fis = FIS.load(fileName, true);
+
+		if (fis == null) {
+			System.err.println("Can't load file: '" + fileName + "'");
+			return;
+		}
+		fis.chart();
     
 }
 }

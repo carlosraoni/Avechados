@@ -67,15 +67,16 @@ public class RaceRenderer {
 		
 		debugRenderer = new Box2DDebugRenderer();
 		
-		carTextureAtlas = new TextureAtlas("res/cars/cars.pack");
-		
-//		carTexture = new Texture[raceWorld.getCars().size()];
+		carTextureAtlas = new TextureAtlas(Constants.CARS_TEXTURE);		
 		carTextureRegion = new TextureRegion[raceWorld.getCars().size()];
 		List<Car> cars = raceWorld.getCars();
 		for(Car car : cars){
 			int index = car.getId() - 1;
-//			carTexture[index] = new Texture(Gdx.files.internal("res/cars/carro90_"+car.getColor().code()+".png"));
-			carTextureRegion[index] = carTextureAtlas.findRegion("carro90_"+car.getColor().code());
+			carTextureRegion[index] = carTextureAtlas.findRegion("Carro" + car.getColor().code());
+			if(carTextureRegion[index] == null){
+				System.out.println("Nao encontrou regiao: Carro" + car.getColor().code());				
+			}
+			
 		}
 
 		spriteBatch = new SpriteBatch();
@@ -104,16 +105,13 @@ public class RaceRenderer {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		
 		updatePhysicsCameraPosition();
-//		tileMapRenderer.getProjectionMatrix().set(physicsCamera.combined);
 
 		tileMapRenderer.render(physicsCamera);
-//		tileMapRenderer.render(getPhysicsCamera().position.x, getPhysicsCamera().position.y, Constants.VIEW_W, Constants.VIEW_H);
 		
 		renderCars();		
 		renderInfo();
 
 //		debugRenderer.render(raceWorld.getWorld(), getPhysicsCamera().combined);
-
 	}
 
 	private void renderInfo() {		

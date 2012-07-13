@@ -23,6 +23,7 @@ public interface Constants {
 
 	// we want one tile to be 10mx10m
 	public static final float PPM = 1.8f;
+//	public static final float PPM = 2.5f;
 	
 	// constants below are in meters
 	public static final int HTC_EVO_3D_W = 540;
@@ -35,10 +36,10 @@ public interface Constants {
 	public static final int DOUBLE_GALAXY_5_H = 640;
 	
 //	// change to target resolution
-	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_H;
-	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_W;
-//	public static final int TARGET_RES_W = GALAXY_5_H;
-//	public static final int TARGET_RES_H = GALAXY_5_W;
+//	public static final int TARGET_RES_W = DOUBLE_GALAXY_5_H;
+//	public static final int TARGET_RES_H = DOUBLE_GALAXY_5_W;
+	public static final int TARGET_RES_W = GALAXY_5_H;
+	public static final int TARGET_RES_H = GALAXY_5_W;
 //	public static final int TARGET_RES_W = HTC_EVO_3D_W;
 //	public static final int TARGET_RES_H = HTC_EVO_3D_H;
 	
@@ -49,7 +50,9 @@ public interface Constants {
 //	public static final float VIEW_W = 300f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	
-	// Range dos sensores da parede
+	public static final float BRAKE_CONTROL_RANGE = TARGET_RES_W / 8f; 
+	
+	// Range dos sensores da parede 
 	
 	public static final float WALL_SENSOR_APERTURE = 0.1f;
 	public static final float WALL_SENSOR_CLEAR_VALUE = Float.MAX_VALUE;
@@ -59,7 +62,7 @@ public interface Constants {
 	public static final int CAR_PLAYER_INITIAL_POSITION = 1;
 	public static final String CHECKPOINT_NAME = "Checkpoint";
 	public static final String TOTAL_LAPS_KEY = "TotalLaps";
-	public static final Object CHECKPOINT_INDEX_KEY = "index";
+	public static final String CHECKPOINT_INDEX_KEY = "index";
 	
 	public static final long RACE_START_TIME_SECONDS = 5; // segundos
 
@@ -70,4 +73,6 @@ public interface Constants {
 
 	public static final float WALL_SENSOR_FRONT_RANGE = 70;
 
+	public static final String CARS_TEXTURE = "res/cars/cars.pack";
+//	public static final String CARS_TEXTURE = "res/cars/DDcars.pack";	
 }

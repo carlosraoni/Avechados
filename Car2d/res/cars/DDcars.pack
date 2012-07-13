@@ -1,0 +1,47 @@
+
+DDCars1.png
+format: RGBA8888
+filter: Nearest,Nearest
+repeat: none
+CarroVermelho
+  rotate: false
+  xy: 2, 2
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+CarroVerde
+  rotate: false
+  xy: 2, 34
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+CarroRoxo
+  rotate: false
+  xy: 2, 66
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+CarroAzulClaro
+  rotate: false
+  xy: 30, 2
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+CarroAzul
+  rotate: false
+  xy: 58, 2
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1
+CarroAmarelo
+  rotate: false
+  xy: 86, 2
+  size: 26, 30
+  orig: 26, 30
+  offset: 0, 0
+  index: -1

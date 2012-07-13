@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import car.com.input.PlayerInputHandler;
+
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -38,15 +40,19 @@ public class Race {
 	// Total de voltas
 	private int totalLaps;
 	
+	// Tratamento dos controles do jogador
+	private PlayerInputHandler playerInputHandler;
+	
 	private boolean raceFinished = false;
 	private long raceFinishTime;
 	
 	private Comparator<Car> carRacePositionsComparator;
 	
-	boolean noPlayer = true;
+	boolean noPlayer = false;
 	
-	public Race(TiledMapHelper tiledHelper){				
+	public Race(TiledMapHelper tiledHelper, PlayerInputHandler playerInputHandler){				
 		this.world = new World(new Vector2(0, 0), false);
+		this.playerInputHandler = playerInputHandler;
 		world.setContactListener(new Car2dContactListener());
 		wayPointsLine = new WayPointsLine(tiledHelper, world);
 		checkpoints = createCheckPoints(tiledHelper,world);
@@ -105,11 +111,11 @@ public class Race {
 				
 				CarIntelligenceInterface carIntelligence = null;
 
-				if (position == Constants.MAX_RACE_CARS) {
-					carIntelligence = new FuzzyInntelligence();
-				} else {
+//				if (position == Constants.MAX_RACE_CARS) {
+//					carIntelligence = new FuzzyInntelligence();
+//				} else {
 					carIntelligence = new SeekWaypointSensorIntelligence();
-				}
+//				}
 				
 				Car computer = new Car(this, carPos, CarColor.value(position-1),carIntelligence);
 				cars.add(computer);
@@ -161,7 +167,8 @@ public class Race {
 		return player.getBody().getAngle() * MathUtils.radiansToDegrees;
 	}
 
-	public void update(float timeStep, int velocityIterations, int positionIterations, BitSet playerControls) {
+	public void update(float timeStep, int velocityIterations, int positionIterations) {
+		BitSet playerControls = playerInputHandler.getPlayerControls();
 		for(Car car: cars){
 			car.updateSensors();
 			BitSet controls = playerControls;

@@ -50,12 +50,12 @@ public class Car {
 	
 	
 	public enum CarColor {
-		BLUE("azul"),
-		LIGHT_BLUE ("azul_claro"),
-		YELLOW ("amarelo"),
-		RED ("vermelho"),
-		PURPLE ("roxo"),
-		GREEN ("verde");
+		BLUE("Azul"),
+		LIGHT_BLUE ("AzulClaro"),
+		YELLOW ("Amarelo"),
+		RED ("Vermelho"),
+		PURPLE ("Roxo"),
+		GREEN ("Verde");
 		
 		private String code;
 		
@@ -131,42 +131,42 @@ public class Car {
         jointDef.localAnchorB.set(Vector2.Zero); 
         
         float maxForwardSpeed = 250;
-//        float maxForwardSpeed = 20;
         float maxBackwardSpeed = -40;
         float backTireMaxDriveForce = 300;
         float frontTireMaxDriveForce = 500;
         float backTireMaxLateralImpulse = 8.5f;
         float frontTireMaxLateralImpulse = 7.5f;
-        float shift =-5f;
+        float shift = -5f;
+        
         //back left tire
-        Tire tire = new Tire(world, posX - 0.75f, posY - 3f, initialAngle);
+        Tire tire = new Tire(world, body, -3f, -4.25f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set(-3, 0.75f+ shift);
+        jointDef.localAnchorA.set(-3, -4.25f);        
         world.createJoint(jointDef);
         tires.add(tire);
         
         //back right tire
-        tire = new Tire(world, posX - 0.75f, posY + 3f, initialAngle);
+        tire = new Tire(world, body, 3f, -4.25f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, backTireMaxDriveForce, backTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set(3, 0.75f+ shift);
+        jointDef.localAnchorA.set(3, 0.75f + shift);        
         world.createJoint(jointDef);
         tires.add(tire);
 
         //front left tire
-        tire = new Tire(world, posX - 8.5f, posY - 3f, initialAngle);
+        tire = new Tire(world, body, -3f, 3.5f);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set( -3, 8.5f + shift);
+        jointDef.localAnchorA.set( -3, 3.5f);        
         flJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
 
         //front right tire
-        tire = new Tire(world, posX - 8.5f, posY + 3f, initialAngle);
+        tire = new Tire(world, body, 3f, 8.5f + shift);
         tire.setCharacteristics(maxForwardSpeed, maxBackwardSpeed, frontTireMaxDriveForce, frontTireMaxLateralImpulse);
         jointDef.bodyB = tire.getBody();
-        jointDef.localAnchorA.set( 3, 8.5f + shift);
+        jointDef.localAnchorA.set( 3, 3.5f);       
         frJoint = (RevoluteJoint)world.createJoint(jointDef);
         tires.add(tire);
         
