@@ -1,45 +1,58 @@
-cars.png
+
+cars1.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
-CarroRoxo
+carro90
   rotate: false
-  xy: 2, 20
+  xy: 0, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-CarroVerde
+carro90
   rotate: false
-  xy: 20, 20
+  xy: 16, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-CarroAzulClaro
+carro90
   rotate: false
-  xy: 38, 2
+  xy: 32, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-CarroVermelho
+carro90
   rotate: false
-  xy: 38, 20
+  xy: 48, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-CarroAmarelo
+
+cars2.png
+format: Alpha
+filter: Nearest,Nearest
+repeat: none
+carro90
   rotate: false
-  xy: 2, 2
+  xy: 0, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0
   index: -1
-CarroAzul
+carro90
   rotate: false
-  xy: 20, 2
+  xy: 16, 0
+  size: 16, 16
+  orig: 16, 16
+  offset: 0, 0
+  index: -1
+carro90
+  rotate: false
+  xy: 32, 0
   size: 16, 16
   orig: 16, 16
   offset: 0, 0

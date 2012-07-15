@@ -23,7 +23,7 @@ public interface Constants {
 
 	// we want one tile to be 10mx10m
 	public static final float PPM = 1.8f;
-//	public static final float PPM = 2.5f;
+//	public static final float PPM = 2.0f;
 	
 	// constants below are in meters
 	public static final int HTC_EVO_3D_W = 540;
@@ -46,7 +46,7 @@ public interface Constants {
 	//public static final float ASPECT_RATIO = 0.68f;
 	public static final float ASPECT_RATIO = TARGET_RES_W  /TARGET_RES_H;
 //	public static final float VIEW_W = 150f;
-	public static final float VIEW_W = 300f;
+	public static final float VIEW_W = 200f;
 //	public static final float VIEW_W = 300f;
 	public static final float VIEW_H = VIEW_W / ASPECT_RATIO;
 	

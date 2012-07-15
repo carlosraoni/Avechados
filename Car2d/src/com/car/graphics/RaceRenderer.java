@@ -47,6 +47,9 @@ public class RaceRenderer {
 	
 	private final StringBuilder timeStrBuilder = new StringBuilder();
 	
+	private float unitsPerTileX;
+	private float unitsPerTileY;
+	
 	public RaceRenderer(Race race, TiledMapHelper tiledHelper, int screenPixelWidth, int screenPixelHeight){
 		this.raceWorld = race;
 		this.tiledHelper = tiledHelper;
@@ -54,8 +57,8 @@ public class RaceRenderer {
 		this.screenPixelHeight = screenPixelHeight;
 		
 		// setup map renderer
-		float unitsPerTileX = tiledHelper.getWorldUnitsPerTileX();
-		float unitsPerTileY = tiledHelper.getWorldUnitsPerTileY();
+		unitsPerTileX = tiledHelper.getWorldUnitsPerTileX();
+		unitsPerTileY = tiledHelper.getWorldUnitsPerTileY();
 		tileMapRenderer = new TileMapRenderer(
 				tiledHelper.getMap(), tiledHelper.getTileAtlas(), 16, 16, unitsPerTileX, unitsPerTileY);
 		
@@ -208,25 +211,25 @@ public class RaceRenderer {
 		spriteBatch.setProjectionMatrix(getPhysicsCamera().combined);
 		spriteBatch.begin();
 		for(Car car: raceWorld.getCars()){
-			drawCarRotated(car.getX(), car.getY(), car.getAngleInDegrees(), car.getBoundingBoxLocalCenter(),car.getId());
+			drawCarRotated(car);
 		}		
 		spriteBatch.end();
 	}
 
-	private void drawCarRotated(float coordX, float coordY, float angle, Vector2 carLocalCenter,int carId) {
-		carId--;		
-		// Centro local da textura em coordenadas do mundo
-		float textureCenterX = carTextureRegion[carId].getRegionWidth() / (2 * Constants.PPM);
-		float textureCenterY = carTextureRegion[carId].getRegionHeight() / (2 * Constants.PPM);
-		// Deslocamento necess�rio para alinhar o centro do carrinho e o centro da textura
-		float centerDx = textureCenterX - carLocalCenter.x;
-		float centerDy = textureCenterY - carLocalCenter.y;
+	private void drawCarRotated(Car car) {
+		float coordX = car.getX(); 
+		float coordY = car.getY();
+		float angle = car.getAngleInDegrees();
+		int carId = car.getId() - 1;
 						
-		spriteBatch.draw(carTextureRegion[carId], coordX - centerDx, coordY - centerDy, // the bottom left corner of the box, unrotated
-                centerDx, centerDy, // the rotation center relative to the bottom left corner of the box
-                (float) carTextureRegion[carId].getRegionWidth() / Constants.PPM, (float) carTextureRegion[carId].getRegionHeight() / Constants.PPM, // the width and height of the box
-                1f, 1f, // the scale on the x- and y-axis
-                angle);				
+		float centerX = car.getWidth()/2;
+		float centerY = car.getHeight()/2;
+								
+		spriteBatch.draw(carTextureRegion[carId], coordX - centerX, coordY - centerY, // the bottom left corner of the box, unrotated
+				 			centerX, centerY, // the rotation center relative to the bottom left corner of the box
+				 			car.getWidth(), car.getHeight(), // the width and height of the box
+				 			1f, 1f, // the scale on the x- and y-axis
+				 			angle);
 	}
 
 	
